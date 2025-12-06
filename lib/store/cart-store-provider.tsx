@@ -46,6 +46,7 @@ export const CartStoreProvider = ({
 /**
  * Hook to access the cart store with a selector
  * Must be used within CartStoreProvider
+ * Handles SSR by returning default state until hydrated
  */
 export const useCartStore = <T,>(selector: (store: CartStore) => T): T => {
   const cartStoreContext = useContext(CartStoreContext);
@@ -97,14 +98,24 @@ export const useCartItem = (productId: string) =>
 
 /**
  * Get all cart actions
+ * Actions are stable references from zustand, safe to destructure
  */
-export const useCartActions = () =>
-  useCartStore((state) => ({
-    addItem: state.addItem,
-    removeItem: state.removeItem,
-    updateQuantity: state.updateQuantity,
-    clearCart: state.clearCart,
-    toggleCart: state.toggleCart,
-    openCart: state.openCart,
-    closeCart: state.closeCart,
-  }));
+export const useCartActions = () => {
+  const addItem = useCartStore((state) => state.addItem);
+  const removeItem = useCartStore((state) => state.removeItem);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const clearCart = useCartStore((state) => state.clearCart);
+  const toggleCart = useCartStore((state) => state.toggleCart);
+  const openCart = useCartStore((state) => state.openCart);
+  const closeCart = useCartStore((state) => state.closeCart);
+
+  return {
+    addItem,
+    removeItem,
+    updateQuantity,
+    clearCart,
+    toggleCart,
+    openCart,
+    closeCart,
+  };
+};

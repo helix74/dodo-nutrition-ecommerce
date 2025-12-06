@@ -1,5 +1,4 @@
 import { createStore } from "zustand/vanilla";
-import { persist } from "zustand/middleware";
 
 // Types
 export interface CartItem {
@@ -35,59 +34,52 @@ export const defaultInitState: CartState = {
 
 /**
  * Cart store factory - creates new store instance per provider
+ * Following Zustand Next.js guide (no persist middleware for SSR compatibility)
  * @see https://zustand.docs.pmnd.rs/guides/nextjs
  */
 export const createCartStore = (initState: CartState = defaultInitState) => {
-  return createStore<CartStore>()(
-    persist(
-      (set) => ({
-        ...initState,
+  return createStore<CartStore>()((set) => ({
+    ...initState,
 
-        addItem: (item) =>
-          set((state) => {
-            const existing = state.items.find(
-              (i) => i.productId === item.productId
-            );
-            if (existing) {
-              return {
-                items: state.items.map((i) =>
-                  i.productId === item.productId
-                    ? { ...i, quantity: i.quantity + 1 }
-                    : i
-                ),
-              };
-            }
-            return { items: [...state.items, { ...item, quantity: 1 }] };
-          }),
-
-        removeItem: (productId) =>
-          set((state) => ({
-            items: state.items.filter((i) => i.productId !== productId),
-          })),
-
-        updateQuantity: (productId, quantity) =>
-          set((state) => {
-            if (quantity <= 0) {
-              return {
-                items: state.items.filter((i) => i.productId !== productId),
-              };
-            }
-            return {
-              items: state.items.map((i) =>
-                i.productId === productId ? { ...i, quantity } : i
-              ),
-            };
-          }),
-
-        clearCart: () => set({ items: [] }),
-        toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
-        openCart: () => set({ isOpen: true }),
-        closeCart: () => set({ isOpen: false }),
+    addItem: (item) =>
+      set((state) => {
+        const existing = state.items.find(
+          (i) => i.productId === item.productId
+        );
+        if (existing) {
+          return {
+            items: state.items.map((i) =>
+              i.productId === item.productId
+                ? { ...i, quantity: i.quantity + 1 }
+                : i
+            ),
+          };
+        }
+        return { items: [...state.items, { ...item, quantity: 1 }] };
       }),
-      {
-        name: "cart-storage",
-        partialize: (state) => ({ items: state.items }),
-      }
-    )
-  );
+
+    removeItem: (productId) =>
+      set((state) => ({
+        items: state.items.filter((i) => i.productId !== productId),
+      })),
+
+    updateQuantity: (productId, quantity) =>
+      set((state) => {
+        if (quantity <= 0) {
+          return {
+            items: state.items.filter((i) => i.productId !== productId),
+          };
+        }
+        return {
+          items: state.items.map((i) =>
+            i.productId === productId ? { ...i, quantity } : i
+          ),
+        };
+      }),
+
+    clearCart: () => set({ items: [] }),
+    toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+    openCart: () => set({ isOpen: true }),
+    closeCart: () => set({ isOpen: false }),
+  }));
 };

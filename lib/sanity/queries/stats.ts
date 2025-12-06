@@ -17,4 +17,3 @@ export const TOTAL_REVENUE_QUERY = defineQuery(`math::sum(*[
   _type == "order"
   && status in ["paid", "shipped", "delivered"]
 ].total)`);
-

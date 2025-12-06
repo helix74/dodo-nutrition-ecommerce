@@ -1,5 +1,34 @@
 import { defineQuery } from "next-sanity";
 
+// ============================================
+// Product List Projection (reused across queries)
+// ============================================
+const PRODUCT_LIST_PROJECTION = `{
+  _id,
+  name,
+  "slug": slug.current,
+  price,
+  "image": images[0]{
+    asset->{
+      _id,
+      url
+    },
+    hotspot
+  },
+  category->{
+    _id,
+    title,
+    "slug": slug.current
+  },
+  material,
+  color,
+  stock
+}`;
+
+// ============================================
+// All Products Query
+// ============================================
+
 /**
  * Get all products with category expanded
  * Used on landing page
@@ -122,9 +151,15 @@ export const PRODUCT_BY_SLUG_QUERY = defineQuery(`*[
   assemblyRequired
 }`);
 
+// ============================================
+// Search & Filter Queries (Server-Side)
+// Uses GROQ score() for relevance ranking
+// ============================================
+
 /**
- * Search products by text query
- * Searches name and description
+ * Search products with relevance scoring
+ * Uses score() + boost() for better ranking
+ * Orders by relevance score descending
  */
 export const SEARCH_PRODUCTS_QUERY = defineQuery(`*[
   _type == "product"
@@ -132,6 +167,43 @@ export const SEARCH_PRODUCTS_QUERY = defineQuery(`*[
     name match $searchQuery + "*"
     || description match $searchQuery + "*"
   )
+] | score(
+  boost(name match $searchQuery + "*", 3),
+  boost(description match $searchQuery + "*", 1)
+) | order(_score desc) {
+  _id,
+  _score,
+  name,
+  "slug": slug.current,
+  price,
+  "image": images[0]{
+    asset->{
+      _id,
+      url
+    },
+    hotspot
+  },
+  category->{
+    _id,
+    title,
+    "slug": slug.current
+  },
+  material,
+  color,
+  stock
+}`);
+
+/**
+ * Filter products - ordered by name (A-Z)
+ */
+export const FILTER_PRODUCTS_BY_NAME_QUERY = defineQuery(`*[
+  _type == "product"
+  && ($categorySlug == "" || category->slug.current == $categorySlug)
+  && ($color == "" || color == $color)
+  && ($material == "" || material == $material)
+  && ($minPrice == 0 || price >= $minPrice)
+  && ($maxPrice == 0 || price <= $maxPrice)
+  && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")
 ] | order(name asc) {
   _id,
   name,
@@ -155,23 +227,87 @@ export const SEARCH_PRODUCTS_QUERY = defineQuery(`*[
 }`);
 
 /**
- * Filter products with multiple criteria
- * Parameters: categorySlug, color, material, minPrice, maxPrice
+ * Filter products - ordered by price ascending
  */
-export const FILTER_PRODUCTS_QUERY = defineQuery(`*[
+export const FILTER_PRODUCTS_BY_PRICE_ASC_QUERY = defineQuery(`*[
   _type == "product"
   && ($categorySlug == "" || category->slug.current == $categorySlug)
   && ($color == "" || color == $color)
   && ($material == "" || material == $material)
   && ($minPrice == 0 || price >= $minPrice)
   && ($maxPrice == 0 || price <= $maxPrice)
-] | order(
-  select(
-    $sortBy == "price_asc" => price asc,
-    $sortBy == "price_desc" => price desc,
-    name asc
-  )
-) {
+  && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")
+] | order(price asc) {
+  _id,
+  name,
+  "slug": slug.current,
+  price,
+  "image": images[0]{
+    asset->{
+      _id,
+      url
+    },
+    hotspot
+  },
+  category->{
+    _id,
+    title,
+    "slug": slug.current
+  },
+  material,
+  color,
+  stock
+}`);
+
+/**
+ * Filter products - ordered by price descending
+ */
+export const FILTER_PRODUCTS_BY_PRICE_DESC_QUERY = defineQuery(`*[
+  _type == "product"
+  && ($categorySlug == "" || category->slug.current == $categorySlug)
+  && ($color == "" || color == $color)
+  && ($material == "" || material == $material)
+  && ($minPrice == 0 || price >= $minPrice)
+  && ($maxPrice == 0 || price <= $maxPrice)
+  && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")
+] | order(price desc) {
+  _id,
+  name,
+  "slug": slug.current,
+  price,
+  "image": images[0]{
+    asset->{
+      _id,
+      url
+    },
+    hotspot
+  },
+  category->{
+    _id,
+    title,
+    "slug": slug.current
+  },
+  material,
+  color,
+  stock
+}`);
+
+/**
+ * Filter products - ordered by relevance (when searching)
+ * Uses score() for search term matching
+ */
+export const FILTER_PRODUCTS_BY_RELEVANCE_QUERY = defineQuery(`*[
+  _type == "product"
+  && ($categorySlug == "" || category->slug.current == $categorySlug)
+  && ($color == "" || color == $color)
+  && ($material == "" || material == $material)
+  && ($minPrice == 0 || price >= $minPrice)
+  && ($maxPrice == 0 || price <= $maxPrice)
+  && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")
+] | score(
+  boost(name match $searchQuery + "*", 3),
+  boost(description match $searchQuery + "*", 1)
+) | order(_score desc, name asc) {
   _id,
   name,
   "slug": slug.current,
