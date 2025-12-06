@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCartActions } from "@/lib/store/cart-store-provider";
+import { cn } from "@/lib/utils";
 import type { FILTER_PRODUCTS_BY_NAME_QUERYResult } from "@/sanity.types";
 
 type Product = FILTER_PRODUCTS_BY_NAME_QUERYResult[number];
@@ -16,9 +18,19 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addItem, openCart } = useCartActions();
+  const [hoveredImageIndex, setHoveredImageIndex] = useState<number | null>(
+    null
+  );
 
-  const imageUrl = product.image?.asset?.url;
+  const images = product.images ?? [];
+  const mainImageUrl = images[0]?.asset?.url;
+  const displayedImageUrl =
+    hoveredImageIndex !== null
+      ? images[hoveredImageIndex]?.asset?.url
+      : mainImageUrl;
+
   const isOutOfStock = (product.stock ?? 0) <= 0;
+  const hasMultipleImages = images.length > 1;
 
   const handleAddToCart = () => {
     if (isOutOfStock) return;
@@ -27,7 +39,7 @@ export function ProductCard({ product }: ProductCardProps) {
       productId: product._id,
       name: product.name ?? "Unknown Product",
       price: product.price ?? 0,
-      image: imageUrl ?? undefined,
+      image: mainImageUrl ?? undefined,
     });
     openCart();
   };
@@ -36,12 +48,12 @@ export function ProductCard({ product }: ProductCardProps) {
     <Card className="group overflow-hidden border-zinc-200 bg-white transition-all hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
       <Link href={`/products/${product.slug}`}>
         <div className="relative aspect-square overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-          {imageUrl ? (
+          {displayedImageUrl ? (
             <Image
-              src={imageUrl}
+              src={displayedImageUrl}
               alt={product.name ?? "Product image"}
               fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className="object-cover transition-all duration-300 group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             />
           ) : (
@@ -50,15 +62,42 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
           {isOutOfStock && (
-            <Badge
-              variant="destructive"
-              className="absolute right-2 top-2"
-            >
+            <Badge variant="destructive" className="absolute right-2 top-2">
               Out of Stock
             </Badge>
           )}
         </div>
       </Link>
+
+      {/* Thumbnail strip - only show if multiple images */}
+      {hasMultipleImages && (
+        <div className="flex gap-1 border-t border-zinc-100 bg-zinc-50 p-2 dark:border-zinc-800 dark:bg-zinc-900">
+          {images.map((image, index) => (
+            <button
+              key={image._key ?? index}
+              type="button"
+              className={cn(
+                "relative h-12 flex-1 overflow-hidden rounded-md transition-all",
+                hoveredImageIndex === index
+                  ? "ring-2 ring-zinc-900 dark:ring-zinc-100"
+                  : "opacity-60 hover:opacity-100"
+              )}
+              onMouseEnter={() => setHoveredImageIndex(index)}
+              onMouseLeave={() => setHoveredImageIndex(null)}
+            >
+              {image.asset?.url && (
+                <Image
+                  src={image.asset.url}
+                  alt={`${product.name} - view ${index + 1}`}
+                  fill
+                  className="object-cover"
+                  sizes="80px"
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
 
       <CardContent className="p-4">
         <Link href={`/products/${product.slug}`}>

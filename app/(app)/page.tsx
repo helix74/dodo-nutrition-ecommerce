@@ -73,17 +73,17 @@ export default async function HomePage({ searchParams }: PageProps) {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
-      {/* Header */}
-      <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            Furniture Store
+      {/* Page Banner */}
+      <div className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+            Shop All Products
           </h1>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
             Premium furniture for your home
           </p>
         </div>
-      </header>
+      </div>
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8 lg:flex-row">
