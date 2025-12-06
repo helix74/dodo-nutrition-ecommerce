@@ -1,12 +1,12 @@
 import Link from "next/link";
-import Image from "next/image";
 import { auth } from "@clerk/nextjs/server";
-import { Package, ArrowRight, ShoppingBag } from "lucide-react";
+import { Package, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { sanityFetch } from "@/sanity/lib/live";
 import { ORDERS_BY_USER_QUERY } from "@/lib/sanity/queries/orders";
 import { getOrderStatus } from "@/lib/constants/orderStatus";
+import { StackedProductImages } from "@/components/app/StackedProductImages";
 
 export const metadata = {
   title: "Your Orders | Furniture Shop",
@@ -55,8 +55,9 @@ export default async function OrdersPage() {
         {orders.map((order) => {
           const status = getOrderStatus(order.status);
           const StatusIcon = status.icon;
-          const images = (order.itemImages ?? []).filter(Boolean).slice(0, 4);
-          const extraCount = (order.itemCount ?? 0) - images.length;
+          const images = (order.itemImages ?? []).filter(
+            (url): url is string => url !== null,
+          );
 
           return (
             <Link
@@ -66,51 +67,11 @@ export default async function OrdersPage() {
             >
               <div className="flex gap-5 p-5">
                 {/* Left: Product Images Stack */}
-                <div className="relative flex h-20 w-20 shrink-0 items-center justify-center">
-                  {images.length > 0 ? (
-                    <div className="relative h-full w-full">
-                      {images.map((imageUrl, idx) => (
-                        <div
-                          key={`${order._id}-img-${idx}`}
-                          className="absolute overflow-hidden rounded-lg border-2 border-white bg-zinc-100 shadow-sm dark:border-zinc-900 dark:bg-zinc-800"
-                          style={{
-                            width: images.length === 1 ? "100%" : "56px",
-                            height: images.length === 1 ? "100%" : "56px",
-                            top: images.length === 1 ? 0 : `${idx * 6}px`,
-                            left: images.length === 1 ? 0 : `${idx * 6}px`,
-                            zIndex: images.length - idx,
-                          }}
-                        >
-                          <Image
-                            src={imageUrl as string}
-                            alt=""
-                            fill
-                            className="object-cover"
-                            sizes="80px"
-                          />
-                        </div>
-                      ))}
-                      {extraCount > 0 && (
-                        <div
-                          className="absolute flex items-center justify-center rounded-lg border-2 border-white bg-zinc-200 text-xs font-medium text-zinc-600 dark:border-zinc-900 dark:bg-zinc-700 dark:text-zinc-300"
-                          style={{
-                            width: "56px",
-                            height: "56px",
-                            top: `${Math.min(images.length, 3) * 6}px`,
-                            left: `${Math.min(images.length, 3) * 6}px`,
-                            zIndex: 0,
-                          }}
-                        >
-                          +{extraCount}
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800">
-                      <ShoppingBag className="h-8 w-8 text-zinc-400" />
-                    </div>
-                  )}
-                </div>
+                <StackedProductImages
+                  images={images}
+                  totalCount={order.itemCount ?? 0}
+                  size="lg"
+                />
 
                 {/* Right: Order Details */}
                 <div className="flex min-w-0 flex-1 flex-col justify-between">

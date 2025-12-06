@@ -1,8 +1,10 @@
-import { Search, CheckCircle2, Loader2 } from "lucide-react";
+import { Search, Package, CheckCircle2, Loader2 } from "lucide-react";
 import type { ToolCallPart } from "./types";
 import type { SearchProductsResult } from "@/lib/ai/types";
+import type { GetMyOrdersResult } from "@/lib/ai/tools/get-my-orders";
 import { getToolDisplayName } from "./utils";
 import { ProductCardWidget } from "./ProductCardWidget";
+import { OrderCardWidget } from "./OrderCardWidget";
 
 interface ToolCallUIProps {
   toolPart: ToolCallPart;
@@ -24,18 +26,37 @@ export function ToolCallUI({ toolPart, closeChat }: ToolCallUIProps) {
       ? String(toolPart.args.query)
       : undefined;
 
-  // Get product results if available
-  const result = (toolPart.result || toolPart.output) as SearchProductsResult;
+  const orderStatus =
+    toolName === "getMyOrders" && toolPart.args?.status
+      ? String(toolPart.args.status)
+      : undefined;
+
+  // Get results based on tool type
+  const result = toolPart.result || toolPart.output;
+  const productResult = result as SearchProductsResult | undefined;
+  const orderResult = result as GetMyOrdersResult | undefined;
 
   const hasProducts =
-    result?.found && result.products && result.products.length > 0;
+    toolName === "searchProducts" &&
+    productResult?.found &&
+    productResult.products &&
+    productResult.products.length > 0;
+
+  const hasOrders =
+    toolName === "getMyOrders" &&
+    orderResult?.found &&
+    orderResult.orders &&
+    orderResult.orders.length > 0;
+
+  // Determine icon based on tool type
+  const ToolIcon = toolName === "getMyOrders" ? Package : Search;
 
   return (
     <div className="space-y-2">
       {/* Tool status indicator */}
       <div className="flex gap-3">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
-          <Search className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+          <ToolIcon className="h-4 w-4 text-amber-600 dark:text-amber-400" />
         </div>
         <div
           className={`flex items-center gap-3 rounded-xl px-4 py-2 text-sm ${
@@ -64,22 +85,46 @@ export function ToolCallUI({ toolPart, closeChat }: ToolCallUIProps) {
                 Query: &quot;{searchQuery}&quot;
               </span>
             )}
+            {orderStatus && (
+              <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                Filter: {orderStatus}
+              </span>
+            )}
           </div>
         </div>
       </div>
 
       {/* Product results */}
-      {hasProducts && result.products && (
+      {hasProducts && productResult?.products && (
         <div className="ml-11 mt-2">
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-2">
-            {result.products.length} product
-            {result.products.length !== 1 ? "s" : ""} found
+            {productResult.products.length} product
+            {productResult.products.length !== 1 ? "s" : ""} found
           </p>
           <div className="space-y-2">
-            {result.products.map((product) => (
+            {productResult.products.map((product) => (
               <ProductCardWidget
                 key={product.id}
                 product={product}
+                onClose={closeChat}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Order results */}
+      {hasOrders && orderResult?.orders && (
+        <div className="ml-11 mt-2">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-2">
+            {orderResult.orders.length} order
+            {orderResult.orders.length !== 1 ? "s" : ""} found
+          </p>
+          <div className="space-y-2">
+            {orderResult.orders.map((order) => (
+              <OrderCardWidget
+                key={order.id}
+                order={order}
                 onClose={closeChat}
               />
             ))}
