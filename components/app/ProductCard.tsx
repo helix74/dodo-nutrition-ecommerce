@@ -33,42 +33,70 @@ export function ProductCard({ product }: ProductCardProps) {
   const hasMultipleImages = images.length > 1;
 
   return (
-    <Card className="group overflow-hidden border-zinc-200 bg-white transition-all hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
-      <Link href={`/products/${product.slug}`}>
-        <div className="relative aspect-square overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+    <Card className="group relative flex h-full flex-col overflow-hidden rounded-2xl border-0 bg-white p-0 shadow-sm ring-1 ring-zinc-950/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-zinc-950/10 dark:bg-zinc-900 dark:ring-white/10 dark:hover:shadow-zinc-950/50">
+      <Link href={`/products/${product.slug}`} className="block">
+        <div
+          className={cn(
+            "relative overflow-hidden bg-linear-to-br from-zinc-100 to-zinc-50 dark:from-zinc-800 dark:to-zinc-900",
+            hasMultipleImages ? "aspect-square" : "aspect-4/5",
+          )}
+        >
           {displayedImageUrl ? (
             <Image
               src={displayedImageUrl}
               alt={product.name ?? "Product image"}
               fill
-              className="object-cover transition-all duration-300 group-hover:scale-105"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
             />
           ) : (
             <div className="flex h-full items-center justify-center text-zinc-400">
-              No image
+              <svg
+                className="h-16 w-16 opacity-30"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
             </div>
           )}
+          {/* Gradient overlay for text contrast */}
+          <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           {isOutOfStock && (
-            <Badge variant="destructive" className="absolute right-2 top-2">
+            <Badge
+              variant="destructive"
+              className="absolute right-3 top-3 rounded-full px-3 py-1 text-xs font-medium shadow-lg"
+            >
               Out of Stock
             </Badge>
+          )}
+          {product.category && (
+            <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-zinc-700 shadow-sm backdrop-blur-sm dark:bg-zinc-900/90 dark:text-zinc-300">
+              {product.category.title}
+            </span>
           )}
         </div>
       </Link>
 
       {/* Thumbnail strip - only show if multiple images */}
       {hasMultipleImages && (
-        <div className="flex gap-1 border-t border-zinc-100 bg-zinc-50 p-2 dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="flex gap-2 border-t border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-800 dark:bg-zinc-800/50">
           {images.map((image, index) => (
             <button
               key={image._key ?? index}
               type="button"
               className={cn(
-                "relative h-12 flex-1 overflow-hidden rounded-md transition-all",
+                "relative h-14 flex-1 overflow-hidden rounded-lg transition-all duration-200",
                 hoveredImageIndex === index
-                  ? "ring-2 ring-zinc-900 dark:ring-zinc-100"
-                  : "opacity-60 hover:opacity-100",
+                  ? "ring-2 ring-zinc-900 ring-offset-2 dark:ring-white dark:ring-offset-zinc-900"
+                  : "opacity-50 hover:opacity-100",
               )}
               onMouseEnter={() => setHoveredImageIndex(index)}
               onMouseLeave={() => setHoveredImageIndex(null)}
@@ -79,7 +107,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   alt={`${product.name} - view ${index + 1}`}
                   fill
                   className="object-cover"
-                  sizes="80px"
+                  sizes="100px"
                 />
               )}
             </button>
@@ -87,24 +115,21 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       )}
 
-      <CardContent className="p-4">
-        <Link href={`/products/${product.slug}`}>
-          <h3 className="line-clamp-1 font-medium text-zinc-900 transition-colors hover:text-zinc-600 dark:text-zinc-100 dark:hover:text-zinc-300">
+      <CardContent className="flex grow flex-col justify-between gap-2 p-5">
+        <Link href={`/products/${product.slug}`} className="block">
+          <h3 className="line-clamp-2 text-base font-semibold leading-tight text-zinc-900 transition-colors group-hover:text-zinc-600 dark:text-zinc-100 dark:group-hover:text-zinc-300">
             {product.name}
           </h3>
         </Link>
-        {product.category && (
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-            {product.category.title}
+        <div className="flex items-baseline justify-between gap-2">
+          <p className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            £{(product.price ?? 0).toFixed(2)}
           </p>
-        )}
-        <p className="mt-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-          £{(product.price ?? 0).toFixed(2)}
-        </p>
+          <StockBadge productId={product._id} stock={stock} />
+        </div>
       </CardContent>
 
-      <CardFooter className="flex flex-col gap-2 p-4 pt-0">
-        <StockBadge productId={product._id} stock={stock} className="mx-auto" />
+      <CardFooter className="mt-auto p-5 pt-0">
         <AddToCartButton
           productId={product._id}
           name={product.name ?? "Unknown Product"}

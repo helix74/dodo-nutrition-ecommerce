@@ -19,7 +19,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
           </AppShell>
           <CartSheet />
           <ChatSheet />
-          <Toaster position="bottom-left" />
+          <Toaster position="bottom-center" />
           <SanityLive />
         </ChatStoreProvider>
       </CartStoreProvider>

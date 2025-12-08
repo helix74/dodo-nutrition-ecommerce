@@ -8,9 +8,7 @@ import {
   FILTER_PRODUCTS_BY_RELEVANCE_QUERY,
 } from "@/lib/sanity/queries/products";
 import { ALL_CATEGORIES_QUERY } from "@/lib/sanity/queries/categories";
-import { ProductGrid } from "@/components/app/ProductGrid";
-import { ProductGridSkeleton } from "@/components/app/ProductGridSkeleton";
-import { ProductFilters } from "@/components/app/ProductFilters";
+import { ProductSection } from "@/components/app/ProductSection";
 import { CategoryTiles } from "@/components/app/CategoryTiles";
 import { FeaturedCarousel } from "@/components/app/FeaturedCarousel";
 import { FeaturedCarouselSkeleton } from "@/components/app/FeaturedCarouselSkeleton";
@@ -113,34 +111,11 @@ export default async function HomePage({ searchParams }: PageProps) {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-8 lg:flex-row">
-          {/* Sidebar Filters */}
-          <aside className="w-full shrink-0 lg:w-72">
-            <ProductFilters categories={categories} />
-          </aside>
-
-          {/* Product Grid */}
-          <main className="flex-1">
-            {/* Results count */}
-            <div className="mb-6 flex items-center justify-between">
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                {products.length}{" "}
-                {products.length === 1 ? "product" : "products"} found
-                {searchQuery && (
-                  <span>
-                    {" "}
-                    for &quot;<span className="font-medium">{searchQuery}</span>
-                    &quot;
-                  </span>
-                )}
-              </p>
-            </div>
-
-            <Suspense fallback={<ProductGridSkeleton />}>
-              <ProductGrid products={products} />
-            </Suspense>
-          </main>
-        </div>
+        <ProductSection
+          categories={categories}
+          products={products}
+          searchQuery={searchQuery}
+        />
       </div>
     </div>
   );

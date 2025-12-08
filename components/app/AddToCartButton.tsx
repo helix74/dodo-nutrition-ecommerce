@@ -46,7 +46,11 @@ export function AddToCartButton({
   // Out of stock
   if (isOutOfStock) {
     return (
-      <Button disabled variant="secondary" className={cn("w-full", className)}>
+      <Button
+        disabled
+        variant="secondary"
+        className={cn("h-11 w-full", className)}
+      >
         Out of Stock
       </Button>
     );
@@ -55,7 +59,7 @@ export function AddToCartButton({
   // Not in cart - show Add to Basket button
   if (quantityInCart === 0) {
     return (
-      <Button onClick={handleAdd} className={cn("w-full", className)}>
+      <Button onClick={handleAdd} className={cn("h-11 w-full", className)}>
         <ShoppingBag className="mr-2 h-4 w-4" />
         Add to Basket
       </Button>
@@ -66,25 +70,25 @@ export function AddToCartButton({
   return (
     <div
       className={cn(
-        "flex w-full items-center rounded-md border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900",
+        "flex h-11 w-full items-center rounded-md border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900",
         className,
       )}
     >
       <Button
         variant="ghost"
         size="icon"
-        className="h-10 flex-1 rounded-r-none"
+        className="h-full flex-1 rounded-r-none"
         onClick={handleDecrement}
       >
         <Minus className="h-4 w-4" />
       </Button>
-      <span className="flex-1 text-center text-sm font-semibold">
+      <span className="flex-1 text-center text-sm font-semibold tabular-nums">
         {quantityInCart}
       </span>
       <Button
         variant="ghost"
         size="icon"
-        className="h-10 flex-1 rounded-l-none disabled:opacity-20"
+        className="h-full flex-1 rounded-l-none disabled:opacity-20"
         onClick={handleAdd}
         disabled={isAtMax}
       >
