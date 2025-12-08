@@ -7,6 +7,7 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getOrderStatus } from "@/lib/constants/orderStatus";
+import { formatPrice, formatDate, formatOrderNumber } from "@/lib/utils";
 
 interface OrderProjection {
   orderNumber: string;
@@ -42,11 +43,11 @@ function OrderRowContent(handle: DocumentHandle) {
         <Link href={`/admin/orders/${handle.documentId}`} className="block">
           <div className="flex items-center justify-between gap-2 sm:block">
             <span className="font-medium text-zinc-900 dark:text-zinc-100">
-              #{data.orderNumber?.split("-").pop()}
+              #{formatOrderNumber(data.orderNumber)}
             </span>
             {/* Mobile: Total inline */}
             <span className="font-medium text-zinc-900 dark:text-zinc-100 sm:hidden">
-              £{(data.total ?? 0).toFixed(2)}
+              {formatPrice(data.total)}
             </span>
           </div>
           {/* Mobile: Email and items */}
@@ -59,10 +60,7 @@ function OrderRowContent(handle: DocumentHandle) {
               {data.createdAt && (
                 <>
                   {" · "}
-                  {new Date(data.createdAt).toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "short",
-                  })}
+                  {formatDate(data.createdAt, "short")}
                 </>
               )}
             </p>
@@ -90,7 +88,7 @@ function OrderRowContent(handle: DocumentHandle) {
       {/* Total - Desktop only */}
       <TableCell className="hidden py-4 font-medium text-zinc-900 dark:text-zinc-100 sm:table-cell">
         <Link href={`/admin/orders/${handle.documentId}`} className="block">
-          £{(data.total ?? 0).toFixed(2)}
+          {formatPrice(data.total)}
         </Link>
       </TableCell>
 
@@ -112,13 +110,7 @@ function OrderRowContent(handle: DocumentHandle) {
       {/* Date - Desktop only */}
       <TableCell className="hidden py-4 text-zinc-500 dark:text-zinc-400 md:table-cell">
         <Link href={`/admin/orders/${handle.documentId}`} className="block">
-          {data.createdAt
-            ? new Date(data.createdAt).toLocaleDateString("en-GB", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })
-            : "—"}
+          {formatDate(data.createdAt, "long", "—")}
         </Link>
       </TableCell>
     </TableRow>

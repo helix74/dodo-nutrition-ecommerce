@@ -10,18 +10,14 @@ import {
 } from "@sanity/sdk-react";
 import { Plus, Package, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Table, TableBody } from "@/components/ui/table";
 import {
   ProductRow,
   ProductRowSkeleton,
   AdminSearch,
   useProductSearchFilter,
+  ProductTableHeader,
 } from "@/components/admin";
 
 interface ProductListContentProps {
@@ -52,33 +48,25 @@ function ProductListContent({
 
   if (!products || products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-          <Package className="h-8 w-8 text-zinc-400" />
-        </div>
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-          {filter ? "No products found" : "No products yet"}
-        </h2>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          {filter
+      <EmptyState
+        icon={Package}
+        title={filter ? "No products found" : "No products yet"}
+        description={
+          filter
             ? "Try adjusting your search terms."
-            : "Get started by adding your first product."}
-        </p>
-        {!filter && (
-          <Button
-            onClick={onCreateProduct}
-            disabled={isCreating}
-            className="mt-4"
-          >
-            {isCreating ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Plus className="mr-2 h-4 w-4" />
-            )}
-            Add Product
-          </Button>
-        )}
-      </div>
+            : "Get started by adding your first product."
+        }
+        action={
+          !filter
+            ? {
+                label: "Add Product",
+                onClick: onCreateProduct,
+                disabled: isCreating,
+                icon: isCreating ? Loader2 : Plus,
+              }
+            : undefined
+        }
+      />
     );
   }
 
@@ -86,20 +74,7 @@ function ProductListContent({
     <>
       <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="hidden w-16 sm:table-cell">Image</TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead className="hidden w-28 md:table-cell">Price</TableHead>
-              <TableHead className="hidden w-28 md:table-cell">Stock</TableHead>
-              <TableHead className="hidden w-16 lg:table-cell">
-                Featured
-              </TableHead>
-              <TableHead className="hidden w-[140px] text-right sm:table-cell">
-                Actions
-              </TableHead>
-            </TableRow>
-          </TableHeader>
+          <ProductTableHeader />
           <TableBody>
             {products.map((handle) => (
               <ProductRow key={handle.documentId} {...handle} />
@@ -127,20 +102,7 @@ function ProductListSkeleton() {
   return (
     <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
       <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="hidden w-16 sm:table-cell">Image</TableHead>
-            <TableHead>Product</TableHead>
-            <TableHead className="hidden w-28 md:table-cell">Price</TableHead>
-            <TableHead className="hidden w-28 md:table-cell">Stock</TableHead>
-            <TableHead className="hidden w-16 lg:table-cell">
-              Featured
-            </TableHead>
-            <TableHead className="hidden w-[140px] text-right sm:table-cell">
-              Actions
-            </TableHead>
-          </TableRow>
-        </TableHeader>
+        <ProductTableHeader />
         <TableBody>
           {[1, 2, 3, 4, 5].map((i) => (
             <ProductRowSkeleton key={i} />

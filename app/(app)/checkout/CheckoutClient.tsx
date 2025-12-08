@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ArrowLeft, ShoppingBag, AlertTriangle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CheckoutButton } from "@/components/app/CheckoutButton";
+import { formatPrice } from "@/lib/utils";
 import {
   useCartItems,
   useTotalPrice,
@@ -140,11 +141,11 @@ export function CheckoutClient() {
                     {/* Price */}
                     <div className="text-right">
                       <p className="font-medium text-zinc-900 dark:text-zinc-100">
-                        £{(item.price * item.quantity).toFixed(2)}
+                        {formatPrice(item.price * item.quantity)}
                       </p>
                       {item.quantity > 1 && (
                         <p className="text-sm text-zinc-500">
-                          £{item.price.toFixed(2)} each
+                          {formatPrice(item.price)} each
                         </p>
                       )}
                     </div>
@@ -168,7 +169,7 @@ export function CheckoutClient() {
                   Subtotal
                 </span>
                 <span className="text-zinc-900 dark:text-zinc-100">
-                  £{totalPrice.toFixed(2)}
+                  {formatPrice(totalPrice)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
@@ -185,7 +186,7 @@ export function CheckoutClient() {
                     Total
                   </span>
                   <span className="text-zinc-900 dark:text-zinc-100">
-                    £{totalPrice.toFixed(2)}
+                    {formatPrice(totalPrice)}
                   </span>
                 </div>
               </div>

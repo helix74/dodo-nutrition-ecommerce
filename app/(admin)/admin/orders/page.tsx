@@ -4,28 +4,17 @@ import { Suspense, useState } from "react";
 import { useDocuments } from "@sanity/sdk-react";
 import { ShoppingCart } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   OrderRow,
   OrderRowSkeleton,
   AdminSearch,
   useOrderSearchFilter,
+  OrderTableHeader,
 } from "@/components/admin";
-
-const STATUS_TABS = [
-  { value: "all", label: "All" },
-  { value: "paid", label: "Paid" },
-  { value: "shipped", label: "Shipped" },
-  { value: "delivered", label: "Delivered" },
-  { value: "cancelled", label: "Cancelled" },
-];
+import { ORDER_STATUS_TABS } from "@/lib/constants/orderStatus";
 
 interface OrderListContentProps {
   statusFilter: string;
@@ -59,22 +48,18 @@ function OrderListContent({
   });
 
   if (!orders || orders.length === 0) {
+    const description = searchFilter
+      ? "Try adjusting your search terms."
+      : statusFilter === "all"
+        ? "Orders will appear here when customers make purchases."
+        : `No ${statusFilter} orders at the moment.`;
+
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-          <ShoppingCart className="h-8 w-8 text-zinc-400" />
-        </div>
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-          No orders found
-        </h2>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          {searchFilter
-            ? "Try adjusting your search terms."
-            : statusFilter === "all"
-              ? "Orders will appear here when customers make purchases."
-              : `No ${statusFilter} orders at the moment.`}
-        </p>
-      </div>
+      <EmptyState
+        icon={ShoppingCart}
+        title="No orders found"
+        description={description}
+      />
     );
   }
 
@@ -82,18 +67,7 @@ function OrderListContent({
     <>
       <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Order</TableHead>
-              <TableHead className="hidden sm:table-cell">Customer</TableHead>
-              <TableHead className="hidden text-center md:table-cell">
-                Items
-              </TableHead>
-              <TableHead className="hidden sm:table-cell">Total</TableHead>
-              <TableHead className="text-center sm:text-left">Status</TableHead>
-              <TableHead className="hidden md:table-cell">Date</TableHead>
-            </TableRow>
-          </TableHeader>
+          <OrderTableHeader />
           <TableBody>
             {orders.map((handle) => (
               <OrderRow key={handle.documentId} {...handle} />
@@ -121,18 +95,7 @@ function OrderListSkeleton() {
   return (
     <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
       <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Order</TableHead>
-            <TableHead className="hidden sm:table-cell">Customer</TableHead>
-            <TableHead className="hidden text-center md:table-cell">
-              Items
-            </TableHead>
-            <TableHead className="hidden sm:table-cell">Total</TableHead>
-            <TableHead className="text-center sm:text-left">Status</TableHead>
-            <TableHead className="hidden md:table-cell">Date</TableHead>
-          </TableRow>
-        </TableHeader>
+        <OrderTableHeader />
         <TableBody>
           {[1, 2, 3, 4, 5].map((i) => (
             <OrderRowSkeleton key={i} />
@@ -172,7 +135,7 @@ export default function OrdersPage() {
         <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
           <Tabs value={statusFilter} onValueChange={setStatusFilter}>
             <TabsList className="w-max">
-              {STATUS_TABS.map((tab) => (
+              {ORDER_STATUS_TABS.map((tab) => (
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}

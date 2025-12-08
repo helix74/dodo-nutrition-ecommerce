@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ORDER_STATUS_CONFIG } from "@/lib/constants/orderStatus";
+import { ORDER_STATUS_CONFIG, getOrderStatus, type OrderStatusValue } from "@/lib/constants/orderStatus";
 
 interface StatusSelectProps extends DocumentHandle {}
 
@@ -25,9 +25,8 @@ function StatusSelectContent(handle: StatusSelectProps) {
   const editStatus = useEditDocument({ ...handle, path: "status" });
   const apply = useApplyDocumentActions();
 
-  const currentStatus = (status as string) ?? "pending";
-  const statusConfig =
-    ORDER_STATUS_CONFIG[currentStatus] ?? ORDER_STATUS_CONFIG.pending;
+  const currentStatus = (status as string) ?? "paid";
+  const statusConfig = getOrderStatus(currentStatus);
   const StatusIcon = statusConfig.icon;
 
   const handleStatusChange = async (value: string) => {

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { CheckCircle, Package, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/lib/utils";
 import { useCartActions } from "@/lib/store/cart-store-provider";
 
 interface SuccessClientProps {
@@ -73,7 +74,7 @@ export function SuccessClient({ session }: SuccessClientProps) {
                     {item.name} × {item.quantity}
                   </span>
                   <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                    £{(item.amount / 100).toFixed(2)}
+                    {formatPrice(item.amount / 100)}
                   </span>
                 </div>
               ))}
@@ -85,7 +86,7 @@ export function SuccessClient({ session }: SuccessClientProps) {
             <div className="flex justify-between text-base font-semibold">
               <span className="text-zinc-900 dark:text-zinc-100">Total</span>
               <span className="text-zinc-900 dark:text-zinc-100">
-                £{((session.amountTotal ?? 0) / 100).toFixed(2)}
+                {formatPrice((session.amountTotal ?? 0) / 100)}
               </span>
             </div>
           </div>

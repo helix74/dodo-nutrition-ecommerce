@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { StockBadge } from "@/components/app/StockBadge";
 import type { FILTER_PRODUCTS_BY_NAME_QUERYResult } from "@/sanity.types";
@@ -123,7 +123,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </Link>
         <div className="flex items-baseline justify-between gap-2">
           <p className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
-            £{(product.price ?? 0).toFixed(2)}
+            {formatPrice(product.price)}
           </p>
           <StockBadge productId={product._id} stock={stock} />
         </div>

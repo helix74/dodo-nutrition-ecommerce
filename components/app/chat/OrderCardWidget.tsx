@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { OrderSummary } from "@/lib/ai/tools/get-my-orders";
 import { getOrderStatus } from "@/lib/constants/orderStatus";
+import { formatDate, formatOrderNumber } from "@/lib/utils";
 import { StackedProductImages } from "@/components/app/StackedProductImages";
 
 interface OrderCardWidgetProps {
@@ -19,13 +20,7 @@ export function OrderCardWidget({ order, onClose }: OrderCardWidgetProps) {
   };
 
   // Format date
-  const formattedDate = order.createdAt
-    ? new Date(order.createdAt).toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      })
-    : null;
+  const formattedDate = order.createdAt ? formatDate(order.createdAt, "long") : null;
 
   // Truncate item names for display
   const displayItems =
@@ -45,7 +40,7 @@ export function OrderCardWidget({ order, onClose }: OrderCardWidgetProps) {
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             <span className="block truncate text-sm font-medium text-zinc-900 transition-colors duration-200 group-hover:text-amber-600 dark:text-zinc-100 dark:group-hover:text-amber-400">
-              Order #{order.orderNumber?.split("-").pop()}
+              Order #{formatOrderNumber(order.orderNumber)}
             </span>
             {displayItems && (
               <span className="block truncate text-xs text-zinc-500 dark:text-zinc-400">

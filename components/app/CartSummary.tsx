@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/lib/utils";
 import {
   useTotalPrice,
   useTotalItems,
@@ -23,7 +24,7 @@ export function CartSummary({ hasStockIssues = false }: CartSummaryProps) {
     <div className="border-t border-zinc-200 p-4 dark:border-zinc-800">
       <div className="flex justify-between text-base font-medium text-zinc-900 dark:text-zinc-100">
         <span>Subtotal</span>
-        <span>£{totalPrice.toFixed(2)}</span>
+        <span>{formatPrice(totalPrice)}</span>
       </div>
       <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
         Shipping calculated at checkout

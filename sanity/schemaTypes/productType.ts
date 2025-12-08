@@ -1,5 +1,6 @@
 import { PackageIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
+import { MATERIALS_SANITY_LIST, COLORS_SANITY_LIST } from "@/lib/constants/filters";
 
 export const productType = defineType({
   name: "product",
@@ -59,13 +60,7 @@ export const productType = defineType({
       type: "string",
       group: "details",
       options: {
-        list: [
-          { title: "Wood", value: "wood" },
-          { title: "Metal", value: "metal" },
-          { title: "Fabric", value: "fabric" },
-          { title: "Leather", value: "leather" },
-          { title: "Glass", value: "glass" },
-        ],
+        list: MATERIALS_SANITY_LIST,
         layout: "radio",
       },
     }),
@@ -74,14 +69,7 @@ export const productType = defineType({
       type: "string",
       group: "details",
       options: {
-        list: [
-          { title: "Black", value: "black" },
-          { title: "White", value: "white" },
-          { title: "Oak", value: "oak" },
-          { title: "Walnut", value: "walnut" },
-          { title: "Grey", value: "grey" },
-          { title: "Natural", value: "natural" },
-        ],
+        list: COLORS_SANITY_LIST,
         layout: "radio",
       },
     }),

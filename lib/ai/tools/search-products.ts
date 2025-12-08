@@ -2,6 +2,9 @@ import { tool } from "ai";
 import { z } from "zod";
 import { sanityFetch } from "@/sanity/lib/live";
 import { AI_SEARCH_PRODUCTS_QUERY } from "@/lib/sanity/queries/products";
+import { formatPrice } from "@/lib/utils";
+import { getStockStatus, getStockMessage } from "@/lib/constants/stock";
+import { MATERIAL_VALUES, COLOR_VALUES } from "@/lib/constants/filters";
 import type { AI_SEARCH_PRODUCTS_QUERYResult } from "@/sanity.types";
 import type { SearchProduct } from "@/lib/ai/types";
 
@@ -21,12 +24,12 @@ const productSearchSchema = z.object({
       "Filter by category slug (e.g., 'sofas', 'tables', 'chairs', 'storage')"
     ),
   material: z
-    .enum(["", "wood", "metal", "fabric", "leather", "glass"])
+    .enum(["", ...MATERIAL_VALUES])
     .optional()
     .default("")
     .describe("Filter by material type"),
   color: z
-    .enum(["", "black", "white", "oak", "walnut", "grey", "natural"])
+    .enum(["", ...COLOR_VALUES])
     .optional()
     .default("")
     .describe("Filter by color"),
@@ -91,44 +94,26 @@ export const searchProductsTool = tool({
       // Format the results with stock status for the AI to communicate
       const formattedProducts: SearchProduct[] = (
         products as AI_SEARCH_PRODUCTS_QUERYResult
-      ).map((product) => {
-        const stockStatus: SearchProduct["stockStatus"] =
-          product.stock === null || product.stock === undefined
-            ? "unknown"
-            : product.stock === 0
-              ? "out_of_stock"
-              : product.stock <= 5
-                ? "low_stock"
-                : "in_stock";
-
-        return {
-          id: product._id,
-          name: product.name ?? null,
-          slug: product.slug ?? null,
-          description: product.description ?? null,
-          price: product.price ?? null,
-          priceFormatted: product.price ? `£${product.price.toFixed(2)}` : null,
-          category: product.category?.title ?? null,
-          categorySlug: product.category?.slug ?? null,
-          material: product.material ?? null,
-          color: product.color ?? null,
-          dimensions: product.dimensions ?? null,
-          stockCount: product.stock ?? 0,
-          stockStatus,
-          stockMessage:
-            stockStatus === "out_of_stock"
-              ? "OUT OF STOCK - Currently unavailable"
-              : stockStatus === "low_stock"
-                ? `LOW STOCK - Only ${product.stock} left`
-                : stockStatus === "in_stock"
-                  ? `In stock (${product.stock} available)`
-                  : "Stock status unknown",
-          featured: product.featured ?? false,
-          assemblyRequired: product.assemblyRequired ?? false,
-          imageUrl: product.image?.asset?.url ?? null,
-          productUrl: product.slug ? `/products/${product.slug}` : null,
-        };
-      });
+      ).map((product) => ({
+        id: product._id,
+        name: product.name ?? null,
+        slug: product.slug ?? null,
+        description: product.description ?? null,
+        price: product.price ?? null,
+        priceFormatted: product.price ? formatPrice(product.price) : null,
+        category: product.category?.title ?? null,
+        categorySlug: product.category?.slug ?? null,
+        material: product.material ?? null,
+        color: product.color ?? null,
+        dimensions: product.dimensions ?? null,
+        stockCount: product.stock ?? 0,
+        stockStatus: getStockStatus(product.stock),
+        stockMessage: getStockMessage(product.stock),
+        featured: product.featured ?? false,
+        assemblyRequired: product.assemblyRequired ?? false,
+        imageUrl: product.image?.asset?.url ?? null,
+        productUrl: product.slug ? `/products/${product.slug}` : null,
+      }));
 
       return {
         found: true,

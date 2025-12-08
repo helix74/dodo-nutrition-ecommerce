@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import type { FEATURED_PRODUCTS_QUERYResult } from "@/sanity.types";
 
 type FeaturedProduct = FEATURED_PRODUCTS_QUERYResult[number];
@@ -157,7 +157,7 @@ function FeaturedSlide({ product }: FeaturedSlideProps) {
         )}
 
         <p className="mt-6 text-3xl font-bold text-white lg:text-4xl">
-          £{(product.price ?? 0).toFixed(2)}
+          {formatPrice(product.price)}
         </p>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">

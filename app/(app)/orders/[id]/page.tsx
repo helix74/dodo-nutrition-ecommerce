@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { sanityFetch } from "@/sanity/lib/live";
 import { ORDER_BY_ID_QUERY } from "@/lib/sanity/queries/orders";
 import { getOrderStatus } from "@/lib/constants/orderStatus";
+import { formatPrice, formatDate } from "@/lib/utils";
 
 export const metadata = {
   title: "Order Details | Furniture Shop",
@@ -51,16 +52,7 @@ export default async function OrderDetailPage({ params }: OrderPageProps) {
               Order {order.orderNumber}
             </h1>
             <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-              Placed on{" "}
-              {order.createdAt
-                ? new Date(order.createdAt).toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
-                : "Date unknown"}
+              Placed on {formatDate(order.createdAt, "datetime")}
             </p>
           </div>
           <Badge className={`${status.color} flex items-center gap-1.5`}>
@@ -117,14 +109,11 @@ export default async function OrderDetailPage({ params }: OrderPageProps) {
                   {/* Price */}
                   <div className="text-right">
                     <p className="font-medium text-zinc-900 dark:text-zinc-100">
-                      £
-                      {(
-                        (item.priceAtPurchase ?? 0) * (item.quantity ?? 1)
-                      ).toFixed(2)}
+                      {formatPrice((item.priceAtPurchase ?? 0) * (item.quantity ?? 1))}
                     </p>
                     {(item.quantity ?? 1) > 1 && (
                       <p className="text-sm text-zinc-500">
-                        £{(item.priceAtPurchase ?? 0).toFixed(2)} each
+                        {formatPrice(item.priceAtPurchase)} each
                       </p>
                     )}
                   </div>
@@ -147,7 +136,7 @@ export default async function OrderDetailPage({ params }: OrderPageProps) {
                   Subtotal
                 </span>
                 <span className="text-zinc-900 dark:text-zinc-100">
-                  £{(order.total ?? 0).toFixed(2)}
+                  {formatPrice(order.total)}
                 </span>
               </div>
               <div className="border-t border-zinc-200 pt-3 dark:border-zinc-800">
@@ -156,7 +145,7 @@ export default async function OrderDetailPage({ params }: OrderPageProps) {
                     Total
                   </span>
                   <span className="text-zinc-900 dark:text-zinc-100">
-                    £{(order.total ?? 0).toFixed(2)}
+                    {formatPrice(order.total)}
                   </span>
                 </div>
               </div>

@@ -11,6 +11,7 @@ import { ShoppingCart } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { getOrderStatus } from "@/lib/constants/orderStatus";
+import { formatPrice, formatOrderNumber } from "@/lib/utils";
 
 interface OrderProjection {
   orderNumber: string;
@@ -44,7 +45,7 @@ function OrderRow(handle: DocumentHandle) {
     >
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          #{data.orderNumber?.split("-").pop()}
+          #{formatOrderNumber(data.orderNumber)}
         </p>
         <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
           {data.email}
@@ -52,7 +53,7 @@ function OrderRow(handle: DocumentHandle) {
       </div>
       <div className="flex items-center gap-3">
         <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          £{(data.total ?? 0).toFixed(2)}
+          {formatPrice(data.total)}
         </p>
         <Badge className={`${status.color} flex items-center gap-1`}>
           <StatusIcon className="h-3 w-3" />

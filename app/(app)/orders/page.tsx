@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { Package, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
 import { sanityFetch } from "@/sanity/lib/live";
 import { ORDERS_BY_USER_QUERY } from "@/lib/sanity/queries/orders";
 import { getOrderStatus } from "@/lib/constants/orderStatus";
+import { formatPrice, formatDate, formatOrderNumber } from "@/lib/utils";
 import { StackedProductImages } from "@/components/app/StackedProductImages";
 
 export const metadata = {
@@ -24,18 +25,13 @@ export default async function OrdersPage() {
   if (orders.length === 0) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <Package className="mx-auto h-16 w-16 text-zinc-300 dark:text-zinc-600" />
-          <h1 className="mt-6 text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-            No orders yet
-          </h1>
-          <p className="mt-2 text-zinc-500 dark:text-zinc-400">
-            When you place an order, it will appear here.
-          </p>
-          <Button asChild className="mt-8">
-            <Link href="/">Start Shopping</Link>
-          </Button>
-        </div>
+        <EmptyState
+          icon={Package}
+          title="No orders yet"
+          description="When you place an order, it will appear here."
+          action={{ label: "Start Shopping", href: "/" }}
+          size="lg"
+        />
       </div>
     );
   }
@@ -79,19 +75,10 @@ export default async function OrdersPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="font-semibold text-zinc-900 dark:text-zinc-100">
-                        Order #{order.orderNumber?.split("-").pop()}
+                        Order #{formatOrderNumber(order.orderNumber)}
                       </p>
                       <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">
-                        {order.createdAt
-                          ? new Date(order.createdAt).toLocaleDateString(
-                              "en-GB",
-                              {
-                                day: "numeric",
-                                month: "long",
-                                year: "numeric",
-                              },
-                            )
-                          : "Date unknown"}
+                        {formatDate(order.createdAt)}
                       </p>
                     </div>
                     <Badge
@@ -109,7 +96,7 @@ export default async function OrdersPage() {
                       {order.itemCount === 1 ? "item" : "items"}
                     </p>
                     <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                      £{(order.total ?? 0).toFixed(2)}
+                      {formatPrice(order.total)}
                     </p>
                   </div>
                 </div>

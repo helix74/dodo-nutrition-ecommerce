@@ -2,11 +2,13 @@ import { tool } from "ai";
 import { z } from "zod";
 import { sanityFetch } from "@/sanity/lib/live";
 import { ORDERS_BY_USER_QUERY } from "@/lib/sanity/queries/orders";
+import { ORDER_STATUS_VALUES, getOrderStatusEmoji } from "@/lib/constants/orderStatus";
+import { formatPrice } from "@/lib/utils";
 import type { ORDERS_BY_USER_QUERYResult } from "@/sanity.types";
 
 const getMyOrdersSchema = z.object({
   status: z
-    .enum(["", "paid", "shipped", "delivered", "cancelled"])
+    .enum(["", ...ORDER_STATUS_VALUES])
     .optional()
     .default("")
     .describe("Filter orders by status (leave empty for all orders)"),
@@ -80,33 +82,23 @@ export function createGetMyOrdersTool(userId: string | null) {
           } satisfies GetMyOrdersResult;
         }
 
-        const formattedOrders: OrderSummary[] = filteredOrders.map((order) => {
-          const statusDisplayMap: Record<string, string> = {
-            paid: "✅ Paid",
-            shipped: "📦 Shipped",
-            delivered: "🎉 Delivered",
-            cancelled: "❌ Cancelled",
-          };
-
-          return {
-            id: order._id,
-            orderNumber: order.orderNumber,
-            total: order.total,
-            totalFormatted: order.total ? `£${order.total.toFixed(2)}` : null,
-            status: order.status,
-            statusDisplay:
-              statusDisplayMap[order.status ?? ""] ?? order.status ?? "Unknown",
-            itemCount: order.itemCount ?? 0,
-            itemNames: (order.itemNames ?? []).filter(
-              (name): name is string => name !== null
-            ),
-            itemImages: (order.itemImages ?? []).filter(
-              (url): url is string => url !== null
-            ),
-            createdAt: order.createdAt,
-            orderUrl: `/orders/${order._id}`,
-          };
-        });
+        const formattedOrders: OrderSummary[] = filteredOrders.map((order) => ({
+          id: order._id,
+          orderNumber: order.orderNumber,
+          total: order.total,
+          totalFormatted: order.total ? formatPrice(order.total) : null,
+          status: order.status,
+          statusDisplay: getOrderStatusEmoji(order.status),
+          itemCount: order.itemCount ?? 0,
+          itemNames: (order.itemNames ?? []).filter(
+            (name): name is string => name !== null
+          ),
+          itemImages: (order.itemImages ?? []).filter(
+            (url): url is string => url !== null
+          ),
+          createdAt: order.createdAt,
+          orderUrl: `/orders/${order._id}`,
+        }));
 
         return {
           found: true,

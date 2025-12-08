@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useCartActions } from "@/lib/store/cart-store-provider";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { StockBadge } from "@/components/app/StockBadge";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import type { CartItem as CartItemType } from "@/lib/store/cart-store";
 import type { StockInfo } from "@/lib/hooks/useCartStock";
 
@@ -77,7 +77,7 @@ export function CartItem({ item, stockInfo }: CartItemProps) {
         </div>
 
         <p className="mt-1 text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          £{item.price.toFixed(2)}
+          {formatPrice(item.price)}
         </p>
 
         {/* Stock Badge & Quantity Controls */}

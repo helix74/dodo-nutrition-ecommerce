@@ -12,6 +12,8 @@ import { CircleAlert, ExternalLink, Star } from "lucide-react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatPrice } from "@/lib/utils";
+import { isLowStock, isOutOfStock } from "@/lib/constants/stock";
 import { StockInput } from "./StockInput";
 import { PriceInput } from "./PriceInput";
 import { FeaturedToggle } from "./FeaturedToggle";
@@ -59,8 +61,8 @@ function ProductRowContent(handle: DocumentHandle) {
 
   if (!data) return null;
 
-  const isLowStock = data.stock > 0 && data.stock <= 5;
-  const isOutOfStock = data.stock === 0;
+  const lowStock = isLowStock(data.stock);
+  const outOfStock = isOutOfStock(data.stock);
 
   return (
     <TableRow className="group">
@@ -147,18 +149,18 @@ function ProductRowContent(handle: DocumentHandle) {
             {/* Mobile: show price and stock inline */}
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs sm:hidden">
               <span className="font-medium text-zinc-700 dark:text-zinc-300">
-                £{data.price?.toFixed(2) ?? "0.00"}
+                {formatPrice(data.price)}
               </span>
               <span className="text-zinc-300 dark:text-zinc-600">•</span>
               <span className="text-zinc-500 dark:text-zinc-400">
                 {data.stock} in stock
               </span>
-              {isOutOfStock && (
+              {outOfStock && (
                 <Badge variant="destructive" className="h-5 px-1.5 text-[10px]">
                   Out
                 </Badge>
               )}
-              {isLowStock && (
+              {lowStock && (
                 <Badge
                   variant="secondary"
                   className="h-5 bg-amber-100 px-1.5 text-[10px] text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
@@ -184,12 +186,12 @@ function ProductRowContent(handle: DocumentHandle) {
           <Suspense fallback={<Skeleton className="h-8 w-20" />}>
             <StockInput {...handle} />
           </Suspense>
-          {isOutOfStock && (
+          {outOfStock && (
             <Badge variant="destructive" className="text-xs">
               Out
             </Badge>
           )}
-          {isLowStock && (
+          {lowStock && (
             <Badge
               variant="secondary"
               className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"

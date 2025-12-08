@@ -18,6 +18,7 @@ import {
   PublishButton,
   RevertButton,
 } from "@/components/admin";
+import { formatPrice, formatDate } from "@/lib/utils";
 
 interface OrderDetailProjection {
   orderNumber: string;
@@ -104,15 +105,7 @@ function OrderDetailContent({ handle }: { handle: DocumentHandle }) {
             Order {data.orderNumber}
           </h1>
           <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-            {data.createdAt
-              ? new Date(data.createdAt).toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : "Date unknown"}
+            {formatDate(data.createdAt, "datetime")}
           </p>
         </div>
 
@@ -187,8 +180,7 @@ function OrderDetailContent({ handle }: { handle: DocumentHandle }) {
                         )}
                       </div>
                       <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 sm:text-sm">
-                        Qty: {item.quantity} × £
-                        {(item.priceAtPurchase ?? 0).toFixed(2)}
+                        Qty: {item.quantity} × {formatPrice(item.priceAtPurchase)}
                       </p>
                     </div>
                   </div>
@@ -196,10 +188,7 @@ function OrderDetailContent({ handle }: { handle: DocumentHandle }) {
                   {/* Price */}
                   <div className="text-right">
                     <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 sm:text-base">
-                      £
-                      {(
-                        (item.priceAtPurchase ?? 0) * (item.quantity ?? 1)
-                      ).toFixed(2)}
+                      {formatPrice((item.priceAtPurchase ?? 0) * (item.quantity ?? 1))}
                     </p>
                   </div>
                 </div>
@@ -218,7 +207,7 @@ function OrderDetailContent({ handle }: { handle: DocumentHandle }) {
                   Subtotal
                 </span>
                 <span className="text-zinc-900 dark:text-zinc-100">
-                  £{(data.total ?? 0).toFixed(2)}
+                  {formatPrice(data.total)}
                 </span>
               </div>
               <div className="border-t border-zinc-200 pt-3 dark:border-zinc-800">
@@ -227,7 +216,7 @@ function OrderDetailContent({ handle }: { handle: DocumentHandle }) {
                     Total
                   </span>
                   <span className="text-zinc-900 dark:text-zinc-100">
-                    £{(data.total ?? 0).toFixed(2)}
+                    {formatPrice(data.total)}
                   </span>
                 </div>
               </div>

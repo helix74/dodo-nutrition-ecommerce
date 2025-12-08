@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { AskAISimilarButton } from "@/components/app/AskAISimilarButton";
 import { StockBadge } from "@/components/app/StockBadge";
+import { formatPrice } from "@/lib/utils";
 import type { PRODUCT_BY_SLUG_QUERYResult } from "@/sanity.types";
 
 interface ProductInfoProps {
@@ -30,7 +31,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
       {/* Price */}
       <p className="mt-4 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-        £{(product.price ?? 0).toFixed(2)}
+        {formatPrice(product.price)}
       </p>
 
       {/* Description */}
