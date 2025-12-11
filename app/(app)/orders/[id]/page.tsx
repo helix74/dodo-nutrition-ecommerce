@@ -109,7 +109,9 @@ export default async function OrderDetailPage({ params }: OrderPageProps) {
                   {/* Price */}
                   <div className="text-right">
                     <p className="font-medium text-zinc-900 dark:text-zinc-100">
-                      {formatPrice((item.priceAtPurchase ?? 0) * (item.quantity ?? 1))}
+                      {formatPrice(
+                        (item.priceAtPurchase ?? 0) * (item.quantity ?? 1),
+                      )}
                     </p>
                     {(item.quantity ?? 1) > 1 && (
                       <p className="text-sm text-zinc-500">

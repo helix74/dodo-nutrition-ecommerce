@@ -2,7 +2,10 @@ import { tool } from "ai";
 import { z } from "zod";
 import { sanityFetch } from "@/sanity/lib/live";
 import { ORDERS_BY_USER_QUERY } from "@/lib/sanity/queries/orders";
-import { ORDER_STATUS_VALUES, getOrderStatusEmoji } from "@/lib/constants/orderStatus";
+import {
+  ORDER_STATUS_VALUES,
+  getOrderStatusEmoji,
+} from "@/lib/constants/orderStatus";
 import { formatPrice } from "@/lib/utils";
 import type { ORDERS_BY_USER_QUERYResult } from "@/sanity.types";
 

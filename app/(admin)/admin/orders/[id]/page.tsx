@@ -180,7 +180,8 @@ function OrderDetailContent({ handle }: { handle: DocumentHandle }) {
                         )}
                       </div>
                       <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 sm:text-sm">
-                        Qty: {item.quantity} × {formatPrice(item.priceAtPurchase)}
+                        Qty: {item.quantity} ×{" "}
+                        {formatPrice(item.priceAtPurchase)}
                       </p>
                     </div>
                   </div>
@@ -188,7 +189,9 @@ function OrderDetailContent({ handle }: { handle: DocumentHandle }) {
                   {/* Price */}
                   <div className="text-right">
                     <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 sm:text-base">
-                      {formatPrice((item.priceAtPurchase ?? 0) * (item.quantity ?? 1))}
+                      {formatPrice(
+                        (item.priceAtPurchase ?? 0) * (item.quantity ?? 1),
+                      )}
                     </p>
                   </div>
                 </div>

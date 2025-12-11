@@ -51,4 +51,3 @@ export const getStockMessage = (stock: number | null | undefined): string => {
       return "Stock status unknown";
   }
 };
-

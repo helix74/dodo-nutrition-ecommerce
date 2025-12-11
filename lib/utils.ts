@@ -1,8 +1,8 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 /**
@@ -20,10 +20,19 @@ export function formatPrice(
 
 type DateFormatOption = "short" | "long" | "datetime";
 
-const DATE_FORMAT_OPTIONS: Record<DateFormatOption, Intl.DateTimeFormatOptions> = {
+const DATE_FORMAT_OPTIONS: Record<
+  DateFormatOption,
+  Intl.DateTimeFormatOptions
+> = {
   short: { day: "numeric", month: "short" },
   long: { day: "numeric", month: "long", year: "numeric" },
-  datetime: { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" },
+  datetime: {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  },
 };
 
 /**
@@ -39,7 +48,10 @@ export function formatDate(
   fallback = "Date unknown"
 ): string {
   if (!date) return fallback;
-  return new Date(date).toLocaleDateString("en-GB", DATE_FORMAT_OPTIONS[format]);
+  return new Date(date).toLocaleDateString(
+    "en-GB",
+    DATE_FORMAT_OPTIONS[format]
+  );
 }
 
 /**
@@ -47,7 +59,9 @@ export function formatDate(
  * @param orderNumber - Full order number (e.g., "ORD-2024-ABC123")
  * @returns Shortened order number (e.g., "ABC123") or "N/A" if null
  */
-export function formatOrderNumber(orderNumber: string | null | undefined): string {
+export function formatOrderNumber(
+  orderNumber: string | null | undefined
+): string {
   if (!orderNumber) return "N/A";
   return orderNumber.split("-").pop() ?? orderNumber;
 }

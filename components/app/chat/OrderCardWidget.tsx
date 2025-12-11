@@ -20,7 +20,9 @@ export function OrderCardWidget({ order, onClose }: OrderCardWidgetProps) {
   };
 
   // Format date
-  const formattedDate = order.createdAt ? formatDate(order.createdAt, "long") : null;
+  const formattedDate = order.createdAt
+    ? formatDate(order.createdAt, "long")
+    : null;
 
   // Truncate item names for display
   const displayItems =
