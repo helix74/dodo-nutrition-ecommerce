@@ -132,3 +132,9 @@ export const useCartActions = () => {
     closeCart,
   };
 };
+
+/**
+ * Clear cart action hook
+ */
+export const useClearCart = () => useCartStore((state) => state.clearCart);
+

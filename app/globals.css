@@ -42,75 +42,118 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* === DODO NUTRITION DESIGN SYSTEM === */
+  --color-dodo-yellow: var(--dodo-yellow);
+  --color-dodo-yellow-hover: var(--dodo-yellow-hover);
+  --color-dodo-red: var(--dodo-red);
+  --color-dodo-red-hover: var(--dodo-red-hover);
 }
 
+/* === DODO NUTRITION - DARK THEME BY DEFAULT === */
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+
+  /* DODO NUTRITION BRAND COLORS */
+  --dodo-yellow: #fee257;
+  --dodo-yellow-hover: #ffe97a;
+  --dodo-yellow-dark: #e5cb4e;
+  --dodo-red: #f01b24;
+  --dodo-red-hover: #ff3b44;
+  --dodo-red-dark: #d81620;
+
+  /* DARK THEME - DEFAULT */
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --card: #111111;
+  --card-foreground: #ffffff;
+  --popover: #111111;
+  --popover-foreground: #ffffff;
+  --primary: #fee257;
+  --primary-foreground: #0a0a0a;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ffffff;
+  --muted: #1a1a1a;
+  --muted-foreground: #999999;
+  --accent: #fee257;
+  --accent-foreground: #0a0a0a;
+  --destructive: #f01b24;
+  --border: #222222;
+  --input: #1a1a1a;
+  --ring: #fee257;
+  --chart-1: #fee257;
+  --chart-2: #f01b24;
+  --chart-3: #22c55e;
+  --chart-4: #0ea5e9;
+  --chart-5: #a855f7;
+  --sidebar: #111111;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #fee257;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #222222;
+  --sidebar-ring: #fee257;
 }
 
+/* LIGHT THEME - Optional override */
+.light {
+  --background: #fafafa;
+  --foreground: #0a0a0a;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+  --primary: #0a0a0a;
+  --primary-foreground: #fee257;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #0a0a0a;
+  --muted: #f4f4f5;
+  --muted-foreground: #666666;
+  --accent: #fee257;
+  --accent-foreground: #0a0a0a;
+  --destructive: #f01b24;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #0a0a0a;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0a0a0a;
+  --sidebar-primary: #0a0a0a;
+  --sidebar-primary-foreground: #fee257;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #0a0a0a;
+  --sidebar-border: #e4e4e7;
+  --sidebar-ring: #0a0a0a;
+}
+
+/* Keep old .dark for compatibility */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --card: #111111;
+  --card-foreground: #ffffff;
+  --popover: #111111;
+  --popover-foreground: #ffffff;
+  --primary: #fee257;
+  --primary-foreground: #0a0a0a;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ffffff;
+  --muted: #1a1a1a;
+  --muted-foreground: #999999;
+  --accent: #fee257;
+  --accent-foreground: #0a0a0a;
+  --destructive: #f01b24;
+  --border: #222222;
+  --input: #1a1a1a;
+  --ring: #fee257;
+  --sidebar: #111111;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #fee257;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #222222;
+  --sidebar-ring: #fee257;
 }
 
 @layer base {
@@ -119,5 +162,54 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* === DODO NUTRITION UTILITY CLASSES === */
+@layer utilities {
+  .bg-dodo-yellow {
+    background-color: var(--dodo-yellow);
+  }
+  .bg-dodo-yellow-hover {
+    background-color: var(--dodo-yellow-hover);
+  }
+  .bg-dodo-red {
+    background-color: var(--dodo-red);
+  }
+  .text-dodo-yellow {
+    color: var(--dodo-yellow);
+  }
+  .text-dodo-red {
+    color: var(--dodo-red);
+  }
+  .border-dodo-yellow {
+    border-color: var(--dodo-yellow);
+  }
+  .ring-dodo-yellow {
+    --tw-ring-color: var(--dodo-yellow);
+  }
+
+  /* CTA Button Dodo Style */
+  .btn-dodo {
+    @apply bg-dodo-yellow text-black font-semibold px-6 py-3 rounded-lg transition-all duration-200;
+  }
+  .btn-dodo:hover {
+    background-color: var(--dodo-yellow-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(254, 226, 87, 0.3);
+  }
+
+  /* Promo Badge */
+  .badge-promo {
+    @apply bg-dodo-red text-white text-xs font-bold px-2 py-1 rounded;
+  }
+
+  /* Card Dodo Style */
+  .card-dodo {
+    @apply bg-card border border-border rounded-xl transition-all duration-300;
+  }
+  .card-dodo:hover {
+    border-color: var(--dodo-yellow);
+    box-shadow: 0 0 20px rgba(254, 226, 87, 0.1);
   }
 }

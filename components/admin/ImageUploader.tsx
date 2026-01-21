@@ -54,14 +54,14 @@ function ImageUploaderContent(handle: DocumentHandle) {
     if (!files || files.length === 0) return;
 
     setIsUploading(true);
-    setUploadProgress(`Uploading ${files.length} image(s)...`);
+    setUploadProgress(`Téléchargement de ${files.length} image(s)...`);
 
     try {
       const newImages: SanityImageAsset[] = [];
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        setUploadProgress(`Uploading ${i + 1} of ${files.length}...`);
+        setUploadProgress(`Téléchargement ${i + 1} sur ${files.length}...`);
 
         // Upload the asset to Sanity
         const asset = await client.assets.upload("image", file, {
@@ -86,7 +86,7 @@ function ImageUploaderContent(handle: DocumentHandle) {
       setUploadProgress(null);
     } catch (error) {
       console.error("Upload failed:", error);
-      setUploadProgress("Upload failed. Please try again.");
+      setUploadProgress("Échec du téléchargement. Veuillez réessayer.");
       setTimeout(() => setUploadProgress(null), 3000);
     } finally {
       setIsUploading(false);
@@ -141,7 +141,7 @@ function ImageUploaderContent(handle: DocumentHandle) {
           ) : (
             <>
               <Upload className="mr-2 h-4 w-4" />
-              Upload Images
+              Télécharger des images
             </>
           )}
         </Button>
@@ -165,20 +165,20 @@ function ImageUploaderContent(handle: DocumentHandle) {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-zinc-200 py-8 dark:border-zinc-700">
-          <ImageIcon className="mb-2 h-10 w-10 text-zinc-400" />
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            No images uploaded
+        <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border py-8">
+          <ImageIcon className="mb-2 h-10 w-10 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">
+            Aucune image téléchargée
           </p>
-          <p className="text-xs text-zinc-400 dark:text-zinc-500">
-            Click upload to add product images
+          <p className="text-xs text-muted-foreground">
+            Cliquez pour ajouter des images
           </p>
         </div>
       )}
 
       {currentImages.length > 0 && (
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          First image is the main product image. Drag to reorder.
+        <p className="text-xs text-muted-foreground">
+          La première image est l'image principale. Glissez pour réorganiser.
         </p>
       )}
     </div>
@@ -221,9 +221,9 @@ function ImageThumbnail({
   return (
     <div
       className={cn(
-        "group relative aspect-square overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800",
+        "group relative aspect-square overflow-hidden rounded-lg bg-secondary",
         isFirst &&
-          "ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-zinc-900",
+          "ring-2 ring-dodo-yellow ring-offset-2 ring-offset-background",
       )}
     >
       {imageUrl ? (
@@ -236,14 +236,14 @@ function ImageThumbnail({
         />
       ) : (
         <div className="flex h-full items-center justify-center">
-          <ImageIcon className="h-8 w-8 text-zinc-400" />
+          <ImageIcon className="h-8 w-8 text-muted-foreground" />
         </div>
       )}
 
       {/* First image badge */}
       {isFirst && (
-        <div className="absolute left-2 top-2 rounded bg-blue-500 px-1.5 py-0.5 text-xs font-medium text-white">
-          Main
+        <div className="absolute left-2 top-2 rounded bg-dodo-yellow px-1.5 py-0.5 text-xs font-medium text-black">
+          Principale
         </div>
       )}
 

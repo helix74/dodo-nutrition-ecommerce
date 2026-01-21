@@ -8,10 +8,11 @@ import {
   createDocumentHandle,
   createDocument,
 } from "@sanity/sdk-react";
-import { Plus, Package, Loader2 } from "lucide-react";
+import { Plus, Package, Loader2, AlertTriangle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Table, TableBody } from "@/components/ui/table";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ProductRow,
   ProductRowSkeleton,
@@ -19,6 +20,13 @@ import {
   useProductSearchFilter,
   ProductTableHeader,
 } from "@/components/admin";
+
+// Stock status tabs
+const STOCK_TABS = [
+  { value: "all", label: "Tous", filter: undefined },
+  { value: "low", label: "Stock faible", filter: "stock > 0 && stock <= 10", icon: AlertTriangle },
+  { value: "out", label: "Rupture", filter: "stock <= 0", icon: XCircle },
+];
 
 interface ProductListContentProps {
   filter?: string;
@@ -50,16 +58,16 @@ function ProductListContent({
     return (
       <EmptyState
         icon={Package}
-        title={filter ? "No products found" : "No products yet"}
+        title={filter ? "Aucun produit trouvé" : "Aucun produit"}
         description={
           filter
-            ? "Try adjusting your search terms."
-            : "Get started by adding your first product."
+            ? "Essayez d'ajuster vos termes de recherche."
+            : "Commencez par ajouter votre premier produit."
         }
         action={
           !filter
             ? {
-                label: "Add Product",
+                label: "Ajouter un produit",
                 onClick: onCreateProduct,
                 disabled: isCreating,
                 icon: isCreating ? Loader2 : Plus,
@@ -72,8 +80,8 @@ function ProductListContent({
 
   return (
     <>
-      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <Table>
+      <div className="overflow-x-auto rounded-xl border border-border bg-card">
+        <Table className="min-w-[800px]">
           <ProductTableHeader />
           <TableBody>
             {products.map((handle) => (
@@ -90,7 +98,7 @@ function ProductListContent({
             onClick={() => loadMore()}
             disabled={isPending}
           >
-            {isPending ? "Loading..." : "Load More"}
+            {isPending ? "Chargement..." : "Charger plus"}
           </Button>
         </div>
       )}
@@ -100,7 +108,7 @@ function ProductListContent({
 
 function ProductListSkeleton() {
   return (
-    <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+    <div className="overflow-hidden rounded-xl border border-border bg-card">
       <Table>
         <ProductTableHeader />
         <TableBody>
@@ -116,9 +124,24 @@ function ProductListSkeleton() {
 function InventoryContent() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [stockTab, setStockTab] = useState("all");
   const [isPending, startTransition] = useTransition();
-  const { filter, isSearching } = useProductSearchFilter(searchQuery);
+  const { filter: searchFilter, isSearching } = useProductSearchFilter(searchQuery);
   const apply = useApplyDocumentActions();
+
+  // Combine search filter with stock tab filter
+  const stockTabConfig = STOCK_TABS.find((t) => t.value === stockTab);
+  const stockFilter = stockTabConfig?.filter;
+  
+  // Build combined filter
+  let combinedFilter: string | undefined;
+  if (searchFilter && stockFilter) {
+    combinedFilter = `(${searchFilter}) && (${stockFilter})`;
+  } else if (searchFilter) {
+    combinedFilter = searchFilter;
+  } else if (stockFilter) {
+    combinedFilter = stockFilter;
+  }
 
   const handleCreateProduct = () => {
     startTransition(async () => {
@@ -136,42 +159,62 @@ function InventoryContent() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 sm:text-3xl">
-            Inventory
+          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
+            Inventaire
           </h1>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400 sm:text-base">
-            Manage your product stock and pricing
+          <p className="mt-1 text-sm text-muted-foreground sm:text-base">
+            Gérer vos stocks et prix
           </p>
         </div>
         <Button
           onClick={handleCreateProduct}
           disabled={isPending}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto bg-dodo-yellow hover:bg-dodo-yellow-hover text-black"
         >
           {isPending ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Plus className="mr-2 h-4 w-4" />
           )}
-          New Product
+          Nouveau produit
         </Button>
       </div>
 
-      {/* Search */}
-      <AdminSearch
-        placeholder="Search products..."
-        value={searchQuery}
-        onChange={setSearchQuery}
-        className="w-full sm:max-w-sm"
-      />
+      {/* Search and Tabs */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <AdminSearch
+          placeholder="Rechercher..."
+          value={searchQuery}
+          onChange={setSearchQuery}
+          className="w-full sm:max-w-xs"
+        />
+        
+        <Tabs value={stockTab} onValueChange={setStockTab}>
+          <TabsList>
+            {STOCK_TABS.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <TabsTrigger
+                  key={tab.value}
+                  value={tab.value}
+                  className="text-xs sm:text-sm"
+                >
+                  {Icon && <Icon className="mr-1.5 h-3.5 w-3.5" />}
+                  {tab.label}
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
+        </Tabs>
+      </div>
 
       {/* Product List */}
       {isSearching ? (
         <ProductListSkeleton />
       ) : (
-        <Suspense fallback={<ProductListSkeleton />}>
+        <Suspense key={`${combinedFilter ?? "all"}`} fallback={<ProductListSkeleton />}>
           <ProductListContent
-            filter={filter}
+            filter={combinedFilter}
             onCreateProduct={handleCreateProduct}
             isCreating={isPending}
           />

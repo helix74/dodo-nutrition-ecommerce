@@ -68,7 +68,7 @@ function ProductRowContent(handle: DocumentHandle) {
     <TableRow className="group">
       {/* Image - Desktop only */}
       <TableCell className="hidden py-3 sm:table-cell">
-        <div className="relative h-12 w-12 overflow-hidden rounded-md bg-zinc-100 dark:bg-zinc-800">
+        <div className="relative h-12 w-12 overflow-hidden rounded-md bg-secondary">
           {data.image?.asset?.url ? (
             <Image
               src={data.image.asset.url}
@@ -78,7 +78,7 @@ function ProductRowContent(handle: DocumentHandle) {
               sizes="48px"
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-xs text-zinc-400">
+            <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
               ?
             </div>
           )}
@@ -86,13 +86,13 @@ function ProductRowContent(handle: DocumentHandle) {
       </TableCell>
 
       {/* Name - Mobile: includes image, price, stock badges */}
-      <TableCell className="py-3 sm:py-4">
+      <TableCell className="py-3 sm:py-4 whitespace-normal max-w-[180px] sm:max-w-[300px]">
         <Link
           href={`/admin/inventory/${handle.documentId}`}
           className="flex items-start gap-3 sm:block"
         >
           {/* Mobile image */}
-          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-zinc-100 dark:bg-zinc-800 sm:hidden">
+          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-secondary sm:hidden">
             {data.image?.asset?.url ? (
               <Image
                 src={data.image.asset.url}
@@ -102,15 +102,15 @@ function ProductRowContent(handle: DocumentHandle) {
                 sizes="48px"
               />
             ) : (
-              <div className="flex h-full items-center justify-center text-xs text-zinc-400">
+              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
                 ?
               </div>
             )}
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <span className="truncate font-medium text-zinc-900 group-hover:text-zinc-600 dark:text-zinc-100 dark:group-hover:text-zinc-300 sm:hover:text-zinc-600 sm:dark:hover:text-zinc-300">
-                {data.name || "Untitled Product"}
+              <span className="font-medium text-foreground group-hover:text-dodo-yellow line-clamp-2">
+                {data.name || "Produit sans nom"}
               </span>
               {data.featured && (
                 <Star className="h-3.5 w-3.5 shrink-0 fill-amber-400 text-amber-400 sm:hidden" />
@@ -124,9 +124,9 @@ function ProductRowContent(handle: DocumentHandle) {
                     window.open(`/products/${data.slug}`, "_blank");
                   }}
                   className="hidden shrink-0 opacity-0 transition-opacity group-hover:opacity-100 sm:block"
-                  aria-label="View product on store"
+                  aria-label="Voir le produit"
                 >
-                  <ExternalLink className="h-3.5 w-3.5 text-zinc-400 hover:text-zinc-600" />
+                  <ExternalLink className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
                 </button>
               )}
             </div>
@@ -134,38 +134,38 @@ function ProductRowContent(handle: DocumentHandle) {
               <div className="mt-1 flex items-center gap-1 sm:hidden">
                 <Badge
                   variant="outline"
-                  className="h-5 gap-1 border-orange-300 bg-orange-50 px-1.5 text-[10px] font-medium text-orange-600 dark:border-orange-500/50 dark:bg-orange-950/50 dark:text-orange-400"
+                  className="h-5 gap-1 border-orange-500/50 bg-orange-500/10 px-1.5 text-[10px] font-medium text-orange-400"
                 >
                   <CircleAlert className="h-3 w-3" />
-                  Draft
+                  Brouillon
                 </Badge>
               </div>
             )}
             {data.category && (
-              <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="truncate text-xs text-muted-foreground">
                 {data.category.title}
               </p>
             )}
             {/* Mobile: show price and stock inline */}
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs sm:hidden">
-              <span className="font-medium text-zinc-700 dark:text-zinc-300">
+              <span className="font-medium text-foreground">
                 {formatPrice(data.price)}
               </span>
-              <span className="text-zinc-300 dark:text-zinc-600">•</span>
-              <span className="text-zinc-500 dark:text-zinc-400">
-                {data.stock} in stock
+              <span className="text-muted-foreground">•</span>
+              <span className="text-muted-foreground">
+                {data.stock} en stock
               </span>
               {outOfStock && (
                 <Badge variant="destructive" className="h-5 px-1.5 text-[10px]">
-                  Out
+                  Rupture
                 </Badge>
               )}
               {lowStock && (
                 <Badge
                   variant="secondary"
-                  className="h-5 bg-amber-100 px-1.5 text-[10px] text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
+                  className="h-5 bg-amber-500/20 px-1.5 text-[10px] text-amber-400"
                 >
-                  Low
+                  Faible
                 </Badge>
               )}
             </div>
@@ -188,15 +188,15 @@ function ProductRowContent(handle: DocumentHandle) {
           </Suspense>
           {outOfStock && (
             <Badge variant="destructive" className="text-xs">
-              Out
+              Rupture
             </Badge>
           )}
           {lowStock && (
             <Badge
               variant="secondary"
-              className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
+              className="bg-amber-500/20 text-amber-400"
             >
-              Low
+              Faible
             </Badge>
           )}
         </div>

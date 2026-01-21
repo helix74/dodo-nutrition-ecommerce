@@ -30,7 +30,7 @@ export function CartSheet() {
         <SheetHeader className="border-b border-zinc-200 dark:border-zinc-800">
           <SheetTitle className="flex items-center gap-2">
             <ShoppingBag className="h-5 w-5" />
-            Shopping Cart ({totalItems})
+            Panier ({totalItems})
             {isLoading && (
               <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
             )}
@@ -39,12 +39,12 @@ export function CartSheet() {
 
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center text-center">
-            <ShoppingBag className="h-12 w-12 text-zinc-300 dark:text-zinc-600" />
-            <h3 className="mt-4 text-lg font-medium text-zinc-900 dark:text-zinc-100">
-              Your cart is empty
+            <ShoppingBag className="h-12 w-12 text-muted-foreground" />
+            <h3 className="mt-4 text-lg font-medium text-foreground">
+              Votre panier est vide
             </h3>
-            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-              Add some items to get started
+            <p className="mt-1 text-sm text-muted-foreground">
+              Ajoutez des produits pour commencer
             </p>
           </div>
         ) : (
@@ -54,7 +54,7 @@ export function CartSheet() {
               <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
                 <AlertTriangle className="h-4 w-4 shrink-0" />
                 <span>
-                  Some items have stock issues. Please review before checkout.
+                  Certains articles ont des problèmes de stock. Vérifiez avant de commander.
                 </span>
               </div>
             )}

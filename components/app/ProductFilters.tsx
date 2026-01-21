@@ -14,24 +14,30 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import { COLORS, MATERIALS, SORT_OPTIONS } from "@/lib/constants/filters";
+import { SORT_OPTIONS } from "@/lib/constants/filters";
 import type { ALL_CATEGORIES_QUERYResult } from "@/sanity.types";
+
+interface Brand {
+  _id: string;
+  name: string | null;
+  slug: string | null;
+}
 
 interface ProductFiltersProps {
   categories: ALL_CATEGORIES_QUERYResult;
+  brands?: Brand[];
 }
 
-export function ProductFilters({ categories }: ProductFiltersProps) {
+export function ProductFilters({ categories, brands = [] }: ProductFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const currentSearch = searchParams.get("q") ?? "";
   const currentCategory = searchParams.get("category") ?? "";
-  const currentColor = searchParams.get("color") ?? "";
-  const currentMaterial = searchParams.get("material") ?? "";
+  const currentBrand = searchParams.get("brand") ?? "";
   const currentSort = searchParams.get("sort") ?? "name";
   const urlMinPrice = Number(searchParams.get("minPrice")) || 0;
-  const urlMaxPrice = Number(searchParams.get("maxPrice")) || 5000;
+  const urlMaxPrice = Number(searchParams.get("maxPrice")) || 500;
   const currentInStock = searchParams.get("inStock") === "true";
 
   // Local state for price range (for smooth slider dragging)
@@ -48,16 +54,14 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
   // Check which filters are active
   const isSearchActive = !!currentSearch;
   const isCategoryActive = !!currentCategory;
-  const isColorActive = !!currentColor;
-  const isMaterialActive = !!currentMaterial;
-  const isPriceActive = urlMinPrice > 0 || urlMaxPrice < 5000;
+  const isBrandActive = !!currentBrand;
+  const isPriceActive = urlMinPrice > 0 || urlMaxPrice < 500;
   const isInStockActive = currentInStock;
 
   const hasActiveFilters =
     isSearchActive ||
     isCategoryActive ||
-    isColorActive ||
-    isMaterialActive ||
+    isBrandActive ||
     isPriceActive ||
     isInStockActive;
 
@@ -65,8 +69,7 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
   const activeFilterCount = [
     isSearchActive,
     isCategoryActive,
-    isColorActive,
-    isMaterialActive,
+    isBrandActive,
     isPriceActive,
     isInStockActive,
   ].filter(Boolean).length;
@@ -128,7 +131,7 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
         {children}
         {isActive && (
           <Badge className="ml-2 h-5 bg-amber-500 px-1.5 text-xs text-white hover:bg-amber-500">
-            Active
+            Actif
           </Badge>
         )}
       </span>
@@ -137,7 +140,7 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
           type="button"
           onClick={() => clearSingleFilter(filterKey)}
           className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
-          aria-label={`Clear ${filterKey} filter`}
+          aria-label={`Effacer le filtre ${filterKey}`}
         >
           <X className="h-4 w-4" />
         </button>
@@ -146,23 +149,23 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
   );
 
   return (
-    <div className="space-y-6 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
+    <div className="space-y-6 rounded-lg border border-border bg-card p-6">
       {/* Clear Filters - Show at top when active */}
       {hasActiveFilters && (
-        <div className="rounded-lg border-2 border-amber-300 bg-amber-50 p-3 dark:border-amber-700 dark:bg-amber-950">
+        <div className="rounded-lg border border-dodo-yellow/20 bg-dodo-yellow/10 p-3">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-sm font-medium text-amber-800 dark:text-amber-200">
+            <span className="text-sm font-medium text-dodo-yellow">
               {activeFilterCount}{" "}
-              {activeFilterCount === 1 ? "filter" : "filters"} applied
+              {activeFilterCount === 1 ? "filtre actif" : "filtres actifs"}
             </span>
           </div>
           <Button
             size="sm"
             onClick={handleClearFilters}
-            className="w-full bg-amber-500 text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700"
+            className="w-full bg-dodo-yellow text-black hover:bg-dodo-yellow-hover"
           >
             <X className="mr-2 h-4 w-4" />
-            Clear All Filters
+            Effacer tous les filtres
           </Button>
         </div>
       )}
@@ -170,21 +173,21 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
       {/* Search */}
       <div>
         <FilterLabel isActive={isSearchActive} filterKey="q">
-          Search
+          Rechercher
         </FilterLabel>
         <form onSubmit={handleSearchSubmit} className="flex gap-2">
           <Input
             name="search"
-            placeholder="Search products..."
+            placeholder="Rechercher un produit..."
             defaultValue={currentSearch}
-            className={`flex-1 ${
+            className={`flex-1 bg-background border-input ${
               isSearchActive
-                ? "border-amber-500 ring-1 ring-amber-500 dark:border-amber-400 dark:ring-amber-400"
+                ? "border-dodo-yellow ring-1 ring-dodo-yellow"
                 : ""
             }`}
           />
-          <Button type="submit" size="sm">
-            Search
+          <Button type="submit" size="sm" variant="secondary">
+            OK
           </Button>
         </form>
       </div>
@@ -192,7 +195,7 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
       {/* Category */}
       <div>
         <FilterLabel isActive={isCategoryActive} filterKey="category">
-          Category
+          Catégorie
         </FilterLabel>
         <Select
           value={currentCategory || "all"}
@@ -201,16 +204,16 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
           }
         >
           <SelectTrigger
-            className={
+            className={`bg-background border-input ${
               isCategoryActive
-                ? "border-amber-500 ring-1 ring-amber-500 dark:border-amber-400 dark:ring-amber-400"
+                ? "border-dodo-yellow ring-1 ring-dodo-yellow"
                 : ""
-            }
+            }`}
           >
-            <SelectValue placeholder="All Categories" />
+            <SelectValue placeholder="Toutes les catégories" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
+            <SelectItem value="all">Toutes les catégories</SelectItem>
             {categories.map((category) => (
               <SelectItem key={category._id} value={category.slug ?? ""}>
                 {category.title}
@@ -220,62 +223,31 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
         </Select>
       </div>
 
-      {/* Color */}
+      {/* Brand */}
       <div>
-        <FilterLabel isActive={isColorActive} filterKey="color">
-          Color
+        <FilterLabel isActive={isBrandActive} filterKey="brand">
+          Marque
         </FilterLabel>
         <Select
-          value={currentColor || "all"}
+          value={currentBrand || "all"}
           onValueChange={(value) =>
-            updateParams({ color: value === "all" ? null : value })
+            updateParams({ brand: value === "all" ? null : value })
           }
         >
           <SelectTrigger
-            className={
-              isColorActive
-                ? "border-amber-500 ring-1 ring-amber-500 dark:border-amber-400 dark:ring-amber-400"
+            className={`bg-background border-input ${
+              isBrandActive
+                ? "border-dodo-yellow ring-1 ring-dodo-yellow"
                 : ""
-            }
+            }`}
           >
-            <SelectValue placeholder="All Colors" />
+            <SelectValue placeholder="Toutes les marques" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Colors</SelectItem>
-            {COLORS.map((color) => (
-              <SelectItem key={color.value} value={color.value}>
-                {color.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Material */}
-      <div>
-        <FilterLabel isActive={isMaterialActive} filterKey="material">
-          Material
-        </FilterLabel>
-        <Select
-          value={currentMaterial || "all"}
-          onValueChange={(value) =>
-            updateParams({ material: value === "all" ? null : value })
-          }
-        >
-          <SelectTrigger
-            className={
-              isMaterialActive
-                ? "border-amber-500 ring-1 ring-amber-500 dark:border-amber-400 dark:ring-amber-400"
-                : ""
-            }
-          >
-            <SelectValue placeholder="All Materials" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Materials</SelectItem>
-            {MATERIALS.map((material) => (
-              <SelectItem key={material.value} value={material.value}>
-                {material.label}
+            <SelectItem value="all">Toutes les marques</SelectItem>
+            {brands.map((brand) => (
+              <SelectItem key={brand._id} value={brand.slug ?? ""}>
+                {brand.name}
               </SelectItem>
             ))}
           </SelectContent>
@@ -285,21 +257,21 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
       {/* Price Range */}
       <div>
         <FilterLabel isActive={isPriceActive} filterKey="price">
-          Price Range: £{priceRange[0]} - £{priceRange[1]}
+          Prix: {priceRange[0]} - {priceRange[1]} TND
         </FilterLabel>
         <Slider
           min={0}
-          max={5000}
-          step={100}
+          max={500}
+          step={10}
           value={priceRange}
           onValueChange={(value) => setPriceRange(value as [number, number])}
           onValueCommit={([min, max]) =>
             updateParams({
               minPrice: min > 0 ? min : null,
-              maxPrice: max < 5000 ? max : null,
+              maxPrice: max < 500 ? max : null,
             })
           }
-          className={`mt-4 ${isPriceActive ? "[&_[role=slider]]:border-amber-500 [&_[role=slider]]:ring-amber-500" : ""}`}
+          className={`mt-4 ${isPriceActive ? "[&_[role=slider]]:border-dodo-yellow [&_[role=slider]]:ring-dodo-yellow" : ""}`}
         />
       </div>
 
@@ -312,19 +284,19 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
             onChange={(e) =>
               updateParams({ inStock: e.target.checked ? "true" : null })
             }
-            className="h-5 w-5 rounded border-zinc-300 text-amber-500 focus:ring-amber-500 dark:border-zinc-600 dark:bg-zinc-800"
+            className="h-5 w-5 rounded border-input bg-background text-dodo-yellow focus:ring-dodo-yellow"
           />
           <span
             className={`text-sm font-medium ${
               isInStockActive
-                ? "text-zinc-900 dark:text-zinc-100"
-                : "text-zinc-700 dark:text-zinc-300"
+                ? "text-foreground"
+                : "text-muted-foreground"
             }`}
           >
-            Show only in-stock
+            En stock uniquement
             {isInStockActive && (
-              <Badge className="ml-2 h-5 bg-amber-500 px-1.5 text-xs text-white hover:bg-amber-500">
-                Active
+              <Badge className="ml-2 h-5 bg-dodo-yellow px-1.5 text-xs text-black hover:bg-dodo-yellow-hover">
+                Actif
               </Badge>
             )}
           </span>
@@ -333,14 +305,14 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
 
       {/* Sort */}
       <div>
-        <span className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Sort By
+        <span className="mb-2 block text-sm font-medium text-muted-foreground">
+          Trier par
         </span>
         <Select
           value={currentSort}
           onValueChange={(value) => updateParams({ sort: value })}
         >
-          <SelectTrigger>
+          <SelectTrigger className="bg-background border-input">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

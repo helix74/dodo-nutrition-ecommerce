@@ -1,5 +1,5 @@
 /**
- * Shared types for AI shopping assistant
+ * Shared types for AI shopping assistant - Dodo Nutrition
  */
 
 export interface SearchProduct {
@@ -11,14 +11,20 @@ export interface SearchProduct {
   priceFormatted: string | null;
   category: string | null;
   categorySlug: string | null;
-  material: string | null;
-  color: string | null;
-  dimensions: string | null;
+  // Nutrition-specific fields
+  brand: string | null;
+  brandSlug: string | null;
+  unit: string | null;
+  quantity: number | null;
+  servings: number | null;
+  flavors: string[];
+  benefits: string[];
+  certifications: string[];
+  // Stock info
   stockCount: number;
   stockStatus: "in_stock" | "low_stock" | "out_of_stock" | "unknown";
   stockMessage: string;
   featured: boolean;
-  assemblyRequired: boolean;
   imageUrl: string | null;
   productUrl: string | null;
 }
@@ -32,8 +38,7 @@ export interface SearchProductsResult {
   filters: {
     query: string;
     category: string;
-    material: string;
-    color: string;
+    brand: string;
     minPrice: number;
     maxPrice: number;
   };

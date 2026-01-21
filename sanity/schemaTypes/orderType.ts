@@ -1,6 +1,7 @@
 import { BasketIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { ORDER_STATUS_SANITY_LIST } from "@/lib/constants/orderStatus";
+import { GOUVERNORATS } from "@/lib/constants/gouvernorats";
 
 export const orderType = defineType({
   name: "order",
@@ -10,6 +11,7 @@ export const orderType = defineType({
   groups: [
     { name: "details", title: "Order Details", default: true },
     { name: "customer", title: "Customer" },
+    { name: "shipping", title: "Shipping" },
     { name: "payment", title: "Payment" },
   ],
   fields: [
@@ -57,7 +59,7 @@ export const orderType = defineType({
             prepare({ title, quantity, price, media }) {
               return {
                 title: title ?? "Product",
-                subtitle: `Qty: ${quantity} • £${price}`,
+                subtitle: `Qty: ${quantity} • ${price} TND`,
                 media,
               };
             },
@@ -70,57 +72,114 @@ export const orderType = defineType({
       type: "number",
       group: "details",
       readOnly: true,
-      description: "Total order amount in GBP",
+      description: "Total order amount in TND",
     }),
     defineField({
       name: "status",
       type: "string",
       group: "details",
-      initialValue: "paid",
+      initialValue: "pending",
       options: {
         list: ORDER_STATUS_SANITY_LIST,
         layout: "radio",
       },
     }),
     defineField({
+      name: "paymentMethod",
+      type: "string",
+      group: "payment",
+      initialValue: "cod",
+      options: {
+        list: [
+          { title: "Cash on Delivery", value: "cod" },
+          { title: "Card (Stripe)", value: "stripe" },
+        ],
+        layout: "radio",
+      },
+    }),
+    // Customer info
+    defineField({
       name: "customer",
       type: "reference",
       to: [{ type: "customer" }],
       group: "customer",
-      description: "Reference to the customer record",
+      description: "Reference to the customer record (if logged in)",
     }),
     defineField({
       name: "clerkUserId",
       type: "string",
       group: "customer",
       readOnly: true,
-      description: "Clerk user ID",
+      description: "Clerk user ID (if logged in)",
     }),
     defineField({
       name: "email",
       type: "string",
       group: "customer",
-      readOnly: true,
+      validation: (rule) => rule.required().email(),
     }),
+    defineField({
+      name: "phone",
+      type: "string",
+      group: "customer",
+      description: "Phone number for delivery confirmation (+216)",
+      validation: (rule) => rule.required().error("Phone number is required for COD"),
+    }),
+    // Shipping address
     defineField({
       name: "address",
       type: "object",
-      group: "customer",
+      group: "shipping",
       fields: [
-        defineField({ name: "name", type: "string", title: "Full Name" }),
-        defineField({ name: "line1", type: "string", title: "Address Line 1" }),
-        defineField({ name: "line2", type: "string", title: "Address Line 2" }),
-        defineField({ name: "city", type: "string" }),
-        defineField({ name: "postcode", type: "string", title: "Postcode" }),
-        defineField({ name: "country", type: "string" }),
+        defineField({ 
+          name: "name", 
+          type: "string", 
+          title: "Nom complet",
+          validation: (rule) => rule.required(),
+        }),
+        defineField({ 
+          name: "line1", 
+          type: "string", 
+          title: "Adresse",
+          validation: (rule) => rule.required(),
+        }),
+        defineField({ 
+          name: "city", 
+          type: "string", 
+          title: "Ville",
+          validation: (rule) => rule.required(),
+        }),
+        defineField({ 
+          name: "gouvernorat", 
+          type: "string", 
+          title: "Gouvernorat",
+          options: {
+            list: GOUVERNORATS.map((g: string) => ({ title: g, value: g })),
+          },
+          initialValue: "Tunis",
+          validation: (rule) => rule.required(),
+        }),
+        defineField({ 
+          name: "postcode", 
+          type: "string", 
+          title: "Code postal" 
+        }),
       ],
     }),
+    defineField({
+      name: "notes",
+      type: "text",
+      group: "shipping",
+      title: "Notes de livraison",
+      description: "Instructions spéciales pour la livraison",
+    }),
+    // Payment info
     defineField({
       name: "stripePaymentId",
       type: "string",
       group: "payment",
       readOnly: true,
-      description: "Stripe payment intent ID",
+      description: "Stripe payment intent ID (for card payments)",
     }),
     defineField({
       name: "createdAt",
@@ -136,11 +195,13 @@ export const orderType = defineType({
       email: "email",
       total: "total",
       status: "status",
+      paymentMethod: "paymentMethod",
     },
-    prepare({ orderNumber, email, total, status }) {
+    prepare({ orderNumber, email, total, status, paymentMethod }) {
+      const method = paymentMethod === "cod" ? "COD" : "💳";
       return {
         title: `Order ${orderNumber ?? "N/A"}`,
-        subtitle: `${email ?? "No email"} • £${total ?? 0} • ${status ?? "paid"}`,
+        subtitle: `${email ?? "No email"} • ${total ?? 0} TND • ${status ?? "pending"} • ${method}`,
       };
     },
   },
@@ -149,6 +210,11 @@ export const orderType = defineType({
       title: "Newest First",
       name: "createdAtDesc",
       by: [{ field: "createdAt", direction: "desc" }],
+    },
+    {
+      title: "Status",
+      name: "statusAsc",
+      by: [{ field: "status", direction: "asc" }],
     },
   ],
 });

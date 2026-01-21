@@ -2,7 +2,7 @@
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import Stripe from "stripe";
-import { client } from "@/sanity/lib/client";
+import { client, writeClient } from "@/sanity/lib/client";
 import { PRODUCTS_BY_IDS_QUERY } from "@/lib/sanity/queries/products";
 import { getOrCreateStripeCustomer } from "@/lib/actions/customer";
 
@@ -96,7 +96,7 @@ export async function createCheckoutSession(
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
       validatedItems.map(({ product, quantity }) => ({
         price_data: {
-          currency: "gbp",
+          currency: "tnd", // Tunisian Dinar
           product_data: {
             name: product.name ?? "Product",
             images: product.image?.asset?.url ? [product.image.asset.url] : [],
@@ -104,7 +104,7 @@ export async function createCheckoutSession(
               productId: product._id,
             },
           },
-          unit_amount: Math.round((product.price ?? 0) * 100), // Convert to pence
+          unit_amount: Math.round((product.priceRetail ?? 0) * 1000), // Convert to millimes (TND has 3 decimal places)
         },
         quantity,
       }));
@@ -249,3 +249,160 @@ export async function getCheckoutSession(sessionId: string) {
     return { success: false, error: "Could not retrieve order details" };
   }
 }
+
+// =============================================================================
+// COD (Cash on Delivery) Checkout
+// =============================================================================
+
+export interface CODOrderData {
+  items: CartItem[];
+  address: {
+    name: string;
+    line1: string;
+    city: string;
+    gouvernorat: string;
+    postcode?: string;
+  };
+  phone: string;
+  email: string;
+  notes?: string;
+}
+
+export interface CODOrderResult {
+  success: boolean;
+  orderId?: string;
+  orderNumber?: string;
+  error?: string;
+}
+
+/**
+ * Creates a COD (Cash on Delivery) order
+ * Works for both authenticated and guest users
+ */
+export async function createCODOrder(
+  data: CODOrderData
+): Promise<CODOrderResult> {
+  try {
+    // 1. Get user if authenticated (optional for COD)
+    const { userId } = await auth();
+    const user = userId ? await currentUser() : null;
+
+    // 2. Validate cart is not empty
+    if (!data.items || data.items.length === 0) {
+      return { success: false, error: "Votre panier est vide" };
+    }
+
+    // 3. Validate required fields
+    if (!data.address.name || !data.address.line1 || !data.address.city || !data.address.gouvernorat) {
+      return { success: false, error: "Veuillez remplir tous les champs obligatoires" };
+    }
+
+    if (!data.phone) {
+      return { success: false, error: "Le numéro de téléphone est requis" };
+    }
+
+    if (!data.email) {
+      return { success: false, error: "L'adresse email est requise" };
+    }
+
+    // 4. Fetch current product data from Sanity to validate prices/stock
+    const productIds = data.items.map((item) => item.productId);
+    const products = await client.fetch(PRODUCTS_BY_IDS_QUERY, {
+      ids: productIds,
+    });
+
+    // 5. Validate each item and calculate total
+    const validationErrors: string[] = [];
+    const orderItems: {
+      _key: string;
+      product: { _type: "reference"; _ref: string };
+      quantity: number;
+      priceAtPurchase: number;
+    }[] = [];
+    let total = 0;
+
+    for (const item of data.items) {
+      const product = products.find(
+        (p: { _id: string }) => p._id === item.productId
+      );
+
+      if (!product) {
+        validationErrors.push(`"${item.name}" n'est plus disponible`);
+        continue;
+      }
+
+      if ((product.stock ?? 0) === 0) {
+        validationErrors.push(`"${product.name}" est en rupture de stock`);
+        continue;
+      }
+
+      if (item.quantity > (product.stock ?? 0)) {
+        validationErrors.push(
+          `Seulement ${product.stock} "${product.name}" disponible(s)`
+        );
+        continue;
+      }
+
+      const price = product.priceRetail ?? 0;
+      orderItems.push({
+        _key: crypto.randomUUID(),
+        product: { _type: "reference", _ref: product._id },
+        quantity: item.quantity,
+        priceAtPurchase: price,
+      });
+      total += price * item.quantity;
+    }
+
+    if (validationErrors.length > 0) {
+      return { success: false, error: validationErrors.join(". ") };
+    }
+
+    // 6. Generate order number
+    const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+    // 7. Create order in Sanity (using writeClient for mutations)
+    const order = await writeClient.create({
+      _type: "order",
+      orderNumber,
+      items: orderItems,
+      total,
+      status: "pending",
+      paymentMethod: "cod",
+      clerkUserId: userId ?? null,
+      email: data.email,
+      phone: data.phone,
+      address: {
+        name: data.address.name,
+        line1: data.address.line1,
+        city: data.address.city,
+        gouvernorat: data.address.gouvernorat,
+        postcode: data.address.postcode ?? null,
+      },
+      notes: data.notes ?? null,
+      createdAt: new Date().toISOString(),
+    });
+
+    // 8. Decrement stock for each product (using writeClient)
+    const stockUpdates = orderItems.map((item) =>
+      writeClient
+        .patch(item.product._ref)
+        .dec({ stock: item.quantity })
+        .commit()
+    );
+
+    await Promise.all(stockUpdates);
+
+    return {
+      success: true,
+      orderId: order._id,
+      orderNumber: order.orderNumber,
+    };
+  } catch (error) {
+    console.error("COD Order Error:", error);
+    return {
+      success: false,
+      error: "Une erreur est survenue. Veuillez réessayer.",
+    };
+  }
+}
+

@@ -1,8 +1,8 @@
 import { CheckoutClient } from "./CheckoutClient";
 
 export const metadata = {
-  title: "Checkout | Furniture Shop",
-  description: "Complete your purchase",
+  title: "Commander | Dodo Nutrition",
+  description: "Finalisez votre commande - Paiement à la livraison",
 };
 
 export default function CheckoutPage() {

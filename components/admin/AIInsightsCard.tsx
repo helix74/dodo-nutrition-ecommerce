@@ -222,11 +222,11 @@ export function AIInsightsCard() {
             Revenue (7d)
           </p>
           <p className="mt-1 text-lg font-bold text-zinc-900 dark:text-zinc-100">
-            £
-            {Number(rawMetrics.currentRevenue).toLocaleString("en-GB", {
+            {Number(rawMetrics.currentRevenue).toLocaleString("fr-TN", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}
+            <span className="text-sm text-muted-foreground ml-1">TND</span>
           </p>
           <p
             className={cn(
@@ -256,9 +256,9 @@ export function AIInsightsCard() {
             Avg Order
           </p>
           <p className="mt-1 text-lg font-bold text-zinc-900 dark:text-zinc-100">
-            £{rawMetrics.avgOrderValue}
+            {rawMetrics.avgOrderValue} <span className="text-sm text-muted-foreground">TND</span>
           </p>
-          <p className="text-xs text-zinc-500">Per order</p>
+          <p className="text-xs text-muted-foreground">Par commande</p>
         </div>
         <div className="bg-white p-4 dark:bg-zinc-900">
           <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">

@@ -30,7 +30,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
   return (
     <div className="space-y-4">
       {/* Main Image */}
-      <div className="relative aspect-square overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800">
+      <div className="relative aspect-square overflow-hidden rounded-lg bg-secondary">
         {selectedImage?.asset?.url ? (
           <Image
             src={selectedImage.asset.url}
@@ -58,7 +58,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
               aria-label={`View image ${index + 1}`}
               aria-pressed={selectedIndex === index}
               className={cn(
-                "relative aspect-square overflow-hidden rounded-md bg-zinc-100 transition-all dark:bg-zinc-800",
+                "relative aspect-square overflow-hidden rounded-md bg-secondary transition-all",
                 selectedIndex === index
                   ? "ring-2 ring-zinc-900 dark:ring-zinc-100"
                   : "hover:opacity-75",

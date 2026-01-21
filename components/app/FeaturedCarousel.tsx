@@ -145,6 +145,12 @@ function FeaturedSlide({ product }: FeaturedSlideProps) {
             {product.category.title}
           </Badge>
         )}
+        
+        {product.brand && (
+          <span className="text-sm font-medium uppercase tracking-wider text-amber-400">
+            {product.brand.name}
+          </span>
+        )}
 
         <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
           {product.name}
@@ -156,9 +162,16 @@ function FeaturedSlide({ product }: FeaturedSlideProps) {
           </p>
         )}
 
-        <p className="mt-6 text-3xl font-bold text-white lg:text-4xl">
-          {formatPrice(product.price)}
-        </p>
+        <div className="mt-6 flex items-baseline gap-3">
+          {product.priceSlashed && product.priceSlashed > (product.priceRetail ?? 0) && (
+            <span className="text-xl text-zinc-400 line-through">
+              {formatPrice(product.priceSlashed)}
+            </span>
+          )}
+          <p className="text-3xl font-bold text-white lg:text-4xl">
+            {formatPrice(product.priceRetail)}
+          </p>
+        </div>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button
@@ -167,7 +180,7 @@ function FeaturedSlide({ product }: FeaturedSlideProps) {
             className="bg-white text-zinc-900 hover:bg-zinc-100"
           >
             <Link href={`/products/${product.slug}`}>
-              Shop Now
+              Voir le Produit
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>

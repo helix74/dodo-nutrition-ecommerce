@@ -3,16 +3,26 @@ import {
   Truck,
   XCircle,
   CreditCard,
+  Clock,
+  CheckCircle,
   type LucideIcon,
 } from "lucide-react";
 
-export type OrderStatusValue = "paid" | "shipped" | "delivered" | "cancelled";
+export type OrderStatusValue =
+  | "pending"
+  | "confirmed"
+  | "paid"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
 
 export interface OrderStatusConfig {
   /** The status value/key */
   value: OrderStatusValue;
   /** Display label */
   label: string;
+  /** French label for customer-facing */
+  labelFr: string;
   /** Badge color classes (combined bg + text) */
   color: string;
   /** Lucide icon component */
@@ -27,18 +37,40 @@ export interface OrderStatusConfig {
 
 export const ORDER_STATUS_CONFIG: Record<OrderStatusValue, OrderStatusConfig> =
   {
+    pending: {
+      value: "pending",
+      label: "Pending",
+      labelFr: "En attente",
+      color: "bg-yellow-100 text-yellow-800",
+      icon: Clock,
+      emoji: "⏳",
+      iconColor: "text-yellow-600 dark:text-yellow-400",
+      iconBgColor: "bg-yellow-100 dark:bg-yellow-900/30",
+    },
+    confirmed: {
+      value: "confirmed",
+      label: "Confirmed",
+      labelFr: "Confirmée",
+      color: "bg-green-100 text-green-800",
+      icon: CheckCircle,
+      emoji: "✅",
+      iconColor: "text-green-600 dark:text-green-400",
+      iconBgColor: "bg-green-100 dark:bg-green-900/30",
+    },
     paid: {
       value: "paid",
       label: "Paid",
-      color: "bg-green-100 text-green-800",
+      labelFr: "Payée",
+      color: "bg-emerald-100 text-emerald-800",
       icon: CreditCard,
-      emoji: "✅",
+      emoji: "💳",
       iconColor: "text-emerald-600 dark:text-emerald-400",
       iconBgColor: "bg-emerald-100 dark:bg-emerald-900/30",
     },
     shipped: {
       value: "shipped",
       label: "Shipped",
+      labelFr: "Expédiée",
       color: "bg-blue-100 text-blue-800",
       icon: Truck,
       emoji: "📦",
@@ -48,6 +80,7 @@ export const ORDER_STATUS_CONFIG: Record<OrderStatusValue, OrderStatusConfig> =
     delivered: {
       value: "delivered",
       label: "Delivered",
+      labelFr: "Livrée",
       color: "bg-zinc-100 text-zinc-800",
       icon: Package,
       emoji: "🎉",
@@ -57,6 +90,7 @@ export const ORDER_STATUS_CONFIG: Record<OrderStatusValue, OrderStatusConfig> =
     cancelled: {
       value: "cancelled",
       label: "Cancelled",
+      labelFr: "Annulée",
       color: "bg-red-100 text-red-800",
       icon: XCircle,
       emoji: "❌",
@@ -85,11 +119,11 @@ export const ORDER_STATUS_SANITY_LIST = ORDER_STATUS_VALUES.map((value) => ({
   value,
 }));
 
-/** Get order status config with fallback to "paid" */
+/** Get order status config with fallback to "pending" */
 export const getOrderStatus = (
   status: string | null | undefined
 ): OrderStatusConfig =>
-  ORDER_STATUS_CONFIG[status as OrderStatusValue] ?? ORDER_STATUS_CONFIG.paid;
+  ORDER_STATUS_CONFIG[status as OrderStatusValue] ?? ORDER_STATUS_CONFIG.pending;
 
 /** Get emoji display for status (for AI/chat) */
 export const getOrderStatusEmoji = (
@@ -97,4 +131,12 @@ export const getOrderStatusEmoji = (
 ): string => {
   const config = getOrderStatus(status);
   return `${config.emoji} ${config.label}`;
+};
+
+/** Get French label for status */
+export const getOrderStatusFr = (
+  status: string | null | undefined
+): string => {
+  const config = getOrderStatus(status);
+  return config.labelFr;
 };

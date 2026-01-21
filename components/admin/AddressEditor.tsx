@@ -29,7 +29,7 @@ function AddressField({
 
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={field} className="text-xs text-zinc-500 dark:text-zinc-400">
+      <Label htmlFor={field} className="text-xs text-muted-foreground">
         {label}
       </Label>
       <Input
@@ -47,24 +47,24 @@ function AddressEditorContent(handle: AddressEditorProps) {
   return (
     <div className="space-y-3">
       <Suspense fallback={<Skeleton className="h-16" />}>
-        <AddressField handle={handle} field="name" label="Full Name" placeholder="John Doe" />
+        <AddressField handle={handle} field="name" label="Nom complet" placeholder="John Doe" />
       </Suspense>
       <Suspense fallback={<Skeleton className="h-16" />}>
-        <AddressField handle={handle} field="line1" label="Address Line 1" placeholder="123 Main St" />
+        <AddressField handle={handle} field="line1" label="Adresse ligne 1" placeholder="123 Rue Principale" />
       </Suspense>
       <Suspense fallback={<Skeleton className="h-16" />}>
-        <AddressField handle={handle} field="line2" label="Address Line 2" placeholder="Apt 4B (optional)" />
+        <AddressField handle={handle} field="line2" label="Adresse ligne 2" placeholder="Appt 4B (optionnel)" />
       </Suspense>
       <div className="grid grid-cols-2 gap-3">
         <Suspense fallback={<Skeleton className="h-16" />}>
-          <AddressField handle={handle} field="city" label="City" placeholder="London" />
+          <AddressField handle={handle} field="city" label="Ville" placeholder="Tunis" />
         </Suspense>
         <Suspense fallback={<Skeleton className="h-16" />}>
-          <AddressField handle={handle} field="postcode" label="Postcode" placeholder="SW1A 1AA" />
+          <AddressField handle={handle} field="postcode" label="Code postal" placeholder="1000" />
         </Suspense>
       </div>
       <Suspense fallback={<Skeleton className="h-16" />}>
-        <AddressField handle={handle} field="country" label="Country" placeholder="United Kingdom" />
+        <AddressField handle={handle} field="country" label="Pays" placeholder="Tunisie" />
       </Suspense>
     </div>
   );

@@ -65,8 +65,8 @@ function OrderListContent({
 
   return (
     <>
-      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <Table>
+      <div className="overflow-x-auto rounded-xl border border-border bg-card">
+        <Table className="min-w-[800px]">
           <OrderTableHeader />
           <TableBody>
             {orders.map((handle) => (
@@ -83,7 +83,7 @@ function OrderListContent({
             onClick={() => loadMore()}
             disabled={isPending}
           >
-            {isPending ? "Loading..." : "Load More"}
+            {isPending ? "Chargement..." : "Charger plus"}
           </Button>
         </div>
       )}
@@ -93,7 +93,7 @@ function OrderListContent({
 
 function OrderListSkeleton() {
   return (
-    <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+    <div className="overflow-hidden rounded-xl border border-border bg-card">
       <Table>
         <OrderTableHeader />
         <TableBody>
@@ -116,11 +116,11 @@ export default function OrdersPage() {
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 sm:text-3xl">
-          Orders
+        <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
+          Commandes
         </h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400 sm:text-base">
-          Manage and track customer orders
+        <p className="mt-1 text-sm text-muted-foreground sm:text-base">
+          Gérer et suivre les commandes clients
         </p>
       </div>
 

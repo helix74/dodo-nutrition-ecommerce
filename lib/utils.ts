@@ -8,14 +8,15 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Format a price amount with currency symbol
  * @param amount - The price amount (can be null/undefined)
- * @param currency - Currency symbol (default: "£")
- * @returns Formatted price string (e.g., "£599.99")
+ * @param currency - Currency code (default: "TND" for Tunisian Dinar)
+ * @returns Formatted price string (e.g., "99.00 TND")
  */
 export function formatPrice(
   amount: number | null | undefined,
-  currency = "£"
+  currency = "TND"
 ): string {
-  return `${currency}${(amount ?? 0).toFixed(2)}`;
+  const formatted = (amount ?? 0).toFixed(2);
+  return `${formatted} ${currency}`;
 }
 
 type DateFormatOption = "short" | "long" | "datetime";

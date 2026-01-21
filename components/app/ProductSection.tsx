@@ -10,14 +10,22 @@ import type {
   FILTER_PRODUCTS_BY_NAME_QUERYResult,
 } from "@/sanity.types";
 
+interface Brand {
+  _id: string;
+  name: string | null;
+  slug: string | null;
+}
+
 interface ProductSectionProps {
   categories: ALL_CATEGORIES_QUERYResult;
+  brands?: Brand[];
   products: FILTER_PRODUCTS_BY_NAME_QUERYResult;
   searchQuery: string;
 }
 
 export function ProductSection({
   categories,
+  brands = [],
   products,
   searchQuery,
 }: ProductSectionProps) {
@@ -28,12 +36,12 @@ export function ProductSection({
       {/* Header with results count and filter toggle */}
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          {products.length} {products.length === 1 ? "product" : "products"}{" "}
-          found
+          {products.length} {products.length === 1 ? "produit" : "produits"}{" "}
+          trouvé{products.length !== 1 ? "s" : ""}
           {searchQuery && (
             <span>
               {" "}
-              for &quot;<span className="font-medium">{searchQuery}</span>&quot;
+              pour &quot;<span className="font-medium">{searchQuery}</span>&quot;
             </span>
           )}
         </p>
@@ -44,19 +52,19 @@ export function ProductSection({
           size="sm"
           onClick={() => setFiltersOpen(!filtersOpen)}
           className="flex items-center gap-2 border-zinc-300 bg-white shadow-sm transition-all hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
-          aria-label={filtersOpen ? "Hide filters" : "Show filters"}
+          aria-label={filtersOpen ? "Masquer les filtres" : "Afficher les filtres"}
         >
           {filtersOpen ? (
             <>
               <PanelLeftClose className="h-4 w-4" />
-              <span className="hidden sm:inline">Hide Filters</span>
-              <span className="sm:hidden">Hide</span>
+              <span className="hidden sm:inline">Masquer Filtres</span>
+              <span className="sm:hidden">Masquer</span>
             </>
           ) : (
             <>
               <PanelLeft className="h-4 w-4" />
-              <span className="hidden sm:inline">Show Filters</span>
-              <span className="sm:hidden">Filters</span>
+              <span className="hidden sm:inline">Afficher Filtres</span>
+              <span className="sm:hidden">Filtres</span>
             </>
           )}
         </Button>
@@ -70,7 +78,7 @@ export function ProductSection({
             filtersOpen ? "w-full lg:w-72 lg:opacity-100" : "hidden lg:hidden"
           }`}
         >
-          <ProductFilters categories={categories} />
+          <ProductFilters categories={categories} brands={brands} />
         </aside>
 
         {/* Product Grid - expands to full width when filters hidden */}

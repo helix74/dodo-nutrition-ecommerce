@@ -21,33 +21,33 @@ export function CartSummary({ hasStockIssues = false }: CartSummaryProps) {
   if (totalItems === 0) return null;
 
   return (
-    <div className="border-t border-zinc-200 p-4 dark:border-zinc-800">
-      <div className="flex justify-between text-base font-medium text-zinc-900 dark:text-zinc-100">
-        <span>Subtotal</span>
-        <span>{formatPrice(totalPrice)}</span>
+    <div className="border-t border-border p-4">
+      <div className="flex justify-between text-base font-medium text-foreground">
+        <span>Sous-total</span>
+        <span className="text-dodo-yellow">{formatPrice(totalPrice)}</span>
       </div>
-      <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-        Shipping calculated at checkout
+      <p className="mt-1 text-sm text-muted-foreground">
+        Livraison calculée à la commande
       </p>
       <div className="mt-4">
         {hasStockIssues ? (
           <Button disabled className="w-full">
-            Resolve stock issues to checkout
+            Résoudre les problèmes de stock
           </Button>
         ) : (
-          <Button asChild className="w-full">
+          <Button asChild className="w-full bg-dodo-yellow hover:bg-dodo-yellow-hover text-black">
             <Link href="/checkout" onClick={() => closeCart()}>
-              Checkout
+              Commander
             </Link>
           </Button>
         )}
       </div>
       <div className="mt-3 text-center">
         <Link
-          href="/"
-          className="text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+          href="/shop"
+          className="text-sm text-muted-foreground hover:text-dodo-yellow transition-colors"
         >
-          Continue Shopping →
+          Continuer vos achats →
         </Link>
       </div>
     </div>

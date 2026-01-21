@@ -9,6 +9,7 @@ export const ALL_CATEGORIES_QUERY = defineQuery(`*[
 ] | order(title asc) {
   _id,
   title,
+  description,
   "slug": slug.current,
   "image": image{
     asset->{

@@ -8,6 +8,7 @@ export interface CartItem {
   price: number;
   quantity: number;
   image?: string;
+  type?: "product" | "pack"; // Distinguish between products and packs
 }
 
 export interface CartState {

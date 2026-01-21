@@ -1,29 +1,32 @@
 import { redirect } from "next/navigation";
-import { SuccessClient } from "./SuccessClient";
-import { getCheckoutSession } from "@/lib/actions/checkout";
+import { CODSuccessClient } from "./CODSuccessClient";
 
 export const metadata = {
-  title: "Order Confirmed | Furniture Shop",
-  description: "Your order has been placed successfully",
+  title: "Commande Confirmée | Dodo Nutrition",
+  description: "Votre commande a été passée avec succès",
 };
 
 interface SuccessPageProps {
-  searchParams: Promise<{ session_id?: string }>;
+  searchParams: Promise<{ order?: string; total?: string; session_id?: string }>;
 }
 
 export default async function SuccessPage({ searchParams }: SuccessPageProps) {
   const params = await searchParams;
-  const sessionId = params.session_id;
-
-  if (!sessionId) {
+  
+  // Support both COD (order param) and Stripe (session_id param)
+  const orderNumber = params.order;
+  const total = params.total ? parseFloat(params.total) : undefined;
+  
+  // If no order number and no session_id, redirect home
+  if (!orderNumber && !params.session_id) {
     redirect("/");
   }
 
-  const result = await getCheckoutSession(sessionId);
-
-  if (!result.success || !result.session) {
+  // For Stripe sessions, we could still use the old flow
+  // For now, only support COD
+  if (!orderNumber) {
     redirect("/");
   }
 
-  return <SuccessClient session={result.session} />;
+  return <CODSuccessClient orderNumber={orderNumber} total={total} />;
 }

@@ -2,27 +2,29 @@ import { defineQuery } from "next-sanity";
 import { LOW_STOCK_THRESHOLD } from "@/lib/constants/stock";
 
 // ============================================
-// Shared Query Fragments (DRY)
+// Shared Query Fragments (DRY) - Dodo Nutrition
 // ============================================
 
-/** Common filter conditions for product filtering */
+/** Common filter conditions for product filtering - NUTRITION */
 const PRODUCT_FILTER_CONDITIONS = `
   _type == "product"
   && ($categorySlug == "" || category->slug.current == $categorySlug)
-  && ($color == "" || color == $color)
-  && ($material == "" || material == $material)
-  && ($minPrice == 0 || price >= $minPrice)
-  && ($maxPrice == 0 || price <= $maxPrice)
+  && ($brandSlug == "" || brand->slug.current == $brandSlug)
+  && ($minPrice == 0 || priceRetail >= $minPrice)
+  && ($maxPrice == 0 || priceRetail <= $maxPrice)
   && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")
   && ($inStock == false || stock > 0)
 `;
 
-/** Projection for filtered product lists (includes multiple images for hover) */
+/** Projection for filtered product lists - NUTRITION */
 const FILTERED_PRODUCT_PROJECTION = `{
   _id,
   name,
   "slug": slug.current,
-  price,
+  priceRetail,
+  priceSlashed,
+  unit,
+  quantity,
   "images": images[0...4]{
     _key,
     asset->{
@@ -35,23 +37,29 @@ const FILTERED_PRODUCT_PROJECTION = `{
     title,
     "slug": slug.current
   },
-  material,
-  color,
+  brand->{
+    _id,
+    name,
+    "slug": slug.current
+  },
+  flavors,
+  certifications,
   stock
 }`;
 
 /** Scoring for relevance-based search */
 const RELEVANCE_SCORE = `score(
   boost(name match $searchQuery + "*", 3),
-  boost(description match $searchQuery + "*", 1)
+  boost(description match $searchQuery + "*", 1),
+  boost(brand->name match $searchQuery + "*", 2)
 )`;
 
 // ============================================
-// All Products Query
+// All Products Query - NUTRITION
 // ============================================
 
 /**
- * Get all products with category expanded
+ * Get all products with category and brand expanded
  * Used on landing page
  */
 export const ALL_PRODUCTS_QUERY = defineQuery(`*[
@@ -61,7 +69,13 @@ export const ALL_PRODUCTS_QUERY = defineQuery(`*[
   name,
   "slug": slug.current,
   description,
-  price,
+  priceRetail,
+  pricePurchase,
+  priceWholesale,
+  priceSlashed,
+  unit,
+  quantity,
+  servings,
   "images": images[]{
     _key,
     asset->{
@@ -75,12 +89,18 @@ export const ALL_PRODUCTS_QUERY = defineQuery(`*[
     title,
     "slug": slug.current
   },
-  material,
-  color,
-  dimensions,
+  brand->{
+    _id,
+    name,
+    "slug": slug.current
+  },
+  flavors,
+  benefits,
+  allergens,
+  certifications,
+  dosage,
   stock,
-  featured,
-  assemblyRequired
+  featured
 }`);
 
 /**
@@ -95,7 +115,10 @@ export const FEATURED_PRODUCTS_QUERY = defineQuery(`*[
   name,
   "slug": slug.current,
   description,
-  price,
+  priceRetail,
+  priceSlashed,
+  unit,
+  quantity,
   "images": images[]{
     _key,
     asset->{
@@ -107,6 +130,11 @@ export const FEATURED_PRODUCTS_QUERY = defineQuery(`*[
   category->{
     _id,
     title,
+    "slug": slug.current
+  },
+  brand->{
+    _id,
+    name,
     "slug": slug.current
   },
   stock
@@ -122,7 +150,10 @@ export const PRODUCTS_BY_CATEGORY_QUERY = defineQuery(`*[
   _id,
   name,
   "slug": slug.current,
-  price,
+  priceRetail,
+  priceSlashed,
+  unit,
+  quantity,
   "image": images[0]{
     asset->{
       _id,
@@ -135,14 +166,16 @@ export const PRODUCTS_BY_CATEGORY_QUERY = defineQuery(`*[
     title,
     "slug": slug.current
   },
-  material,
-  color,
+  brand->{
+    _id,
+    name,
+    "slug": slug.current
+  },
   stock
 }`);
 
 /**
- * Get single product by slug
- * Used on product detail page
+ * Get single product by slug - FULL DETAILS for product page
  */
 export const PRODUCT_BY_SLUG_QUERY = defineQuery(`*[
   _type == "product"
@@ -152,7 +185,14 @@ export const PRODUCT_BY_SLUG_QUERY = defineQuery(`*[
   name,
   "slug": slug.current,
   description,
-  price,
+  content,
+  priceRetail,
+  pricePurchase,
+  priceWholesale,
+  priceSlashed,
+  unit,
+  quantity,
+  servings,
   "images": images[]{
     _key,
     asset->{
@@ -166,12 +206,26 @@ export const PRODUCT_BY_SLUG_QUERY = defineQuery(`*[
     title,
     "slug": slug.current
   },
-  material,
-  color,
-  dimensions,
+  brand->{
+    _id,
+    name,
+    "slug": slug.current,
+    logo{
+      asset->{
+        _id,
+        url
+      }
+    }
+  },
+  flavors,
+  benefits,
+  allergens,
+  certifications,
+  dosage,
+  metaTitle,
+  metaDescription,
   stock,
-  featured,
-  assemblyRequired
+  featured
 }`);
 
 // ============================================
@@ -182,23 +236,27 @@ export const PRODUCT_BY_SLUG_QUERY = defineQuery(`*[
 /**
  * Search products with relevance scoring
  * Uses score() + boost() for better ranking
- * Orders by relevance score descending
  */
 export const SEARCH_PRODUCTS_QUERY = defineQuery(`*[
   _type == "product"
   && (
     name match $searchQuery + "*"
     || description match $searchQuery + "*"
+    || brand->name match $searchQuery + "*"
   )
 ] | score(
   boost(name match $searchQuery + "*", 3),
-  boost(description match $searchQuery + "*", 1)
+  boost(description match $searchQuery + "*", 1),
+  boost(brand->name match $searchQuery + "*", 2)
 ) | order(_score desc) {
   _id,
   _score,
   name,
   "slug": slug.current,
-  price,
+  priceRetail,
+  priceSlashed,
+  unit,
+  quantity,
   "image": images[0]{
     asset->{
       _id,
@@ -211,14 +269,16 @@ export const SEARCH_PRODUCTS_QUERY = defineQuery(`*[
     title,
     "slug": slug.current
   },
-  material,
-  color,
+  brand->{
+    _id,
+    name,
+    "slug": slug.current
+  },
   stock
 }`);
 
 /**
  * Filter products - ordered by name (A-Z)
- * Returns up to 4 images for hover preview in product cards
  */
 export const FILTER_PRODUCTS_BY_NAME_QUERY = defineQuery(
   `*[${PRODUCT_FILTER_CONDITIONS}] | order(name asc) ${FILTERED_PRODUCT_PROJECTION}`
@@ -226,24 +286,20 @@ export const FILTER_PRODUCTS_BY_NAME_QUERY = defineQuery(
 
 /**
  * Filter products - ordered by price ascending
- * Returns up to 4 images for hover preview in product cards
  */
 export const FILTER_PRODUCTS_BY_PRICE_ASC_QUERY = defineQuery(
-  `*[${PRODUCT_FILTER_CONDITIONS}] | order(price asc) ${FILTERED_PRODUCT_PROJECTION}`
+  `*[${PRODUCT_FILTER_CONDITIONS}] | order(priceRetail asc) ${FILTERED_PRODUCT_PROJECTION}`
 );
 
 /**
  * Filter products - ordered by price descending
- * Returns up to 4 images for hover preview in product cards
  */
 export const FILTER_PRODUCTS_BY_PRICE_DESC_QUERY = defineQuery(
-  `*[${PRODUCT_FILTER_CONDITIONS}] | order(price desc) ${FILTERED_PRODUCT_PROJECTION}`
+  `*[${PRODUCT_FILTER_CONDITIONS}] | order(priceRetail desc) ${FILTERED_PRODUCT_PROJECTION}`
 );
 
 /**
  * Filter products - ordered by relevance (when searching)
- * Uses score() for search term matching
- * Returns up to 4 images for hover preview in product cards
  */
 export const FILTER_PRODUCTS_BY_RELEVANCE_QUERY = defineQuery(
   `*[${PRODUCT_FILTER_CONDITIONS}] | ${RELEVANCE_SCORE} | order(_score desc, name asc) ${FILTERED_PRODUCT_PROJECTION}`
@@ -259,7 +315,9 @@ export const PRODUCTS_BY_IDS_QUERY = defineQuery(`*[
   _id,
   name,
   "slug": slug.current,
-  price,
+  priceRetail,
+  unit,
+  quantity,
   "image": images[0]{
     asset->{
       _id,
@@ -272,7 +330,6 @@ export const PRODUCTS_BY_IDS_QUERY = defineQuery(`*[
 
 /**
  * Get low stock products (admin)
- * Uses LOW_STOCK_THRESHOLD constant for consistency
  */
 export const LOW_STOCK_PRODUCTS_QUERY = defineQuery(`*[
   _type == "product"
@@ -283,6 +340,8 @@ export const LOW_STOCK_PRODUCTS_QUERY = defineQuery(`*[
   name,
   "slug": slug.current,
   stock,
+  priceRetail,
+  brand->{name},
   "image": images[0]{
     asset->{
       _id,
@@ -301,6 +360,7 @@ export const OUT_OF_STOCK_PRODUCTS_QUERY = defineQuery(`*[
   _id,
   name,
   "slug": slug.current,
+  brand->{name},
   "image": images[0]{
     asset->{
       _id,
@@ -311,7 +371,6 @@ export const OUT_OF_STOCK_PRODUCTS_QUERY = defineQuery(`*[
 
 // ============================================
 // AI Shopping Assistant Query
-// Uses score() + boost() with all filters for AI agent
 // ============================================
 
 /**
@@ -325,18 +384,22 @@ export const AI_SEARCH_PRODUCTS_QUERY = defineQuery(`*[
     || name match $searchQuery + "*"
     || description match $searchQuery + "*"
     || category->title match $searchQuery + "*"
+    || brand->name match $searchQuery + "*"
   )
   && ($categorySlug == "" || category->slug.current == $categorySlug)
-  && ($material == "" || material == $material)
-  && ($color == "" || color == $color)
-  && ($minPrice == 0 || price >= $minPrice)
-  && ($maxPrice == 0 || price <= $maxPrice)
+  && ($brandSlug == "" || brand->slug.current == $brandSlug)
+  && ($minPrice == 0 || priceRetail >= $minPrice)
+  && ($maxPrice == 0 || priceRetail <= $maxPrice)
 ] | order(name asc) [0...20] {
   _id,
   name,
   "slug": slug.current,
   description,
-  price,
+  priceRetail,
+  priceSlashed,
+  unit,
+  quantity,
+  servings,
   "image": images[0]{
     asset->{
       _id,
@@ -348,10 +411,103 @@ export const AI_SEARCH_PRODUCTS_QUERY = defineQuery(`*[
     title,
     "slug": slug.current
   },
-  material,
-  color,
-  dimensions,
+  brand->{
+    _id,
+    name,
+    "slug": slug.current
+  },
+  flavors,
+  benefits,
+  certifications,
   stock,
-  featured,
-  assemblyRequired
+  featured
+}`);
+
+// ============================================
+// Brand Queries
+// ============================================
+
+/**
+ * Get all brands for filters
+ */
+export const ALL_BRANDS_QUERY = defineQuery(`*[
+  _type == "brand"
+] | order(name asc) {
+  _id,
+  name,
+  description,
+  "slug": slug.current,
+  logo{
+    asset->{
+      _id,
+  url
+    }
+  }
+}`);
+
+// ============================================
+// Review Queries
+// ============================================
+
+/**
+ * Get approved reviews for a product
+ */
+export const PRODUCT_REVIEWS_QUERY = defineQuery(`*[
+  _type == "review"
+  && product._ref == $productId
+  && status == "approved"
+] | order(createdAt desc) [0...10] {
+  _id,
+  authorName,
+  rating,
+  title,
+  content,
+  verifiedPurchase,
+  createdAt
+}`);
+
+/**
+ * Get average rating and count for a product
+ */
+export const PRODUCT_RATING_QUERY = defineQuery(`{
+  "average": math::avg(*[
+    _type == "review"
+    && product._ref == $productId
+    && status == "approved"
+  ].rating),
+  "count": count(*[
+    _type == "review"
+    && product._ref == $productId
+    && status == "approved"
+  ])
+}`);
+
+// ============================================
+// Related Products Query
+// ============================================
+
+/**
+ * Get related products (same category, exclude current)
+ */
+export const RELATED_PRODUCTS_QUERY = defineQuery(`*[
+  _type == "product"
+  && category._ref == $categoryId
+  && _id != $productId
+  && stock > 0
+] | order(featured desc, name asc) [0...4] {
+  _id,
+  name,
+  "slug": slug.current,
+  priceRetail,
+  priceSlashed,
+  "image": images[0]{
+    asset->{
+      _id,
+      url
+    }
+  },
+  brand->{
+    _id,
+    name
+  }
 }`);

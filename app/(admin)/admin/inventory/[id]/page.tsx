@@ -29,20 +29,20 @@ import {
 } from "@/components/admin";
 
 const MATERIALS = [
-  { value: "wood", label: "Wood" },
-  { value: "metal", label: "Metal" },
-  { value: "fabric", label: "Fabric" },
-  { value: "leather", label: "Leather" },
-  { value: "glass", label: "Glass" },
+  { value: "wood", label: "Bois" },
+  { value: "metal", label: "Métal" },
+  { value: "fabric", label: "Tissu" },
+  { value: "leather", label: "Cuir" },
+  { value: "glass", label: "Verre" },
 ];
 
 const COLORS = [
-  { value: "black", label: "Black" },
-  { value: "white", label: "White" },
-  { value: "oak", label: "Oak" },
-  { value: "walnut", label: "Walnut" },
-  { value: "grey", label: "Grey" },
-  { value: "natural", label: "Natural" },
+  { value: "black", label: "Noir" },
+  { value: "white", label: "Blanc" },
+  { value: "oak", label: "Chêne" },
+  { value: "walnut", label: "Noyer" },
+  { value: "grey", label: "Gris" },
+  { value: "natural", label: "Naturel" },
 ];
 
 // Field editor components
@@ -229,9 +229,9 @@ function ProductStoreLink(handle: DocumentHandle) {
     <Link
       href={`/products/${slug}`}
       target="_blank"
-      className="flex items-center justify-center gap-1 text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+      className="flex items-center justify-center gap-1 text-sm text-muted-foreground hover:text-foreground"
     >
-      View on store
+      Voir sur la boutique
       <ExternalLink className="h-3.5 w-3.5" />
     </Link>
   );
@@ -245,11 +245,11 @@ function ProductDetailContent({ handle }: { handle: DocumentHandle }) {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 sm:text-2xl">
-            {(name as string) || "New Product"}
+          <h1 className="text-xl font-bold text-foreground sm:text-2xl">
+            {(name as string) || "Nouveau produit"}
           </h1>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-            Edit product details
+          <p className="mt-1 text-sm text-muted-foreground">
+            Modifier les détails du produit
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -267,13 +267,13 @@ function ProductDetailContent({ handle }: { handle: DocumentHandle }) {
         {/* Main Form */}
         <div className="space-y-6 lg:col-span-2">
           {/* Basic Info */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
-            <h2 className="mb-4 font-semibold text-zinc-900 dark:text-zinc-100">
-              Basic Information
+          <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
+            <h2 className="mb-4 font-semibold text-foreground">
+              Informations de base
             </h2>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">Nom</Label>
                 <Suspense fallback={<Skeleton className="h-10" />}>
                   <NameEditor {...handle} />
                 </Suspense>
@@ -294,13 +294,13 @@ function ProductDetailContent({ handle }: { handle: DocumentHandle }) {
           </div>
 
           {/* Pricing & Inventory */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
-            <h2 className="mb-4 font-semibold text-zinc-900 dark:text-zinc-100">
-              Pricing & Inventory
+          <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
+            <h2 className="mb-4 font-semibold text-foreground">
+              Prix et stock
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="price">Price (£)</Label>
+                <Label htmlFor="price">Prix (TND)</Label>
                 <Suspense fallback={<Skeleton className="h-10" />}>
                   <PriceEditor {...handle} />
                 </Suspense>
@@ -315,19 +315,19 @@ function ProductDetailContent({ handle }: { handle: DocumentHandle }) {
           </div>
 
           {/* Attributes */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
-            <h2 className="mb-4 font-semibold text-zinc-900 dark:text-zinc-100">
-              Attributes
+          <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
+            <h2 className="mb-4 font-semibold text-foreground">
+              Attributs
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label>Material</Label>
+                <Label>Matériau</Label>
                 <Suspense fallback={<Skeleton className="h-10" />}>
                   <MaterialEditor {...handle} />
                 </Suspense>
               </div>
               <div className="space-y-2">
-                <Label>Color</Label>
+                <Label>Couleur</Label>
                 <Suspense fallback={<Skeleton className="h-10" />}>
                   <ColorEditor {...handle} />
                 </Suspense>
@@ -342,18 +342,18 @@ function ProductDetailContent({ handle }: { handle: DocumentHandle }) {
           </div>
 
           {/* Options */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
-            <h2 className="mb-4 font-semibold text-zinc-900 dark:text-zinc-100">
+          <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
+            <h2 className="mb-4 font-semibold text-foreground">
               Options
             </h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-zinc-900 dark:text-zinc-100">
-                    Featured Product
+                  <p className="font-medium text-foreground">
+                    Produit vedette
                   </p>
-                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                    Show on homepage and promotions
+                  <p className="text-sm text-muted-foreground">
+                    Afficher sur la page d'accueil et les promotions
                   </p>
                 </div>
                 <Suspense fallback={<Skeleton className="h-6 w-11" />}>
@@ -362,11 +362,11 @@ function ProductDetailContent({ handle }: { handle: DocumentHandle }) {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-zinc-900 dark:text-zinc-100">
-                    Assembly Required
+                  <p className="font-medium text-foreground">
+                    Assemblage requis
                   </p>
-                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                    Customer will need to assemble
+                  <p className="text-sm text-muted-foreground">
+                    Le client devra assembler
                   </p>
                 </div>
                 <Suspense fallback={<Skeleton className="h-6 w-11" />}>
@@ -380,9 +380,9 @@ function ProductDetailContent({ handle }: { handle: DocumentHandle }) {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Image Upload */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
-            <h2 className="mb-4 font-semibold text-zinc-900 dark:text-zinc-100">
-              Product Images
+          <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
+            <h2 className="mb-4 font-semibold text-foreground">
+              Images du produit
             </h2>
             <ImageUploader {...handle} />
             <div className="mt-4">
@@ -393,19 +393,19 @@ function ProductDetailContent({ handle }: { handle: DocumentHandle }) {
           </div>
 
           {/* Studio Link */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
-            <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
-              Advanced Editing
+          <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
+            <h2 className="font-semibold text-foreground">
+              Édition avancée
             </h2>
-            <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-              Set category and other options in Sanity Studio.
+            <p className="mt-2 text-sm text-muted-foreground">
+              Définir la catégorie et d'autres options dans Sanity Studio.
             </p>
             <Link
               href={`/studio/structure/product;${handle.documentId}`}
               target="_blank"
-              className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-zinc-900 hover:text-zinc-600 dark:text-zinc-100 dark:hover:text-zinc-300"
+              className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:text-muted-foreground"
             >
-              Open in Studio
+              Ouvrir dans Studio
               <ExternalLink className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -457,10 +457,10 @@ export default function ProductDetailPage({ params }: PageProps) {
       {/* Back Link */}
       <Link
         href="/admin/inventory"
-        className="inline-flex items-center text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+        className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Inventory
+        Retour à l'inventaire
       </Link>
 
       {/* Product Detail */}

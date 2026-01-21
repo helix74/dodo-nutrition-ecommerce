@@ -22,12 +22,12 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
-    label: "Inventory",
+    label: "Inventaire",
     href: "/admin/inventory",
     icon: Package,
   },
   {
-    label: "Orders",
+    label: "Commandes",
     href: "/admin/orders",
     icon: ShoppingCart,
   },
@@ -39,16 +39,14 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <Providers>
-      <div className="flex min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <div className="flex min-h-screen bg-background">
         {/* Mobile Header */}
-        <div className="fixed left-0 right-0 top-0 z-50 flex h-14 items-center justify-between border-b border-zinc-200 bg-white px-4 dark:border-zinc-800 dark:bg-zinc-900 lg:hidden">
+        <div className="fixed left-0 right-0 top-0 z-50 flex h-14 items-center justify-between border-b border-border bg-card px-4 lg:hidden">
           <Link href="/admin" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 dark:bg-zinc-100">
-              <span className="text-sm font-bold text-white dark:text-zinc-900">
-                A
-              </span>
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-dodo-yellow">
+              <span className="text-sm font-bold text-black">D</span>
             </div>
-            <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            <span className="text-lg font-semibold text-foreground">
               Admin
             </span>
           </Link>
@@ -78,7 +76,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
         {/* Sidebar */}
         <aside
           className={cn(
-            "fixed left-0 top-0 z-50 h-screen w-64 border-r border-zinc-200 bg-white transition-transform dark:border-zinc-800 dark:bg-zinc-900",
+            "fixed left-0 top-0 z-50 h-screen w-64 border-r border-border bg-card transition-transform",
             // Mobile: slide in/out
             sidebarOpen ? "translate-x-0" : "-translate-x-full",
             // Desktop: always visible
@@ -87,18 +85,16 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
         >
           <div className="flex h-full flex-col">
             {/* Logo */}
-            <div className="flex h-16 items-center border-b border-zinc-200 px-6 dark:border-zinc-800">
+            <div className="flex h-16 items-center border-b border-border px-6">
               <Link
                 href="/admin"
                 className="flex items-center gap-2"
                 onClick={() => setSidebarOpen(false)}
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 dark:bg-zinc-100">
-                  <span className="text-sm font-bold text-white dark:text-zinc-900">
-                    A
-                  </span>
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-dodo-yellow">
+                  <span className="text-sm font-bold text-black">D</span>
                 </div>
-                <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                <span className="text-lg font-semibold text-foreground">
                   Admin
                 </span>
               </Link>
@@ -120,8 +116,8 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100"
-                        : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-zinc-100",
+                        ? "bg-dodo-yellow/10 text-dodo-yellow"
+                        : "text-muted-foreground hover:bg-secondary hover:text-foreground",
                     )}
                   >
                     <item.icon className="h-5 w-5" />
@@ -132,12 +128,12 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
             </nav>
 
             {/* Footer */}
-            <div className="space-y-3 border-t border-zinc-200 px-3 py-4 dark:border-zinc-800">
+            <div className="space-y-3 border-t border-border px-3 py-4">
               <Link
                 href="/studio"
                 target="_blank"
                 onClick={() => setSidebarOpen(false)}
-                className="flex items-center justify-between gap-2 rounded-lg bg-zinc-100 px-3 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
+                className="flex items-center justify-between gap-2 rounded-lg bg-secondary px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary/80"
               >
                 Open Studio
                 <ExternalLink className="h-4 w-4" />
@@ -145,9 +141,9 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
               <Link
                 href="/"
                 onClick={() => setSidebarOpen(false)}
-                className="block px-3 text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                className="block px-3 text-sm text-muted-foreground hover:text-foreground"
               >
-                ← Back to Store
+                ← Retour à la boutique
               </Link>
             </div>
           </div>

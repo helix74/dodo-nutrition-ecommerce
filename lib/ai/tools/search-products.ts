@@ -4,7 +4,6 @@ import { sanityFetch } from "@/sanity/lib/live";
 import { AI_SEARCH_PRODUCTS_QUERY } from "@/lib/sanity/queries/products";
 import { formatPrice } from "@/lib/utils";
 import { getStockStatus, getStockMessage } from "@/lib/constants/stock";
-import { MATERIAL_VALUES, COLOR_VALUES } from "@/lib/constants/filters";
 import type { AI_SEARCH_PRODUCTS_QUERYResult } from "@/sanity.types";
 import type { SearchProduct } from "@/lib/ai/types";
 
@@ -14,47 +13,43 @@ const productSearchSchema = z.object({
     .optional()
     .default("")
     .describe(
-      "Search term to find products by name, description, or category (e.g., 'oak table', 'leather sofa', 'dining')"
+      "Search term to find products by name, description, brand, or category (e.g., 'whey protein', 'creatine', 'pre-workout')"
     ),
   category: z
     .string()
     .optional()
     .default("")
     .describe(
-      "Filter by category slug (e.g., 'sofas', 'tables', 'chairs', 'storage')"
+      "Filter by category slug (e.g., 'proteines', 'creatine', 'pre-workout', 'vitamines', 'bruleurs-de-graisse')"
     ),
-  material: z
-    .enum(["", ...MATERIAL_VALUES])
+  brand: z
+    .string()
     .optional()
     .default("")
-    .describe("Filter by material type"),
-  color: z
-    .enum(["", ...COLOR_VALUES])
-    .optional()
-    .default("")
-    .describe("Filter by color"),
+    .describe(
+      "Filter by brand slug (e.g., 'real-pharm', 'biotech-usa', 'eric-favre', 'muscletech')"
+    ),
   minPrice: z
     .number()
     .optional()
     .default(0)
-    .describe("Minimum price in GBP (e.g., 100)"),
+    .describe("Minimum price in TND (e.g., 50)"),
   maxPrice: z
     .number()
     .optional()
     .default(0)
-    .describe("Maximum price in GBP (e.g., 500). Use 0 for no maximum."),
+    .describe("Maximum price in TND (e.g., 200). Use 0 for no maximum."),
 });
 
 export const searchProductsTool = tool({
   description:
-    "Search for products in the furniture store. Can search by name, description, or category, and filter by material, color, and price range. Returns product details including stock availability.",
+    "Search for nutrition and supplement products in the Dodo Nutrition store. Can search by name, description, brand, or category, and filter by price range. Returns product details including stock availability, unit, quantity, and servings.",
   inputSchema: productSearchSchema,
-  execute: async ({ query, category, material, color, minPrice, maxPrice }) => {
+  execute: async ({ query, category, brand, minPrice, maxPrice }) => {
     console.log("[SearchProducts] Query received:", {
       query,
       category,
-      material,
-      color,
+      brand,
       minPrice,
       maxPrice,
     });
@@ -65,8 +60,7 @@ export const searchProductsTool = tool({
         params: {
           searchQuery: query || "",
           categorySlug: category || "",
-          material: material || "",
-          color: color || "",
+          brandSlug: brand || "",
           minPrice: minPrice || 0,
           maxPrice: maxPrice || 0,
         },
@@ -78,13 +72,12 @@ export const searchProductsTool = tool({
         return {
           found: false,
           message:
-            "No products found matching your criteria. Try different search terms or filters.",
+            "Aucun produit trouvé correspondant à vos critères. Essayez d'autres termes de recherche ou filtres.",
           products: [],
           filters: {
             query,
             category,
-            material,
-            color,
+            brand,
             minPrice,
             maxPrice,
           },
@@ -99,32 +92,35 @@ export const searchProductsTool = tool({
         name: product.name ?? null,
         slug: product.slug ?? null,
         description: product.description ?? null,
-        price: product.price ?? null,
-        priceFormatted: product.price ? formatPrice(product.price) : null,
+        price: product.priceRetail ?? null,
+        priceFormatted: product.priceRetail ? formatPrice(product.priceRetail) : null,
         category: product.category?.title ?? null,
         categorySlug: product.category?.slug ?? null,
-        material: product.material ?? null,
-        color: product.color ?? null,
-        dimensions: product.dimensions ?? null,
+        brand: product.brand?.name ?? null,
+        brandSlug: product.brand?.slug ?? null,
+        unit: product.unit ?? null,
+        quantity: product.quantity ?? null,
+        servings: product.servings ?? null,
+        flavors: product.flavors ?? [],
+        benefits: product.benefits ?? [],
+        certifications: product.certifications ?? [],
         stockCount: product.stock ?? 0,
         stockStatus: getStockStatus(product.stock),
         stockMessage: getStockMessage(product.stock),
         featured: product.featured ?? false,
-        assemblyRequired: product.assemblyRequired ?? false,
         imageUrl: product.image?.asset?.url ?? null,
         productUrl: product.slug ? `/products/${product.slug}` : null,
       }));
 
       return {
         found: true,
-        message: `Found ${products.length} product${products.length === 1 ? "" : "s"} matching your search.`,
+        message: `${products.length} produit${products.length === 1 ? "" : "s"} trouvé${products.length === 1 ? "" : "s"}.`,
         totalResults: products.length,
         products: formattedProducts,
         filters: {
           query,
           category,
-          material,
-          color,
+          brand,
           minPrice,
           maxPrice,
         },
@@ -133,14 +129,13 @@ export const searchProductsTool = tool({
       console.error("[SearchProducts] Error:", error);
       return {
         found: false,
-        message: "An error occurred while searching for products.",
+        message: "Une erreur s'est produite lors de la recherche de produits.",
         products: [],
         error: error instanceof Error ? error.message : "Unknown error",
         filters: {
           query,
           category,
-          material,
-          color,
+          brand,
           minPrice,
           maxPrice,
         },

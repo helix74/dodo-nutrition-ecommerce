@@ -4,7 +4,8 @@
  **/
 import { defineCliConfig } from "sanity/cli";
 
-import { loadEnvConfig } from "@next/env";
+// @ts-ignore - @next/env doesn't have types
+const { loadEnvConfig } = require("@next/env");
 
 // Load .env.local for Sanity CLI
 loadEnvConfig(process.cwd());

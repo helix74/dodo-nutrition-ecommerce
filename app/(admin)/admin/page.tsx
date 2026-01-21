@@ -1,94 +1,76 @@
-"use client";
-
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
-import {
-  useApplyDocumentActions,
-  createDocumentHandle,
-  createDocument,
-} from "@sanity/sdk-react";
-import { Package, ShoppingCart, TrendingUp, Plus, Loader2 } from "lucide-react";
+import { Suspense } from "react";
+import Link from "next/link";
+import { Plus, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  StatCard,
-  LowStockAlert,
-  RecentOrders,
-  AIInsightsCard,
-} from "@/components/admin";
+import { RevenueStats, OrderStats, StockSummary, RecentOrdersWidget } from "@/components/admin/widgets";
+import { AIInsightsCard } from "@/components/admin";
+
+// Loading skeleton for widgets
+function WidgetSkeleton() {
+  return (
+    <div className="rounded-lg border border-border bg-card p-4 animate-pulse">
+      <div className="h-4 w-24 bg-secondary rounded mb-4" />
+      <div className="h-8 w-32 bg-secondary rounded" />
+    </div>
+  );
+}
+
+function StatsGridSkeleton() {
+  return (
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {[1, 2, 3, 4].map((i) => (
+        <WidgetSkeleton key={i} />
+      ))}
+    </div>
+  );
+}
 
 export default function AdminDashboard() {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const apply = useApplyDocumentActions();
-
-  const handleCreateProduct = () => {
-    startTransition(async () => {
-      const newDocHandle = createDocumentHandle({
-        documentId: crypto.randomUUID(),
-        documentType: "product",
-      });
-      await apply(createDocument(newDocHandle));
-      router.push(`/admin/inventory/${newDocHandle.documentId}`);
-    });
-  };
-
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 sm:text-3xl">
-            Dashboard
-          </h1>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400 sm:text-base">
-            Overview of your store
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-dodo-yellow/10">
+            <LayoutDashboard className="h-5 w-5 text-dodo-yellow" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">
+              Tableau de bord
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Vue d'ensemble de votre boutique
+            </p>
+          </div>
         </div>
-        <Button
-          onClick={handleCreateProduct}
-          disabled={isPending}
-          className="w-full sm:w-auto"
-        >
-          {isPending ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
+        <Button asChild className="bg-dodo-yellow hover:bg-dodo-yellow-hover text-black">
+          <Link href="/admin/inventory">
             <Plus className="mr-2 h-4 w-4" />
-          )}
-          New Product
+            Nouveau produit
+          </Link>
         </Button>
       </div>
 
-      {/* AI Insights */}
-      <AIInsightsCard />
+      {/* Revenue Stats Row */}
+      <Suspense fallback={<StatsGridSkeleton />}>
+        <RevenueStats />
+      </Suspense>
 
-      {/* Stats Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <StatCard
-          title="Total Products"
-          icon={Package}
-          documentType="product"
-          href="/admin/inventory"
-        />
-        <StatCard
-          title="Total Orders"
-          icon={ShoppingCart}
-          documentType="order"
-          href="/admin/orders"
-        />
-        <StatCard
-          title="Low Stock Items"
-          icon={TrendingUp}
-          documentType="product"
-          filter="stock <= 5"
-          href="/admin/inventory"
-        />
+      {/* Three Column Grid: Orders, Stock, Recent Orders */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <Suspense fallback={<WidgetSkeleton />}>
+          <OrderStats />
+        </Suspense>
+        <Suspense fallback={<WidgetSkeleton />}>
+          <StockSummary />
+        </Suspense>
+        <Suspense fallback={<WidgetSkeleton />}>
+          <RecentOrdersWidget />
+        </Suspense>
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <LowStockAlert />
-        <RecentOrders />
-      </div>
+      {/* AI Insights - Disabled until Vercel AI Gateway is configured */}
+      {/* <AIInsightsCard /> */}
     </div>
   );
 }

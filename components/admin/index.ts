@@ -10,6 +10,7 @@ export { OrderRow, OrderRowSkeleton } from "./OrderRow";
 export { StatusSelect } from "./StatusSelect";
 export { AddressEditor } from "./AddressEditor";
 export { PublishButton, RevertButton } from "./PublishButton";
+export { QuickStatusActions } from "./QuickStatusActions";
 export {
   AdminSearch,
   useProductSearchFilter,

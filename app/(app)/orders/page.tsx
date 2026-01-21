@@ -10,8 +10,8 @@ import { formatPrice, formatDate, formatOrderNumber } from "@/lib/utils";
 import { StackedProductImages } from "@/components/app/StackedProductImages";
 
 export const metadata = {
-  title: "Your Orders | Furniture Shop",
-  description: "View your order history",
+  title: "Mes Commandes | Dodo Nutrition",
+  description: "Consultez l'historique de vos commandes",
 };
 
 export default async function OrdersPage() {
@@ -27,9 +27,9 @@ export default async function OrdersPage() {
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:px-8">
         <EmptyState
           icon={Package}
-          title="No orders yet"
-          description="When you place an order, it will appear here."
-          action={{ label: "Start Shopping", href: "/" }}
+          title="Aucune commande"
+          description="Quand vous passez une commande, elle apparaîtra ici."
+          action={{ label: "Commencer vos achats", href: "/shop" }}
           size="lg"
         />
       </div>
@@ -39,11 +39,11 @@ export default async function OrdersPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-          Your Orders
+        <h1 className="text-3xl font-bold text-foreground">
+          Mes Commandes
         </h1>
-        <p className="mt-2 text-zinc-500 dark:text-zinc-400">
-          Track and manage your orders
+        <p className="mt-2 text-muted-foreground">
+          Suivez et gérez vos commandes
         </p>
       </div>
 
@@ -59,7 +59,7 @@ export default async function OrdersPage() {
             <Link
               key={order._id}
               href={`/orders/${order._id}`}
-              className="group block rounded-xl border border-zinc-200 bg-white transition-all hover:border-zinc-300 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-zinc-700"
+              className="group block card-dodo transition-all hover:border-dodo-yellow/50"
             >
               <div className="flex gap-5 p-5">
                 {/* Left: Product Images Stack */}
@@ -74,10 +74,10 @@ export default async function OrdersPage() {
                   {/* Top: Order Info + Status */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="font-semibold text-zinc-900 dark:text-zinc-100">
+                      <p className="font-semibold text-foreground">
                         Order #{formatOrderNumber(order.orderNumber)}
                       </p>
-                      <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">
+                      <p className="mt-0.5 text-sm text-muted-foreground">
                         {formatDate(order.createdAt)}
                       </p>
                     </div>
@@ -91,11 +91,11 @@ export default async function OrdersPage() {
 
                   {/* Bottom: Items + Total */}
                   <div className="mt-2 flex items-end justify-between">
-                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                    <p className="text-sm text-muted-foreground">
                       {order.itemCount}{" "}
-                      {order.itemCount === 1 ? "item" : "items"}
+                      {order.itemCount === 1 ? "article" : "articles"}
                     </p>
-                    <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                    <p className="text-lg font-semibold text-dodo-yellow">
                       {formatPrice(order.total)}
                     </p>
                   </div>
@@ -108,8 +108,8 @@ export default async function OrdersPage() {
                   {order.itemNames?.slice(0, 2).filter(Boolean).join(", ")}
                   {(order.itemNames?.length ?? 0) > 2 && "..."}
                 </p>
-                <span className="flex shrink-0 items-center gap-1 text-sm font-medium text-zinc-500 transition-colors group-hover:text-zinc-900 dark:text-zinc-400 dark:group-hover:text-zinc-100">
-                  View order
+                <span className="flex shrink-0 items-center gap-1 text-sm font-medium text-muted-foreground transition-colors group-hover:text-dodo-yellow">
+                  Voir la commande
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </span>
               </div>
