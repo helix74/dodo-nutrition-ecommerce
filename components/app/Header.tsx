@@ -14,6 +14,7 @@ const navLinks = [
   { label: "Accueil", href: "/" },
   { label: "Shop", href: "/shop" },
   { label: "Packs", href: "/packs", highlight: true },
+  { label: "Promotions", href: "/promotions", highlight: true },
   { label: "Catégories", href: "/categories" },
   { label: "Marques", href: "/brands" },
 ];

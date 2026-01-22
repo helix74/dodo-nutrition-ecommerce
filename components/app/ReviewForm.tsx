@@ -135,7 +135,7 @@ export function ReviewForm({
 
       {/* Name */}
       <div>
-        <Label htmlFor="authorName" className="text-foreground">
+        <Label htmlFor="authorName" className="text-foreground mb-2 block">
           Votre nom *
         </Label>
         <Input
@@ -153,7 +153,7 @@ export function ReviewForm({
       {/* Review Type (only if no default category) */}
       {!defaultCategoryId && (
         <div>
-          <Label className="text-foreground">Type d&apos;avis</Label>
+          <Label className="text-foreground mb-2 block">Type d&apos;avis</Label>
           <Select
             value={formData.reviewType}
             onValueChange={(value) => setFormData((d) => ({ ...d, reviewType: value }))}
@@ -180,7 +180,7 @@ export function ReviewForm({
 
       {/* Title */}
       <div>
-        <Label htmlFor="title" className="text-foreground">
+        <Label htmlFor="title" className="text-foreground mb-2 block">
           Titre (optionnel)
         </Label>
         <Input
@@ -194,7 +194,7 @@ export function ReviewForm({
 
       {/* Content */}
       <div>
-        <Label htmlFor="content" className="text-foreground">
+        <Label htmlFor="content" className="text-foreground mb-2 block">
           Votre commentaire
         </Label>
         <Textarea

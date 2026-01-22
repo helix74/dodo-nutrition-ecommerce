@@ -17,13 +17,13 @@
 
 ## 🟠 UI/UX Issues (Theme Standardization)
 
-| #   | Issue                                                                    | Location          | Priority  |
-| --- | ------------------------------------------------------------------------ | ----------------- | --------- |
-| U1  | Text not displayed correctly (fonts/colors)                              | Various pages     | 🟠 High   |
-| U2  | Product images need transparent backgrounds                              | Product images    | 🟠 High   |
-| U3  | Hero section box colors incorrect                                        | Homepage hero     | 🟠 High   |
-| U4  | Promotion link removed from header (was replaced by Packs, needs review) | Header            | 🟠 High   |
-| U5  | Review form spacing (title and field gap)                                | ReviewForm dialog | 🟡 Medium |
+| #   | Issue                                                                    | Location          | Priority  | Status   |
+| --- | ------------------------------------------------------------------------ | ----------------- | --------- | -------- |
+| U1  | Text not displayed correctly (fonts/colors)                              | Various pages     | 🟠 High   | ✅ Fixed |
+| U2  | Product images need transparent backgrounds                              | Product images    | 🟠 High   | ✅ Fixed |
+| U3  | Hero section box colors incorrect                                        | Homepage hero     | 🟠 High   | ✅ Fixed |
+| U4  | Promotion link removed from header (was replaced by Packs, needs review) | Header            | 🟠 High   | ✅ Fixed |
+| U5  | Review form spacing (title and field gap)                                | ReviewForm dialog | 🟡 Medium | ✅ Fixed |
 
 ---
 

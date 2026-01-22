@@ -50,7 +50,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link href={`/products/${product.slug}`} className="block">
         <div
           className={cn(
-            "relative overflow-hidden bg-secondary",
+            "relative overflow-hidden",
             hasMultipleImages ? "aspect-square" : "aspect-4/5",
           )}
         >
@@ -138,7 +138,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <CardContent className="flex grow flex-col justify-between gap-2 p-5">
         {/* Brand name */}
         {product.brand && (
-          <span className="text-xs font-medium uppercase tracking-wider text-amber-600 dark:text-amber-400">
+          <span className="text-xs font-medium uppercase tracking-wider text-dodo-yellow">
             {product.brand.name}
           </span>
         )}

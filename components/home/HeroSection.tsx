@@ -54,12 +54,12 @@ export function HeroSection() {
 
   return (
     <section className="relative h-[500px] md:h-[600px] overflow-hidden bg-background">
-      {/* Background with gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-card via-background to-card" />
+      {/* Background with subtle gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-background" />
       
       {/* Decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className={`absolute -top-1/2 -right-1/4 w-full h-full bg-gradient-radial ${slide.gradient} blur-3xl opacity-50`} />
+        <div className={`absolute -top-1/2 -right-1/4 w-full h-full bg-gradient-radial ${slide.gradient} blur-3xl opacity-20`} />
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </div>
 
