@@ -2,14 +2,16 @@ import { notFound } from "next/navigation";
 import { sanityFetch } from "@/sanity/lib/live";
 import {
   PRODUCT_BY_SLUG_QUERY,
-  PRODUCT_REVIEWS_QUERY,
-  PRODUCT_RATING_QUERY,
   RELATED_PRODUCTS_QUERY,
 } from "@/lib/sanity/queries/products";
+import {
+  CATEGORY_REVIEWS_QUERY,
+  CATEGORY_RATING_QUERY,
+} from "@/lib/sanity/queries/reviews";
 import { ProductGallery } from "@/components/app/ProductGallery";
 import { ProductInfo } from "@/components/app/ProductInfo";
 import { ProductAccordion } from "@/components/app/ProductAccordion";
-import { ProductReviews } from "@/components/app/ProductReviews";
+import { CategoryReviews } from "@/components/app/CategoryReviews";
 import { RelatedProducts } from "@/components/app/RelatedProducts";
 
 interface ProductPageProps {
@@ -31,20 +33,22 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  // Fetch reviews, rating, and related products in parallel
+  const categoryId = product.category?._id || "";
+
+  // Fetch category reviews, rating, and related products in parallel
   const [reviewsResult, ratingResult, relatedResult] = await Promise.all([
     sanityFetch({
-      query: PRODUCT_REVIEWS_QUERY,
-      params: { productId: product._id },
+      query: CATEGORY_REVIEWS_QUERY,
+      params: { categoryId },
     }),
     sanityFetch({
-      query: PRODUCT_RATING_QUERY,
-      params: { productId: product._id },
+      query: CATEGORY_RATING_QUERY,
+      params: { categoryId },
     }),
     sanityFetch({
       query: RELATED_PRODUCTS_QUERY,
       params: {
-        categoryId: product.category?._id || "",
+        categoryId,
         productId: product._id,
       },
     }),
@@ -81,11 +85,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
           />
         </div>
 
-        {/* Reviews Section */}
-        <div className="mt-12 border-t border-zinc-200 pt-12 dark:border-zinc-800">
-          <ProductReviews
-            productId={product._id}
-            productName={product.name ?? "Produit"}
+        {/* Category Reviews Section */}
+        <div id="reviews" className="mt-12 border-t border-border pt-12">
+          <CategoryReviews
+            categoryId={categoryId}
+            categoryName={product.category?.title || "cette catégorie"}
             reviews={reviews}
             averageRating={rating.average}
             reviewCount={rating.count}
@@ -93,11 +97,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
 
         {/* Related Products */}
-        <div className="mt-12 border-t border-zinc-200 pt-12 dark:border-zinc-800">
+        <div className="mt-12 border-t border-border pt-12">
           <RelatedProducts products={relatedProducts} />
         </div>
       </div>
     </div>
   );
 }
-

@@ -3,6 +3,7 @@ import { FEATURED_PRODUCTS_QUERY, ALL_BRANDS_QUERY } from "@/lib/sanity/queries/
 import { ALL_CATEGORIES_QUERY } from "@/lib/sanity/queries/categories";
 import { ACTIVE_BANNERS_QUERY } from "@/lib/sanity/queries/banners";
 import { FEATURED_PACKS_QUERY } from "@/lib/sanity/queries/packs";
+import { FEATURED_REVIEWS_QUERY, REVIEW_STATS_QUERY } from "@/lib/sanity/queries/reviews";
 import { HeroSection } from "@/components/home/HeroSection";
 import { TrustBar } from "@/components/home/TrustBar";
 import { CategoryShowcase } from "@/components/home/CategoryShowcase";
@@ -12,6 +13,7 @@ import { BannerSection } from "@/components/home/BannerSection";
 import { PromoBanner } from "@/components/home/PromoBanner";
 import { BrandsCarousel } from "@/components/home/BrandsCarousel";
 import { WhyUsSection } from "@/components/home/WhyUsSection";
+import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { NewsletterSection } from "@/components/home/NewsletterSection";
 import type { Metadata } from "next";
 
@@ -23,12 +25,14 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   // Fetch all data in parallel
-  const [categoriesResult, brandsResult, featuredResult, bannersResult, packsResult] = await Promise.all([
+  const [categoriesResult, brandsResult, featuredResult, bannersResult, packsResult, reviewsResult, statsResult] = await Promise.all([
     sanityFetch({ query: ALL_CATEGORIES_QUERY }),
     sanityFetch({ query: ALL_BRANDS_QUERY }),
     sanityFetch({ query: FEATURED_PRODUCTS_QUERY }),
     sanityFetch({ query: ACTIVE_BANNERS_QUERY }),
     sanityFetch({ query: FEATURED_PACKS_QUERY }),
+    sanityFetch({ query: FEATURED_REVIEWS_QUERY }),
+    sanityFetch({ query: REVIEW_STATS_QUERY }),
   ]);
 
   const categories = categoriesResult.data;
@@ -36,6 +40,8 @@ export default async function HomePage() {
   const featuredProducts = featuredResult.data;
   const banners = bannersResult.data;
   const featuredPacks = packsResult.data;
+  const featuredReviews = reviewsResult.data || [];
+  const reviewStats = statsResult.data || { average: null, count: 0 };
 
   return (
     <div className="min-h-screen bg-background">
@@ -65,6 +71,9 @@ export default async function HomePage() {
 
       {/* Why Choose Us */}
       <WhyUsSection />
+
+      {/* Customer Testimonials */}
+      <TestimonialsSection reviews={featuredReviews} stats={reviewStats} />
 
       {/* Newsletter */}
       <NewsletterSection />

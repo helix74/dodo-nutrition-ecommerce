@@ -19,18 +19,35 @@ export type Review = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  reviewType?: "general" | "category";
+  authorName?: string;
+  rating?: number;
+  title?: string;
+  content?: string;
+  category?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "category";
+  };
   product?: {
     _ref: string;
     _type: "reference";
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "product";
   };
-  authorName?: string;
-  rating?: number;
-  title?: string;
-  content?: string;
   status?: "pending" | "approved" | "rejected";
+  featured?: boolean;
   verifiedPurchase?: boolean;
+  source?: "website" | "google";
+  googleReviewId?: string;
+  clerkId?: string;
+  order?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "order";
+  };
   createdAt?: string;
 };
 
@@ -53,7 +70,8 @@ export type Order = {
     _key: string;
   }>;
   total?: number;
-  status?: "paid" | "shipped" | "delivered" | "cancelled";
+  status?: "pending" | "confirmed" | "paid" | "shipped" | "delivered" | "cancelled";
+  paymentMethod?: "cod" | "stripe";
   customer?: {
     _ref: string;
     _type: "reference";
@@ -62,16 +80,57 @@ export type Order = {
   };
   clerkUserId?: string;
   email?: string;
+  phone?: string;
   address?: {
     name?: string;
     line1?: string;
-    line2?: string;
     city?: string;
+    gouvernorat?: "Tunis" | "Ariana" | "Ben Arous" | "Manouba" | "Nabeul" | "Zaghouan" | "Bizerte" | "B\xE9ja" | "Jendouba" | "Le Kef" | "Siliana" | "Sousse" | "Monastir" | "Mahdia" | "Sfax" | "Kairouan" | "Kasserine" | "Sidi Bouzid" | "Gab\xE8s" | "M\xE9denine" | "Tataouine" | "Gafsa" | "Tozeur" | "K\xE9bili";
     postcode?: string;
-    country?: string;
   };
+  notes?: string;
   stripePaymentId?: string;
   createdAt?: string;
+};
+
+export type Pack = {
+  _id: string;
+  _type: "pack";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  slug?: Slug;
+  tagline?: string;
+  description?: string;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  products?: Array<{
+    product?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "product";
+    };
+    quantity?: number;
+    _type: "packItem";
+    _key: string;
+  }>;
+  priceOriginal?: number;
+  priceBundle?: number;
+  packCategory?: "masse" | "seche" | "performance" | "debutant" | "force" | "endurance" | "sante";
+  featured?: boolean;
+  stock?: number;
 };
 
 export type Product = {
@@ -214,6 +273,33 @@ export type Brand = {
   description?: string;
 };
 
+export type Banner = {
+  _id: string;
+  _type: "banner";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  alt?: string;
+  link?: string;
+  isActive?: boolean;
+  order?: number;
+  startDate?: string;
+  endDate?: string;
+};
+
 export type SanityImagePaletteSwatch = {
   _type: "sanity.imagePaletteSwatch";
   background?: string;
@@ -332,7 +418,7 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = Review | Order | Product | Customer | Category | Brand | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = Review | Order | Pack | Product | Customer | Category | Brand | Banner | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./lib/sanity/queries/analytics.ts
 // Variable: ANALYTICS_SUMMARY_QUERY
@@ -393,7 +479,7 @@ export type RECENT_ORDERS_DASHBOARD_QUERYResult = Array<{
   _id: string;
   orderNumber: string | null;
   total: number | null;
-  status: "cancelled" | "delivered" | "paid" | "shipped" | null;
+  status: "cancelled" | "confirmed" | "delivered" | "paid" | "pending" | "shipped" | null;
   createdAt: string | null;
   customerName: string | null;
   itemCount: number | null;
@@ -404,13 +490,25 @@ export type ORDERS_DATE_RANGE_QUERYResult = Array<{
   _id: string;
   total: number | null;
   createdAt: string | null;
-  status: "cancelled" | "delivered" | "paid" | "shipped" | null;
+  status: "cancelled" | "confirmed" | "delivered" | "paid" | "pending" | "shipped" | null;
 }>;
 
 // Source: ./lib/sanity/queries/banners.ts
 // Variable: ACTIVE_BANNERS_QUERY
 // Query: *[_type == "banner" && isActive == true && (    !defined(startDate) || startDate <= now()  ) && (    !defined(endDate) || endDate > now()  )] | order(order asc) {    _id,    title,    image {      asset-> {        _id,        url      }    },    alt,    link,    order  }
-export type ACTIVE_BANNERS_QUERYResult = Array<never>;
+export type ACTIVE_BANNERS_QUERYResult = Array<{
+  _id: string;
+  title: string | null;
+  image: {
+    asset: {
+      _id: string;
+      url: string | null;
+    } | null;
+  } | null;
+  alt: string | null;
+  link: string | null;
+  order: number | null;
+}>;
 
 // Source: ./lib/sanity/queries/categories.ts
 // Variable: ALL_CATEGORIES_QUERY
@@ -472,7 +570,7 @@ export type ORDERS_BY_USER_QUERYResult = Array<{
   _id: string;
   orderNumber: string | null;
   total: number | null;
-  status: "cancelled" | "delivered" | "paid" | "shipped" | null;
+  status: "cancelled" | "confirmed" | "delivered" | "paid" | "pending" | "shipped" | null;
   createdAt: string | null;
   itemCount: number | null;
   itemNames: Array<string | null> | null;
@@ -502,14 +600,14 @@ export type ORDER_BY_ID_QUERYResult = {
     } | null;
   }> | null;
   total: number | null;
-  status: "cancelled" | "delivered" | "paid" | "shipped" | null;
+  status: "cancelled" | "confirmed" | "delivered" | "paid" | "pending" | "shipped" | null;
   address: {
     name: string | null;
     line1: string | null;
-    line2: string | null;
+    line2: null;
     city: string | null;
     postcode: string | null;
-    country: string | null;
+    country: null;
   } | null;
   stripePaymentId: string | null;
   createdAt: string | null;
@@ -521,7 +619,7 @@ export type RECENT_ORDERS_QUERYResult = Array<{
   orderNumber: string | null;
   email: string | null;
   total: number | null;
-  status: "cancelled" | "delivered" | "paid" | "shipped" | null;
+  status: "cancelled" | "confirmed" | "delivered" | "paid" | "pending" | "shipped" | null;
   createdAt: string | null;
 }>;
 // Variable: ORDER_BY_STRIPE_PAYMENT_ID_QUERY
@@ -529,6 +627,90 @@ export type RECENT_ORDERS_QUERYResult = Array<{
 export type ORDER_BY_STRIPE_PAYMENT_ID_QUERYResult = {
   _id: string;
 } | null;
+
+// Source: ./lib/sanity/queries/packs.ts
+// Variable: ALL_PACKS_QUERY
+// Query: *[_type == "pack"] | order(featured desc, name asc) {  _id,  name,  slug,  tagline,  description,  "imageUrl": image.asset->url,  priceOriginal,  priceBundle,  featured,  packCategory,  stock,  products[] {    quantity,    "product": product-> {      _id,      name,      slug,      priceRetail,      stock,      "imageUrl": images[0].asset->url    }  }}
+export type ALL_PACKS_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  slug: Slug | null;
+  tagline: string | null;
+  description: string | null;
+  imageUrl: string | null;
+  priceOriginal: number | null;
+  priceBundle: number | null;
+  featured: boolean | null;
+  packCategory: "debutant" | "endurance" | "force" | "masse" | "performance" | "sante" | "seche" | null;
+  stock: number | null;
+  products: Array<{
+    quantity: number | null;
+    product: {
+      _id: string;
+      name: string | null;
+      slug: Slug | null;
+      priceRetail: number | null;
+      stock: number | null;
+      imageUrl: string | null;
+    } | null;
+  }> | null;
+}>;
+// Variable: FEATURED_PACKS_QUERY
+// Query: *[_type == "pack" && featured == true] | order(name asc) [0...4] {  _id,  name,  slug,  tagline,  "imageUrl": image.asset->url,  priceOriginal,  priceBundle,  packCategory,  stock,  "productCount": count(products)}
+export type FEATURED_PACKS_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  slug: Slug | null;
+  tagline: string | null;
+  imageUrl: string | null;
+  priceOriginal: number | null;
+  priceBundle: number | null;
+  packCategory: "debutant" | "endurance" | "force" | "masse" | "performance" | "sante" | "seche" | null;
+  stock: number | null;
+  productCount: number | null;
+}>;
+// Variable: PACK_BY_SLUG_QUERY
+// Query: *[_type == "pack" && slug.current == $slug][0] {  _id,  name,  slug,  tagline,  description,  "imageUrl": image.asset->url,  priceOriginal,  priceBundle,  featured,  packCategory,  stock,  products[] {    quantity,    "product": product-> {      _id,      name,      slug,      priceRetail,      stock,      "imageUrl": images[0].asset->url,      "brand": brand->name,      "category": category->title    }  }}
+export type PACK_BY_SLUG_QUERYResult = {
+  _id: string;
+  name: string | null;
+  slug: Slug | null;
+  tagline: string | null;
+  description: string | null;
+  imageUrl: string | null;
+  priceOriginal: number | null;
+  priceBundle: number | null;
+  featured: boolean | null;
+  packCategory: "debutant" | "endurance" | "force" | "masse" | "performance" | "sante" | "seche" | null;
+  stock: number | null;
+  products: Array<{
+    quantity: number | null;
+    product: {
+      _id: string;
+      name: string | null;
+      slug: Slug | null;
+      priceRetail: number | null;
+      stock: number | null;
+      imageUrl: string | null;
+      brand: string | null;
+      category: string | null;
+    } | null;
+  }> | null;
+} | null;
+// Variable: PACKS_BY_CATEGORY_QUERY
+// Query: *[_type == "pack" && packCategory == $category] | order(featured desc, name asc) {  _id,  name,  slug,  tagline,  "imageUrl": image.asset->url,  priceOriginal,  priceBundle,  packCategory,  stock,  "productCount": count(products)}
+export type PACKS_BY_CATEGORY_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  slug: Slug | null;
+  tagline: string | null;
+  imageUrl: string | null;
+  priceOriginal: number | null;
+  priceBundle: number | null;
+  packCategory: "debutant" | "endurance" | "force" | "masse" | "performance" | "sante" | "seche" | null;
+  stock: number | null;
+  productCount: number | null;
+}>;
 
 // Source: ./lib/sanity/queries/products.ts
 // Variable: ALL_PRODUCTS_QUERY
@@ -1000,6 +1182,102 @@ export type RELATED_PRODUCTS_QUERYResult = Array<{
   } | null;
 }>;
 
+// Source: ./lib/sanity/queries/reviews.ts
+// Variable: FEATURED_REVIEWS_QUERY
+// Query: *[  _type == "review"  && status == "approved"  && featured == true] | order(createdAt desc) [0...8] {  _id,  authorName,  rating,  title,  content,  reviewType,  source,  verifiedPurchase,  createdAt,  category->{    _id,    title,    "slug": slug.current  }}
+export type FEATURED_REVIEWS_QUERYResult = Array<{
+  _id: string;
+  authorName: string | null;
+  rating: number | null;
+  title: string | null;
+  content: string | null;
+  reviewType: "category" | "general" | null;
+  source: "google" | "website" | null;
+  verifiedPurchase: boolean | null;
+  createdAt: string | null;
+  category: {
+    _id: string;
+    title: string | null;
+    slug: string | null;
+  } | null;
+}>;
+// Variable: CATEGORY_REVIEWS_QUERY
+// Query: *[  _type == "review"  && status == "approved"  && reviewType == "category"  && category._ref == $categoryId] | order(createdAt desc) [0...6] {  _id,  authorName,  rating,  title,  content,  verifiedPurchase,  createdAt}
+export type CATEGORY_REVIEWS_QUERYResult = Array<{
+  _id: string;
+  authorName: string | null;
+  rating: number | null;
+  title: string | null;
+  content: string | null;
+  verifiedPurchase: boolean | null;
+  createdAt: string | null;
+}>;
+// Variable: CATEGORY_RATING_QUERY
+// Query: {  "average": math::avg(*[    _type == "review"    && status == "approved"    && reviewType == "category"    && category._ref == $categoryId  ].rating),  "count": count(*[    _type == "review"    && status == "approved"    && reviewType == "category"    && category._ref == $categoryId  ])}
+export type CATEGORY_RATING_QUERYResult = {
+  average: number | null;
+  count: number;
+};
+// Variable: REVIEW_STATS_QUERY
+// Query: {  "average": math::avg(*[    _type == "review"    && status == "approved"  ].rating),  "count": count(*[    _type == "review"    && status == "approved"  ])}
+export type REVIEW_STATS_QUERYResult = {
+  average: number | null;
+  count: number;
+};
+// Variable: ALL_REVIEWS_ADMIN_QUERY
+// Query: *[  _type == "review"] | order(createdAt desc) {  _id,  authorName,  rating,  title,  content,  reviewType,  status,  source,  featured,  verifiedPurchase,  createdAt,  category->{    _id,    title  }}
+export type ALL_REVIEWS_ADMIN_QUERYResult = Array<{
+  _id: string;
+  authorName: string | null;
+  rating: number | null;
+  title: string | null;
+  content: string | null;
+  reviewType: "category" | "general" | null;
+  status: "approved" | "pending" | "rejected" | null;
+  source: "google" | "website" | null;
+  featured: boolean | null;
+  verifiedPurchase: boolean | null;
+  createdAt: string | null;
+  category: {
+    _id: string;
+    title: string | null;
+  } | null;
+}>;
+// Variable: PENDING_REVIEWS_COUNT_QUERY
+// Query: count(*[_type == "review" && status == "pending"])
+export type PENDING_REVIEWS_COUNT_QUERYResult = number;
+// Variable: REVIEWS_BY_STATUS_QUERY
+// Query: *[  _type == "review"  && status == $status] | order(createdAt desc) {  _id,  authorName,  rating,  title,  content,  reviewType,  status,  source,  featured,  verifiedPurchase,  createdAt,  category->{    _id,    title  }}
+export type REVIEWS_BY_STATUS_QUERYResult = Array<{
+  _id: string;
+  authorName: string | null;
+  rating: number | null;
+  title: string | null;
+  content: string | null;
+  reviewType: "category" | "general" | null;
+  status: "approved" | "pending" | "rejected" | null;
+  source: "google" | "website" | null;
+  featured: boolean | null;
+  verifiedPurchase: boolean | null;
+  createdAt: string | null;
+  category: {
+    _id: string;
+    title: string | null;
+  } | null;
+}>;
+// Variable: GOOGLE_REVIEWS_QUERY
+// Query: *[  _type == "review"  && source == "google"] | order(createdAt desc) {  _id,  authorName,  rating,  title,  content,  status,  googleReviewId,  createdAt}
+export type GOOGLE_REVIEWS_QUERYResult = Array<{
+  _id: string;
+  authorName: string | null;
+  rating: number | null;
+  title: string | null;
+  content: string | null;
+  status: "approved" | "pending" | "rejected" | null;
+  googleReviewId: string | null;
+  createdAt: string | null;
+}>;
+
 // Source: ./lib/sanity/queries/stats.ts
 // Variable: PRODUCT_COUNT_QUERY
 // Query: count(*[_type == "product"])
@@ -1016,7 +1294,7 @@ export type ORDERS_LAST_7_DAYS_QUERYResult = Array<{
   _id: string;
   orderNumber: string | null;
   total: number | null;
-  status: "cancelled" | "delivered" | "paid" | "shipped" | null;
+  status: "cancelled" | "confirmed" | "delivered" | "paid" | "pending" | "shipped" | null;
   createdAt: string | null;
   itemCount: number | null;
   items: Array<{
@@ -1090,6 +1368,10 @@ declare module "@sanity/client" {
     "*[\n  _type == \"order\"\n  && _id == $id\n][0] {\n  _id,\n  orderNumber,\n  clerkUserId,\n  email,\n  items[]{\n    _key,\n    quantity,\n    priceAtPurchase,\n    product->{\n      _id,\n      name,\n      \"slug\": slug.current,\n      \"image\": images[0]{\n        asset->{\n          _id,\n          url\n        }\n      }\n    }\n  },\n  total,\n  status,\n  address{\n    name,\n    line1,\n    line2,\n    city,\n    postcode,\n    country\n  },\n  stripePaymentId,\n  createdAt\n}": ORDER_BY_ID_QUERYResult;
     "*[\n  _type == \"order\"\n] | order(createdAt desc) [0...$limit] {\n  _id,\n  orderNumber,\n  email,\n  total,\n  status,\n  createdAt\n}": RECENT_ORDERS_QUERYResult;
     "*[\n  _type == \"order\"\n  && stripePaymentId == $stripePaymentId\n][0]{ _id }": ORDER_BY_STRIPE_PAYMENT_ID_QUERYResult;
+    "*[_type == \"pack\"] | order(featured desc, name asc) {\n  _id,\n  name,\n  slug,\n  tagline,\n  description,\n  \"imageUrl\": image.asset->url,\n  priceOriginal,\n  priceBundle,\n  featured,\n  packCategory,\n  stock,\n  products[] {\n    quantity,\n    \"product\": product-> {\n      _id,\n      name,\n      slug,\n      priceRetail,\n      stock,\n      \"imageUrl\": images[0].asset->url\n    }\n  }\n}": ALL_PACKS_QUERYResult;
+    "*[_type == \"pack\" && featured == true] | order(name asc) [0...4] {\n  _id,\n  name,\n  slug,\n  tagline,\n  \"imageUrl\": image.asset->url,\n  priceOriginal,\n  priceBundle,\n  packCategory,\n  stock,\n  \"productCount\": count(products)\n}": FEATURED_PACKS_QUERYResult;
+    "*[_type == \"pack\" && slug.current == $slug][0] {\n  _id,\n  name,\n  slug,\n  tagline,\n  description,\n  \"imageUrl\": image.asset->url,\n  priceOriginal,\n  priceBundle,\n  featured,\n  packCategory,\n  stock,\n  products[] {\n    quantity,\n    \"product\": product-> {\n      _id,\n      name,\n      slug,\n      priceRetail,\n      stock,\n      \"imageUrl\": images[0].asset->url,\n      \"brand\": brand->name,\n      \"category\": category->title\n    }\n  }\n}": PACK_BY_SLUG_QUERYResult;
+    "*[_type == \"pack\" && packCategory == $category] | order(featured desc, name asc) {\n  _id,\n  name,\n  slug,\n  tagline,\n  \"imageUrl\": image.asset->url,\n  priceOriginal,\n  priceBundle,\n  packCategory,\n  stock,\n  \"productCount\": count(products)\n}": PACKS_BY_CATEGORY_QUERYResult;
     "*[\n  _type == \"product\"\n] | order(name asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  priceRetail,\n  pricePurchase,\n  priceWholesale,\n  priceSlashed,\n  unit,\n  quantity,\n  servings,\n  \"images\": images[]{\n    _key,\n    asset->{\n      _id,\n      url\n    },\n    hotspot\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  flavors,\n  benefits,\n  allergens,\n  certifications,\n  dosage,\n  stock,\n  featured\n}": ALL_PRODUCTS_QUERYResult;
     "*[\n  _type == \"product\"\n  && featured == true\n  && stock > 0\n] | order(name asc) [0...6] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"images\": images[]{\n    _key,\n    asset->{\n      _id,\n      url\n    },\n    hotspot\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  stock\n}": FEATURED_PRODUCTS_QUERYResult;
     "*[\n  _type == \"product\"\n  && category->slug.current == $categorySlug\n] | order(name asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"image\": images[0]{\n    asset->{\n      _id,\n      url\n    },\n    hotspot\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  stock\n}": PRODUCTS_BY_CATEGORY_QUERYResult;
@@ -1107,6 +1389,14 @@ declare module "@sanity/client" {
     "*[\n  _type == \"review\"\n  && product._ref == $productId\n  && status == \"approved\"\n] | order(createdAt desc) [0...10] {\n  _id,\n  authorName,\n  rating,\n  title,\n  content,\n  verifiedPurchase,\n  createdAt\n}": PRODUCT_REVIEWS_QUERYResult;
     "{\n  \"average\": math::avg(*[\n    _type == \"review\"\n    && product._ref == $productId\n    && status == \"approved\"\n  ].rating),\n  \"count\": count(*[\n    _type == \"review\"\n    && product._ref == $productId\n    && status == \"approved\"\n  ])\n}": PRODUCT_RATING_QUERYResult;
     "*[\n  _type == \"product\"\n  && category._ref == $categoryId\n  && _id != $productId\n  && stock > 0\n] | order(featured desc, name asc) [0...4] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  \"image\": images[0]{\n    asset->{\n      _id,\n      url\n    }\n  },\n  brand->{\n    _id,\n    name\n  }\n}": RELATED_PRODUCTS_QUERYResult;
+    "*[\n  _type == \"review\"\n  && status == \"approved\"\n  && featured == true\n] | order(createdAt desc) [0...8] {\n  _id,\n  authorName,\n  rating,\n  title,\n  content,\n  reviewType,\n  source,\n  verifiedPurchase,\n  createdAt,\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  }\n}": FEATURED_REVIEWS_QUERYResult;
+    "*[\n  _type == \"review\"\n  && status == \"approved\"\n  && reviewType == \"category\"\n  && category._ref == $categoryId\n] | order(createdAt desc) [0...6] {\n  _id,\n  authorName,\n  rating,\n  title,\n  content,\n  verifiedPurchase,\n  createdAt\n}": CATEGORY_REVIEWS_QUERYResult;
+    "{\n  \"average\": math::avg(*[\n    _type == \"review\"\n    && status == \"approved\"\n    && reviewType == \"category\"\n    && category._ref == $categoryId\n  ].rating),\n  \"count\": count(*[\n    _type == \"review\"\n    && status == \"approved\"\n    && reviewType == \"category\"\n    && category._ref == $categoryId\n  ])\n}": CATEGORY_RATING_QUERYResult;
+    "{\n  \"average\": math::avg(*[\n    _type == \"review\"\n    && status == \"approved\"\n  ].rating),\n  \"count\": count(*[\n    _type == \"review\"\n    && status == \"approved\"\n  ])\n}": REVIEW_STATS_QUERYResult;
+    "*[\n  _type == \"review\"\n] | order(createdAt desc) {\n  _id,\n  authorName,\n  rating,\n  title,\n  content,\n  reviewType,\n  status,\n  source,\n  featured,\n  verifiedPurchase,\n  createdAt,\n  category->{\n    _id,\n    title\n  }\n}": ALL_REVIEWS_ADMIN_QUERYResult;
+    "\n  count(*[_type == \"review\" && status == \"pending\"])\n": PENDING_REVIEWS_COUNT_QUERYResult;
+    "*[\n  _type == \"review\"\n  && status == $status\n] | order(createdAt desc) {\n  _id,\n  authorName,\n  rating,\n  title,\n  content,\n  reviewType,\n  status,\n  source,\n  featured,\n  verifiedPurchase,\n  createdAt,\n  category->{\n    _id,\n    title\n  }\n}": REVIEWS_BY_STATUS_QUERYResult;
+    "*[\n  _type == \"review\"\n  && source == \"google\"\n] | order(createdAt desc) {\n  _id,\n  authorName,\n  rating,\n  title,\n  content,\n  status,\n  googleReviewId,\n  createdAt\n}": GOOGLE_REVIEWS_QUERYResult;
     "count(*[_type == \"product\"])": PRODUCT_COUNT_QUERYResult;
     "count(*[_type == \"order\"])": ORDER_COUNT_QUERYResult;
     "math::sum(*[\n  _type == \"order\"\n  && status in [\"paid\", \"shipped\", \"delivered\"]\n].total)": TOTAL_REVENUE_QUERYResult;

@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle, Home, Package, PhoneCall } from "lucide-react";
+import { CheckCircle, Home, Package, PhoneCall, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
+import { ReviewFormDialog } from "@/components/app/ReviewFormDialog";
 
 interface CODSuccessClientProps {
   orderNumber: string;
@@ -100,15 +101,26 @@ export function CODSuccessClient({ orderNumber, total }: CODSuccessClientProps) 
         </Button>
       </div>
 
-      {/* Future: Upsell Section - requires server-side data fetching */}
-      {/* 
-      <div className="mt-16">
-        <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
-          🔥 Vous aimerez aussi...
+      {/* Review CTA Section */}
+      <div className="mt-12 card-dodo p-6 text-center">
+        <Star className="mx-auto h-10 w-10 text-dodo-yellow" />
+        <h2 className="mt-4 font-arabic text-xl font-bold text-foreground">
+          شنوا قالوا عليّنا؟ ⭐
         </h2>
-        <RelatedProducts products={[]} />
+        <p className="mt-2 text-sm text-muted-foreground">
+          Partagez votre expérience avec Dodo Nutrition et aidez d&apos;autres clients
+        </p>
+        <div className="mt-4">
+          <ReviewFormDialog
+            trigger={
+              <Button className="bg-dodo-yellow text-black hover:bg-dodo-yellow-hover">
+                <Star className="mr-2 h-4 w-4" />
+                Laisser un avis
+              </Button>
+            }
+          />
+        </div>
       </div>
-      */}
     </div>
   );
 }

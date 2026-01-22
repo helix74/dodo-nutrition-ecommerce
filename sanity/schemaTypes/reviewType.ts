@@ -3,71 +3,169 @@ import { defineField, defineType } from "sanity";
 
 export const reviewType = defineType({
   name: "review",
-  title: "Review",
+  title: "Avis",
   type: "document",
   icon: StarIcon,
+  groups: [
+    { name: "content", title: "Contenu", default: true },
+    { name: "categorization", title: "Catégorisation" },
+    { name: "moderation", title: "Modération" },
+    { name: "metadata", title: "Métadonnées" },
+  ],
   fields: [
+    // ============================================
+    // Content Group
+    // ============================================
     defineField({
-      name: "product",
-      title: "Product",
-      type: "reference",
-      to: [{ type: "product" }],
-      validation: (rule) => rule.required().error("Product is required"),
+      name: "reviewType",
+      title: "Type d'avis",
+      type: "string",
+      group: "content",
+      initialValue: "general",
+      options: {
+        list: [
+          { title: "🌐 Général (expérience globale)", value: "general" },
+          { title: "📦 Catégorie (type de produit)", value: "category" },
+        ],
+        layout: "radio",
+      },
+      description: "Général = témoignage global, Catégorie = avis sur un type de produit",
     }),
     defineField({
       name: "authorName",
-      title: "Author Name",
+      title: "Nom de l'auteur",
       type: "string",
-      validation: (rule) => rule.required().error("Author name is required"),
+      group: "content",
+      validation: (rule) => rule.required().error("Le nom est requis"),
     }),
     defineField({
       name: "rating",
-      title: "Rating (1-5)",
+      title: "Note (1-5)",
       type: "number",
+      group: "content",
       validation: (rule) => [
-        rule.required().error("Rating is required"),
-        rule.min(1).error("Rating must be at least 1"),
-        rule.max(5).error("Rating cannot exceed 5"),
+        rule.required().error("La note est requise"),
+        rule.min(1).error("Minimum 1 étoile"),
+        rule.max(5).error("Maximum 5 étoiles"),
       ],
     }),
     defineField({
       name: "title",
-      title: "Review Title",
+      title: "Titre de l'avis",
       type: "string",
-      description: "Short summary of the review",
+      group: "content",
+      description: "Court résumé de l'avis (optionnel)",
     }),
     defineField({
       name: "content",
-      title: "Review Content",
+      title: "Commentaire",
       type: "text",
+      group: "content",
       rows: 4,
-      description: "Full review text",
+      description: "Texte complet de l'avis",
+    }),
+
+    // ============================================
+    // Categorization Group
+    // ============================================
+    defineField({
+      name: "category",
+      title: "Catégorie",
+      type: "reference",
+      to: [{ type: "category" }],
+      group: "categorization",
+      description: "Si type = catégorie, l'avis s'affiche sur les produits de cette catégorie",
+      hidden: ({ document }) => document?.reviewType !== "category",
     }),
     defineField({
+      name: "product",
+      title: "Produit (legacy)",
+      type: "reference",
+      to: [{ type: "product" }],
+      group: "categorization",
+      description: "Référence produit spécifique (optionnel, pour compatibilité)",
+      hidden: true, // Hidden but kept for data migration
+    }),
+
+    // ============================================
+    // Moderation Group
+    // ============================================
+    defineField({
       name: "status",
-      title: "Status",
+      title: "Statut",
       type: "string",
+      group: "moderation",
       initialValue: "pending",
       options: {
         list: [
-          { title: "⏳ Pending", value: "pending" },
-          { title: "✅ Approved", value: "approved" },
-          { title: "❌ Rejected", value: "rejected" },
+          { title: "⏳ En attente", value: "pending" },
+          { title: "✅ Approuvé", value: "approved" },
+          { title: "❌ Rejeté", value: "rejected" },
         ],
         layout: "radio",
       },
     }),
     defineField({
-      name: "verifiedPurchase",
-      title: "Verified Purchase",
+      name: "featured",
+      title: "⭐ En vedette",
       type: "boolean",
+      group: "moderation",
       initialValue: false,
-      description: "Did this customer actually purchase this product?",
+      description: "Afficher sur la page d'accueil dans la section témoignages",
+    }),
+    defineField({
+      name: "verifiedPurchase",
+      title: "Achat vérifié",
+      type: "boolean",
+      group: "moderation",
+      initialValue: false,
+      description: "Ce client a-t-il acheté chez nous ?",
+    }),
+
+    // ============================================
+    // Metadata Group
+    // ============================================
+    defineField({
+      name: "source",
+      title: "Source",
+      type: "string",
+      group: "metadata",
+      initialValue: "website",
+      options: {
+        list: [
+          { title: "🌐 Site Web", value: "website" },
+          { title: "📍 Google Maps", value: "google" },
+        ],
+      },
+    }),
+    defineField({
+      name: "googleReviewId",
+      title: "ID Google Review",
+      type: "string",
+      group: "metadata",
+      hidden: ({ document }) => document?.source !== "google",
+      description: "Identifiant unique de l'avis Google (pour éviter les doublons)",
+    }),
+    defineField({
+      name: "clerkId",
+      title: "Clerk User ID",
+      type: "string",
+      group: "metadata",
+      description: "ID de l'utilisateur connecté (si applicable)",
+    }),
+    defineField({
+      name: "order",
+      title: "Commande liée",
+      type: "reference",
+      to: [{ type: "order" }],
+      group: "metadata",
+      description: "Commande associée pour vérification d'achat",
     }),
     defineField({
       name: "createdAt",
-      title: "Created At",
+      title: "Date de création",
       type: "datetime",
+      group: "metadata",
       initialValue: () => new Date().toISOString(),
     }),
   ],
@@ -75,28 +173,40 @@ export const reviewType = defineType({
     select: {
       authorName: "authorName",
       rating: "rating",
-      productName: "product.name",
+      reviewType: "reviewType",
+      categoryTitle: "category.title",
       status: "status",
+      source: "source",
+      featured: "featured",
     },
-    prepare({ authorName, rating, productName, status }) {
+    prepare({ authorName, rating, reviewType, categoryTitle, status, source, featured }) {
       const stars = "⭐".repeat(rating || 0);
       const statusEmoji = status === "approved" ? "✅" : status === "rejected" ? "❌" : "⏳";
+      const sourceEmoji = source === "google" ? "📍" : "🌐";
+      const featuredEmoji = featured ? "⭐ " : "";
+      const typeLabel = reviewType === "category" ? categoryTitle || "Catégorie" : "Général";
+      
       return {
-        title: `${authorName} - ${stars}`,
-        subtitle: `${productName || "Unknown Product"} • ${statusEmoji} ${status}`,
+        title: `${featuredEmoji}${authorName} - ${stars}`,
+        subtitle: `${typeLabel} • ${sourceEmoji} ${source} • ${statusEmoji} ${status}`,
       };
     },
   },
   orderings: [
     {
-      title: "Newest First",
+      title: "Plus récents",
       name: "createdAtDesc",
       by: [{ field: "createdAt", direction: "desc" }],
     },
     {
-      title: "Pending First",
+      title: "En attente d'abord",
       name: "pendingFirst",
       by: [{ field: "status", direction: "asc" }],
+    },
+    {
+      title: "En vedette",
+      name: "featuredFirst",
+      by: [{ field: "featured", direction: "desc" }],
     },
   ],
 });

@@ -14,7 +14,7 @@ interface PackProduct {
   product: {
     _id: string;
     name: string;
-    slug: { current: string } | null;
+    slug: { current?: string } | null;
     priceRetail: number | null;
     stock: number | null;
     imageUrl: string | null;
@@ -24,7 +24,7 @@ interface PackProduct {
 interface Pack {
   _id: string;
   name: string | null;
-  slug: { current: string } | null;
+  slug: { current?: string } | null;
   tagline: string | null;
   imageUrl: string | null;
   priceOriginal: number | null;

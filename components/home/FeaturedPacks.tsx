@@ -5,7 +5,7 @@ import { PackCard } from "@/components/app/PackCard";
 interface Pack {
   _id: string;
   name: string | null;
-  slug: { current: string } | null;
+  slug: { current?: string } | null;
   tagline: string | null;
   imageUrl: string | null;
   priceOriginal: number | null;
