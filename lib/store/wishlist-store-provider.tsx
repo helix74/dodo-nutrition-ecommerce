@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, createContext, useRef, useContext } from "react";
+import { type ReactNode, createContext, useRef, useContext, useEffect } from "react";
 import { useStore } from "zustand";
 
 import {
@@ -25,6 +25,12 @@ export const WishlistStoreProvider = ({
   if (!storeRef.current) {
     storeRef.current = createWishlistStore();
   }
+
+  // Manually trigger rehydration on the client after mount
+  // This prevents SSR hydration mismatches since localStorage isn't available on server
+  useEffect(() => {
+    storeRef.current?.persist.rehydrate();
+  }, []);
 
   return (
     <WishlistStoreContext.Provider value={storeRef.current}>

@@ -235,7 +235,7 @@ export default async function PackPage({ params }: PackPageProps) {
         {/* Back to Shop */}
         <div className="mt-12 text-center">
           <Link href="/shop">
-            <Button variant="outline" size="lg">
+            <Button variant="outline" size="lg" className="hover:bg-zinc-800 hover:text-white">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Voir tous les produits
             </Button>

@@ -306,6 +306,15 @@ export const FILTER_PRODUCTS_BY_RELEVANCE_QUERY = defineQuery(
 );
 
 /**
+ * Get products on promotion (priceSlashed > priceRetail)
+ */
+export const PROMOTIONS_QUERY = defineQuery(`*[
+  _type == "product"
+  && priceSlashed > priceRetail
+  && stock > 0
+] | order(priceRetail asc) ${FILTERED_PRODUCT_PROJECTION}`);
+
+/**
  * Get products by IDs (for cart/checkout)
  */
 export const PRODUCTS_BY_IDS_QUERY = defineQuery(`*[

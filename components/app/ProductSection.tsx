@@ -51,7 +51,7 @@ export function ProductSection({
           variant="outline"
           size="sm"
           onClick={() => setFiltersOpen(!filtersOpen)}
-          className="flex items-center gap-2 border-zinc-300 bg-white shadow-sm transition-all hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+          className="flex items-center gap-2 border-zinc-300 bg-white shadow-sm transition-all hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-white"
           aria-label={filtersOpen ? "Masquer les filtres" : "Afficher les filtres"}
         >
           {filtersOpen ? (

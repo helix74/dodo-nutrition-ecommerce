@@ -5,6 +5,8 @@ import Stripe from "stripe";
 import { client, writeClient } from "@/sanity/lib/client";
 import { PRODUCTS_BY_IDS_QUERY } from "@/lib/sanity/queries/products";
 import { getOrCreateStripeCustomer } from "@/lib/actions/customer";
+import { resend, senderEmail } from "@/lib/mail";
+import { OrderConfirmation } from "@/emails/OrderConfirmation";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error("STRIPE_SECRET_KEY is not defined");
@@ -391,6 +393,29 @@ export async function createCODOrder(
     );
 
     await Promise.all(stockUpdates);
+
+    // 9. Send Order Confirmation Email
+    if (resend) {
+      const emailItems = data.items.map((item) => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        image: item.image,
+      }));
+
+      await resend.emails.send({
+        from: senderEmail,
+        to: data.email,
+        subject: `Confirmation de commande ${orderNumber} - Dodo Nutrition`,
+        react: OrderConfirmation({
+          customerName: data.address.name,
+          orderId: orderNumber,
+          items: emailItems,
+          total: total,
+          shippingAddress: `${data.address.line1}\n${data.address.city}, ${data.address.gouvernorat} ${data.address.postcode ?? ""}`,
+        }),
+      });
+    }
 
     return {
       success: true,

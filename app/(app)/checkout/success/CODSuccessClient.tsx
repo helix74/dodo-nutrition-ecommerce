@@ -93,7 +93,7 @@ export function CODSuccessClient({ orderNumber, total }: CODSuccessClientProps) 
             Continuer vos achats
           </Link>
         </Button>
-        <Button asChild variant="outline" size="lg">
+        <Button asChild variant="outline" size="lg" className="hover:bg-zinc-800 hover:text-white">
           <Link href="/orders">
             <Package className="mr-2 h-4 w-4" />
             Voir mes commandes

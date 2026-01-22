@@ -3,6 +3,9 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { client, writeClient } from "@/sanity/lib/client";
 import { ORDER_BY_STRIPE_PAYMENT_ID_QUERY } from "@/lib/sanity/queries/orders";
+import { PRODUCTS_BY_IDS_QUERY } from "@/lib/sanity/queries/products";
+import { resend, senderEmail } from "@/lib/mail";
+import { OrderConfirmation } from "@/emails/OrderConfirmation";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error("STRIPE_SECRET_KEY is not defined");
@@ -90,6 +93,23 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     const productIds = productIdsString.split(",");
     const quantities = quantitiesString.split(",").map(Number);
 
+    // Fetch product details for email and order creation
+    // We need names and images which aren't in metadata
+    const products = await client.fetch(PRODUCTS_BY_IDS_QUERY, {
+      ids: productIds,
+    });
+
+    // Map products by ID for easy lookup
+    // Define a type for the product to avoid 'Property does not exist' errors
+    type ProductData = {
+      _id: string;
+      name: string;
+      image?: { asset?: { url?: string } };
+    };
+    const productsMap = new Map<string, ProductData>(
+      products.map((p: any) => [p._id, p])
+    );
+
     // Get line items from Stripe
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
 
@@ -154,6 +174,42 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       .commit();
 
     console.log(`Stock updated for ${productIds.length} products`);
+
+    // Send Order Confirmation Email
+    if (resend) {
+      const emailTo = userEmail ?? session.customer_details?.email;
+      
+      if (emailTo) {
+        const emailItems = productIds.map((productId, index) => {
+          const product = productsMap.get(productId);
+          return {
+            name: product?.name ?? "Produit",
+            quantity: quantities[index],
+            price: lineItems.data[index]?.amount_total
+              ? lineItems.data[index].amount_total / 100
+              : 0,
+            image: product?.image?.asset?.url,
+          };
+        });
+
+        await resend.emails.send({
+          from: senderEmail,
+          to: emailTo,
+          subject: `Confirmation de commande ${orderNumber} - Dodo Nutrition`,
+          react: OrderConfirmation({
+            customerName: session.customer_details?.name ?? "Client",
+            orderId: orderNumber,
+            items: emailItems,
+            total: (session.amount_total ?? 0) / 100,
+            shippingAddress: address 
+              ? `${address.line1}\n${address.line2 ? address.line2 + '\n' : ''}${address.postcode} ${address.city}\n${address.country}`
+              : "Adresse non fournie",
+          }),
+        });
+        console.log(`Order confirmation email sent to ${emailTo}`);
+      }
+    }
+
   } catch (error) {
     console.error("Error handling checkout.session.completed:", error);
     throw error; // Re-throw to return 500 and trigger Stripe retry

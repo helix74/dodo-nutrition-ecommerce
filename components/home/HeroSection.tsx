@@ -97,7 +97,7 @@ export function HeroSection() {
               asChild
               variant="outline"
               size="lg"
-              className="border-border text-foreground hover:bg-secondary"
+              className="border-border text-foreground hover:bg-zinc-800 hover:text-white"
             >
               <Link href="/categories">
                 Explorer les Catégories
