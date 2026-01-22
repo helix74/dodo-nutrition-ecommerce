@@ -7,6 +7,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { useCartActions, useTotalItems } from "@/lib/store/cart-store-provider";
 import { useChatActions, useIsChatOpen } from "@/lib/store/chat-store-provider";
+import { SearchDialog } from "@/components/app/SearchDialog";
 import { useState } from "react";
 
 const navLinks = [
@@ -23,6 +24,7 @@ export function Header() {
   const isChatOpen = useIsChatOpen();
   const totalItems = useTotalItems();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
@@ -79,6 +81,7 @@ export function Header() {
             variant="ghost"
             size="icon"
             className="hidden sm:flex text-muted-foreground hover:text-foreground"
+            onClick={() => setSearchOpen(true)}
           >
             <Search className="h-5 w-5" />
             <span className="sr-only">Rechercher</span>
@@ -231,6 +234,8 @@ export function Header() {
           </nav>
         </div>
       )}
+      {/* Search Dialog */}
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
   );
 }

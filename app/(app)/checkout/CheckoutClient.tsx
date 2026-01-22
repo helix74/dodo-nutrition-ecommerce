@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { ArrowLeft, ShoppingBag, AlertTriangle, Loader2 } from "lucide-react";
+import { ArrowLeft, ShoppingBag, AlertTriangle, Loader2, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CheckoutForm, type CheckoutFormData } from "@/components/app/CheckoutForm";
 import { LoginPromptDialog } from "@/components/app/LoginPromptDialog";
@@ -32,6 +32,7 @@ export function CheckoutClient() {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [hasSeenLoginPrompt, setHasSeenLoginPrompt] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
 
   // Show login prompt for guests (only once)
   useEffect(() => {
@@ -74,11 +75,16 @@ export function CheckoutClient() {
       });
 
       if (result.success && result.orderNumber) {
+        // Mark order as successful BEFORE clearing cart
+        setOrderSuccess(true);
+        
         // Clear cart
         clearCart();
         
-        // Redirect to success page
-        router.push(`/checkout/success?order=${result.orderNumber}&total=${totalPrice}`);
+        // Small delay to ensure state is set before redirect
+        setTimeout(() => {
+          router.push(`/checkout/success?order=${result.orderNumber}&total=${totalPrice}`);
+        }, 100);
       } else {
         toast.error(result.error ?? "Une erreur est survenue");
       }
@@ -89,6 +95,24 @@ export function CheckoutClient() {
       setIsSubmitting(false);
     }
   };
+
+  // Order success state - show loading while redirecting
+  if (orderSuccess) {
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <CheckCircle className="mx-auto h-16 w-16 text-green-500" />
+          <h1 className="mt-6 text-2xl font-bold text-foreground">
+            Commande confirmée !
+          </h1>
+          <p className="mt-2 text-muted-foreground">
+            Redirection en cours...
+          </p>
+          <Loader2 className="mx-auto mt-4 h-6 w-6 animate-spin text-dodo-yellow" />
+        </div>
+      </div>
+    );
+  }
 
   // Empty cart state
   if (items.length === 0) {
