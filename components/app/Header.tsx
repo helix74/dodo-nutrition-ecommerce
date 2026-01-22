@@ -12,12 +12,12 @@ import { SearchDialog } from "@/components/app/SearchDialog";
 import { useState } from "react";
 
 const navLinks = [
-  { label: "Accueil", href: "/" },
-  { label: "Shop", href: "/shop" },
-  { label: "Packs", href: "/packs", highlight: true },
-  { label: "Promotions", href: "/promotions", highlight: true },
-  { label: "Catégories", href: "/categories" },
-  { label: "Marques", href: "/brands" },
+  { label: "الرئيسية", href: "/" },
+  { label: "المتجر", href: "/shop" },
+  { label: "الباقات", href: "/packs", highlight: true },
+  { label: "العروض", href: "/promotions", highlight: true },
+  { label: "التصنيفات", href: "/categories" },
+  { label: "الماركات", href: "/brands" },
 ];
 
 export function Header() {
@@ -87,7 +87,7 @@ export function Header() {
             onClick={() => setSearchOpen(true)}
           >
             <Search className="h-5 w-5" />
-            <span className="sr-only">Rechercher</span>
+            <span className="sr-only">بحث</span>
           </Button>
 
           {/* AI Shopping Assistant */}
@@ -127,7 +127,7 @@ export function Header() {
                   {wishlistItems.length > 99 ? "99+" : wishlistItems.length}
                 </span>
               )}
-              <span className="sr-only">Wishlist</span>
+              <span className="sr-only">المفضلة</span>
             </Link>
           </Button>
 
@@ -144,7 +144,7 @@ export function Header() {
                 {totalItems > 99 ? "99+" : totalItems}
               </span>
             )}
-            <span className="sr-only">Panier ({totalItems} articles)</span>
+            <span className="sr-only">القفة ({totalItems})</span>
           </Button>
 
           {/* My Orders - Only when signed in (Desktop) */}
@@ -157,7 +157,7 @@ export function Header() {
             >
               <Link href="/orders">
                 <Package className="h-5 w-5" />
-                <span className="sr-only">Mes commandes</span>
+                <span className="sr-only">طلباتي</span>
               </Link>
             </Button>
           </SignedIn>
@@ -174,12 +174,12 @@ export function Header() {
             >
               <UserButton.MenuItems>
                 <UserButton.Link
-                  label="Mes Commandes"
+                  label="طلباتي"
                   labelIcon={<Package className="h-4 w-4" />}
                   href="/orders"
                 />
                 <UserButton.Link
-                  label="Ma Wishlist"
+                  label="المفضلة"
                   labelIcon={<Heart className="h-4 w-4" />}
                   href="/wishlist"
                 />
@@ -190,7 +190,7 @@ export function Header() {
             <SignInButton mode="modal">
               <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
                 <User className="h-5 w-5" />
-                <span className="sr-only">Se connecter</span>
+                <span className="sr-only">دخول</span>
               </Button>
             </SignInButton>
           </SignedOut>

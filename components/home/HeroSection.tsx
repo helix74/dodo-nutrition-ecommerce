@@ -11,7 +11,7 @@ const heroSlides = [
     id: 1,
     title: "Performance. Force. Résultats.",
     subtitle: "Suppléments premium pour athlètes exigeants",
-    cta: { label: "Découvrir le Shop", href: "/shop" },
+    cta: { label: "اكتشف المتجر", href: "/shop" },
     image: "/hero-1.jpg", // Placeholder - will use gradient fallback
     gradient: "from-amber-500/20 via-transparent to-transparent",
   },
@@ -19,7 +19,7 @@ const heroSlides = [
     id: 2,
     title: "Nouvelles Arrivées",
     subtitle: "Les dernières innovations en nutrition sportive",
-    cta: { label: "Voir les Nouveautés", href: "/shop?sort=newest" },
+    cta: { label: "الجديد", href: "/shop?sort=newest" },
     image: "/hero-2.jpg",
     gradient: "from-red-500/20 via-transparent to-transparent",
   },
@@ -27,7 +27,7 @@ const heroSlides = [
     id: 3,
     title: "Offres Exclusives",
     subtitle: "Jusqu'à -30% sur une sélection de produits",
-    cta: { label: "Voir les Promos", href: "/promotions" },
+    cta: { label: "العروض", href: "/promotions" },
     image: "/hero-3.jpg",
     gradient: "from-green-500/20 via-transparent to-transparent",
   },
@@ -100,7 +100,7 @@ export function HeroSection() {
               className="border-border text-foreground hover:bg-zinc-800 hover:text-white"
             >
               <Link href="/categories">
-                Explorer les Catégories
+                تصفح التصنيفات
               </Link>
             </Button>
           </div>

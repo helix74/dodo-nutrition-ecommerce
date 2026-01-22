@@ -4,18 +4,18 @@ import { Facebook, Instagram, Phone, Mail, MapPin } from "lucide-react";
 
 const footerLinks = {
   navigation: [
-    { label: "Accueil", href: "/" },
-    { label: "Shop", href: "/shop" },
-    { label: "Catégories", href: "/categories" },
-    { label: "Marques", href: "/brands" },
-    { label: "Promotions", href: "/promotions" },
+    { label: "الرئيسية", href: "/" },
+    { label: "المتجر", href: "/shop" },
+    { label: "التصنيفات", href: "/categories" },
+    { label: "الماركات", href: "/brands" },
+    { label: "العروض", href: "/promotions" },
   ],
   aide: [
-    { label: "FAQ", href: "/faq" },
-    { label: "Livraison", href: "/livraison" },
-    { label: "Retours", href: "/faq#retours" },
-    { label: "CGV", href: "/cgv" },
-    { label: "Mentions légales", href: "/mentions-legales" },
+    { label: "الأسئلة الشائعة", href: "/faq" },
+    { label: "التوصيل", href: "/livraison" },
+    { label: "الإرجاع", href: "/faq#retours" },
+    { label: "الشروط والأحكام", href: "/cgv" },
+    { label: "إشعار قانوني", href: "/mentions-legales" },
   ],
 };
 
@@ -75,10 +75,10 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Navigation Column */}
+            {/* Navigation Column */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-dodo-yellow">
-              Navigation
+              روابط
             </h3>
             <ul className="space-y-3">
               {footerLinks.navigation.map((link) => (
@@ -97,7 +97,7 @@ export function Footer() {
           {/* Aide Column */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-dodo-yellow">
-              Aide
+              مساعدة
             </h3>
             <ul className="space-y-3">
               {footerLinks.aide.map((link) => (
@@ -116,7 +116,7 @@ export function Footer() {
           {/* Contact Column */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-dodo-yellow">
-              Contact
+              اتصل بنا
             </h3>
             <ul className="space-y-3">
               <li className="flex items-center gap-3 text-sm text-muted-foreground">
@@ -146,11 +146,12 @@ export function Footer() {
             {/* Payment Methods */}
             <div className="mt-6">
               <h4 className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                Paiement
+                الدفع
               </h4>
               <div className="flex items-center gap-2">
                 <span className="rounded bg-secondary px-3 py-1.5 text-xs font-medium text-foreground">
-                  💵 Paiement à la livraison
+                  💵 الدفع عند الاستلام
+
                 </span>
               </div>
             </div>

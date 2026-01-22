@@ -42,34 +42,6 @@
 
 ## 🐛 Bugs (Reported 2026-01-22)
 
-| #   | Issue                                                         | Location             | Priority    | Status     |
-| --- | ------------------------------------------------------------- | -------------------- | ----------- | ---------- |
-| B1  | Wishlist items disappear on refresh (Persistence issue)       | `/wishlist`          | 🔴 Critical | ✅ Fixed   |
-| B2  | `useCartStore` error: "must be used within CartStoreProvider" | `PackCard`           | 🔴 Critical | ✅ Fixed   |
-| B3  | Button text becomes invisible (black on black) on hover       | Various (Home, Shop) | 🟠 High     | ✅ Fixed   |
-| B4  | Promotions page returns 404                                   | `/promotions`        | 🟠 High     | ✅ Fixed   |
-| B5  | Newsletter subscription not sending emails                    | Footer               | 🟡 Medium   | ⏳ Pending |
-
----
-
-## 💡 Improvements & Feature Requests
-
-| #   | Item                                              | Type    | Priority  |
-| --- | ------------------------------------------------- | ------- | --------- |
-| I1  | Add Facebook & TikTok login to Clerk              | Auth    | 🟡 Medium |
-| I2  | Verify/Enable Guest Checkout (Optional Login)     | Auth    | 🟠 High   |
-| I3  | Translate headers/titles to Tunisian Darija       | Content | 🟡 Low    |
-| I4  | Create static pages (FAQ, Livraison, CGV)         | Content | 🟡 Medium |
-| I5  | UI Design Audit (Improve creativity/premium feel) | Design  | 🟡 Medium |
-
----
-
-## 🤔 Decision: Next Steps?
-
-**Option A**: Fix critical issues first (C1-C3), then continue features  
-**Option B**: Continue features (Wishlist, Email), big fix session later  
-**Option C**: Do a complete UI/UX pass to fix all theme issues first
-
 ---
 
 _Last Updated: 2026-01-22 02:05_
