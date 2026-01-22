@@ -48,7 +48,7 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <Card className="group relative flex h-full flex-col overflow-hidden rounded-2xl border-none bg-transparent p-0 shadow-none transition-all duration-300 hover:-translate-y-1">
+    <Card className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-transparent bg-card/50 transition-all duration-300 hover:-translate-y-1 hover:border-dodo-yellow/50 hover:shadow-[0_10px_40px_-10px_rgba(254,226,87,0.15)] dark:bg-zinc-900/50">
       <div
         className={cn(
           "relative overflow-hidden",
@@ -103,9 +103,9 @@ export function ProductCard({ product }: ProductCardProps) {
         {isOutOfStock && (
           <Badge
             variant="destructive"
-            className="absolute left-3 top-3 z-20 rounded-full px-3 py-1 text-xs font-medium shadow-lg"
+            className="absolute left-3 top-3 z-20 rounded-full bg-red-500/90 px-3 py-1 text-xs font-bold text-white shadow-lg backdrop-blur-sm"
           >
-            Rupture de Stock
+            Rupture
           </Badge>
         )}
 
@@ -118,7 +118,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Slashed price badge - Bottom Right */}
         {product.priceSlashed && product.priceSlashed > (product.priceRetail ?? 0) && (
-          <Badge className="absolute right-3 bottom-3 z-10 rounded-full bg-red-500 px-2 py-1 text-xs font-bold text-white shadow-lg">
+          <Badge className="absolute right-3 bottom-3 z-10 rounded-full bg-dodo-red px-2.5 py-1 text-xs font-bold text-white shadow-lg shadow-red-500/20 animate-pulse">
             PROMO
           </Badge>
         )}

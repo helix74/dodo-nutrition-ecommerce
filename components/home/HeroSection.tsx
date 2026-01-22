@@ -66,43 +66,46 @@ export function HeroSection() {
       {/* Content */}
       <div className="relative h-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-full flex-col items-center justify-center text-center">
-          {/* Badge */}
-          <span className="mb-4 inline-block rounded-full bg-dodo-yellow/10 px-4 py-1.5 text-sm font-medium text-dodo-yellow">
-            Dodo Nutrition
-          </span>
+          {/* Animated Container - Re-renders on slide change */}
+          <div key={currentSlide} className="flex flex-col items-center">
+            {/* Badge */}
+            <span className="mb-6 inline-block rounded-full bg-dodo-yellow/10 px-4 py-1.5 text-sm font-medium text-dodo-yellow animate-fade-in-down">
+              Dodo Nutrition
+            </span>
 
-          {/* Title */}
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
-            {slide.title}
-          </h1>
+            {/* Title */}
+            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-7xl lg:text-8xl animate-fade-in-up">
+              {slide.title}
+            </h1>
 
-          {/* Subtitle */}
-          <p className="mt-4 max-w-2xl text-lg text-muted-foreground sm:text-xl md:text-2xl">
-            {slide.subtitle}
-          </p>
+            {/* Subtitle */}
+            <p className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl md:text-2xl animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+              {slide.subtitle}
+            </p>
 
-          {/* CTA */}
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-            <Button
-              asChild
-              size="lg"
-              className="bg-dodo-yellow text-black font-semibold hover:bg-dodo-yellow/90 shadow-lg shadow-dodo-yellow/20 px-8"
-            >
-              <Link href={slide.cta.href}>
-                {slide.cta.label}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-border text-foreground hover:bg-zinc-800 hover:text-white"
-            >
-              <Link href="/categories">
-                تصفح التصنيفات
-              </Link>
-            </Button>
+            {/* CTA */}
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+              <Button
+                asChild
+                size="lg"
+                className="bg-dodo-yellow text-black font-bold text-lg h-14 px-8 hover:bg-dodo-yellow-hover hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(254,226,87,0.3)] hover:shadow-[0_0_30px_rgba(254,226,87,0.5)]"
+              >
+                <Link href={slide.cta.href}>
+                  {slide.cta.label}
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="border-zinc-700 text-foreground h-14 px-8 hover:bg-zinc-800 hover:text-white hover:border-zinc-600 transition-all duration-300"
+              >
+                <Link href="/categories">
+                  تصفح التصنيفات
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
