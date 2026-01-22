@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
+import { WishlistButton } from "@/components/app/WishlistButton";
 import { AskAISimilarButton } from "@/components/app/AskAISimilarButton";
 import { StockBadge } from "@/components/app/StockBadge";
 import { Badge } from "@/components/ui/badge";
@@ -131,6 +132,17 @@ export function ProductInfo({ product, averageRating, reviewCount = 0 }: Product
           price={product.priceRetail ?? 0}
           image={imageUrl ?? undefined}
           stock={product.stock ?? 0}
+        />
+        <WishlistButton 
+          product={{
+            _id: product._id,
+            name: product.name ?? "",
+            priceRetail: product.priceRetail ?? 0,
+            image: imageUrl ? { asset: { url: imageUrl } } : undefined,
+            slug: product.slug ? { current: product.slug } : undefined
+          }}
+          variant="full" 
+          className="w-full" 
         />
         <AskAISimilarButton productName={product.name ?? "this product"} />
       </div>

@@ -25,22 +25,6 @@
 | U4  | Promotion link removed from header (was replaced by Packs, needs review) | Header            | 🟠 High   | ✅ Fixed |
 | U5  | Review form spacing (title and field gap)                                | ReviewForm dialog | 🟡 Medium | ✅ Fixed |
 
----
-
-## 🟡 Features to Add
-
-| #   | Feature                             | Status         | Priority  |
-| --- | ----------------------------------- | -------------- | --------- |
-| F1  | Mega menu for categories in header  | ⬜ Not Started | 🟡 Medium |
-| F2  | Wishlist                            | ⬜ Not Started | 🟡 Medium |
-| F3  | Email notifications                 | ⬜ Not Started | 🟡 Medium |
-| F4  | AI Assistant for users verification | ⬜ Needs Check | 🟡 Medium |
-| F5  | Admin analytics features            | ⬜ Needs Check | 🟡 Medium |
-
----
-
-## 🔵 Configuration & Setup
-
 | #   | Item                                | Status                | Priority  |
 | --- | ----------------------------------- | --------------------- | --------- |
 | S1  | App SDK env linking (Sanity Studio) | ⬜ Needs Verification | 🟠 High   |

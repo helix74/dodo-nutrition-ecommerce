@@ -7,6 +7,8 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatPrice } from "@/lib/utils";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
+import { WishlistButton } from "@/components/app/WishlistButton";
+
 import { StockBadge } from "@/components/app/StockBadge";
 import type { FILTER_PRODUCTS_BY_NAME_QUERYResult } from "@/sanity.types";
 
@@ -47,13 +49,13 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Card className="group relative flex h-full flex-col overflow-hidden rounded-2xl border-none bg-transparent p-0 shadow-none transition-all duration-300 hover:-translate-y-1">
-      <Link href={`/products/${product.slug}`} className="block">
-        <div
-          className={cn(
-            "relative overflow-hidden",
-            hasMultipleImages ? "aspect-square" : "aspect-4/5",
-          )}
-        >
+      <div
+        className={cn(
+          "relative overflow-hidden",
+          hasMultipleImages ? "aspect-square" : "aspect-4/5",
+        )}
+      >
+        <Link href={`/products/${product.slug}`} className="block h-full w-full">
           {displayedImageUrl ? (
             <Image
               src={displayedImageUrl}
@@ -82,28 +84,45 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
           {/* Gradient overlay for text contrast */}
           <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-          {isOutOfStock && (
-            <Badge
-              variant="destructive"
-              className="absolute right-3 top-3 rounded-full px-3 py-1 text-xs font-medium shadow-lg"
-            >
-              Rupture de Stock
-            </Badge>
-          )}
-          {/* Category badge */}
-          {product.category && (
-            <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-zinc-700 shadow-sm backdrop-blur-sm dark:bg-zinc-900/90 dark:text-zinc-300">
-              {product.category.title}
-            </span>
-          )}
-          {/* Slashed price badge */}
-          {product.priceSlashed && product.priceSlashed > (product.priceRetail ?? 0) && (
-            <Badge className="absolute right-3 bottom-3 rounded-full bg-red-500 px-2 py-1 text-xs font-bold text-white shadow-lg">
-              PROMO
-            </Badge>
-          )}
+        </Link>
+
+        {/* Wishlist Button - Top Right */}
+        <div className="absolute right-3 top-3 z-20">
+          <WishlistButton 
+            product={{
+              _id: product._id,
+              name: product.name ?? "",
+              priceRetail: product.priceRetail ?? 0,
+              image: mainImageUrl ? { asset: { url: mainImageUrl } } : undefined,
+              slug: product.slug ? { current: product.slug } : undefined
+            }} 
+          />
         </div>
-      </Link>
+
+        {/* Stock Badge - Top Left */}
+        {isOutOfStock && (
+          <Badge
+            variant="destructive"
+            className="absolute left-3 top-3 z-20 rounded-full px-3 py-1 text-xs font-medium shadow-lg"
+          >
+            Rupture de Stock
+          </Badge>
+        )}
+
+        {/* Category badge - Top Left (only if in stock) */}
+        {product.category && !isOutOfStock && (
+          <span className="absolute left-3 top-3 z-10 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-zinc-700 shadow-sm backdrop-blur-sm dark:bg-zinc-900/90 dark:text-zinc-300">
+            {product.category.title}
+          </span>
+        )}
+
+        {/* Slashed price badge - Bottom Right */}
+        {product.priceSlashed && product.priceSlashed > (product.priceRetail ?? 0) && (
+          <Badge className="absolute right-3 bottom-3 z-10 rounded-full bg-red-500 px-2 py-1 text-xs font-bold text-white shadow-lg">
+            PROMO
+          </Badge>
+        )}
+      </div>
 
       {/* Thumbnail strip - only show if multiple images */}
       {hasMultipleImages && (

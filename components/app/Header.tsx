@@ -7,6 +7,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { useCartActions, useTotalItems } from "@/lib/store/cart-store-provider";
 import { useChatActions, useIsChatOpen } from "@/lib/store/chat-store-provider";
+import { useWishlistItems } from "@/lib/store/wishlist-store-provider";
 import { SearchDialog } from "@/components/app/SearchDialog";
 import { useState } from "react";
 
@@ -24,6 +25,7 @@ export function Header() {
   const { openChat } = useChatActions();
   const isChatOpen = useIsChatOpen();
   const totalItems = useTotalItems();
+  const wishlistItems = useWishlistItems();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -115,11 +117,16 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            className="hidden sm:flex text-muted-foreground hover:text-foreground"
+            className="hidden sm:flex text-muted-foreground hover:text-foreground relative"
             asChild
           >
             <Link href="/wishlist">
               <Heart className="h-5 w-5" />
+              {wishlistItems.length > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-dodo-red text-[10px] font-bold text-white">
+                  {wishlistItems.length > 99 ? "99+" : wishlistItems.length}
+                </span>
+              )}
               <span className="sr-only">Wishlist</span>
             </Link>
           </Button>
