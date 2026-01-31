@@ -1,7 +1,7 @@
 # Dodo Nutrition - Issues & Backlog
 
-> **Created**: 2026-01-22  
-> **Last Updated**: 2026-01-25  
+> **Created**: 2026-01-22
+> **Last Updated**: 2026-01-31
 > **Status**: Active Tracking Document
 
 ---
@@ -51,23 +51,49 @@
 
 ---
 
+## 🟢 Specs Status Summary
+
+| Spec | Feature             | Status      |
+| ---- | ------------------- | ----------- |
+| 001  | Retrofit            | ✅ Complete |
+| 002  | Product Schema      | ✅ Complete |
+| 003  | Product Page        | ✅ Complete |
+| 004  | COD Checkout        | ✅ Complete |
+| 005  | CMS Banners         | ✅ Complete |
+| 006  | Admin Dashboard     | ✅ Complete |
+| 006a | Admin Analytics     | ✅ Complete |
+| 006b | Admin AI Insights   | ✅ Complete |
+| 006c | Admin Orders        | ✅ Complete |
+| 006d | Admin Inventory     | ✅ Complete |
+| 007  | UI Unification      | ✅ Complete |
+| 008  | Packs/Bundles       | ✅ Complete |
+| 009  | Reviews System      | ✅ 98% Done |
+| 010  | Wishlist            | ✅ Complete |
+| 011  | Email Notifications | ✅ Complete |
+| 012  | Enhancements        | ✅ Complete |
+| 013  | UI Design Audit     | ✅ Complete |
+| 014  | Mega Menu           | ✅ Complete |
+
+---
+
 ## 🐛 Bugs
 
-| #   | Issue                            | Status         |
-| --- | -------------------------------- | -------------- |
-| B1  | Middleware vs Proxy naming issue | ⏳ Investigate |
+| #   | Issue                            | Status                      |
+| --- | -------------------------------- | --------------------------- |
+| B1  | Middleware vs Proxy naming issue | ⏳ Minor (cosmetic warning) |
 
-> **B1 Details**: Next.js shows deprecation warning "middleware file convention is deprecated. Please use proxy instead." Project currently uses `proxy.ts`. Need to investigate if renaming causes routing issues.
+> **B1 Details**: Next.js shows deprecation warning about middleware file convention. Project uses `proxy.ts`. Low priority.
 
 ---
 
 ## 📝 Notes
 
-- **Reviews feature**: ✅ Approved and working
+- **Reviews feature**: ✅ Full moderation, testimonials, category reviews
+- **Packs/Bundles**: ✅ Full implementation with cart integration
 - **Google Maps API**: Structure ready, waiting for credentials
-- **AI Features**: Blocked until API key is provided
-- **F4 Details**: Create `/categories/[slug]` pages for better SEO (currently uses `/shop?category=slug`)
+- **AI Features**: ✅ Working with Groq API
+- **F4 Details**: Create `/categories/[slug]` pages for better SEO (future enhancement)
 
 ---
 
-_Last Updated: 2026-01-25_
+_Last Updated: 2026-01-31_

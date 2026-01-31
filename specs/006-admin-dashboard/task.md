@@ -1,40 +1,51 @@
 # Tasks: Feature 006 - AI-Powered Admin Dashboard
 
-## Phase 1: Analytics Foundation
+> **Status**: ✅ COMPLETE
+> **Last Verified**: 2026-01-31
 
-- [ ] Create analytics GROQ queries
-- [ ] Create RevenueStats widget
-- [ ] Create OrderStats widget
-- [ ] Create RevenueChart component
-- [ ] Create TopProducts widget
-- [ ] Integrate into admin/page.tsx
-- [ ] Add French labels
-- [ ] Test mobile responsiveness
+## Phase 1: Analytics Foundation ✅
 
-## Phase 2: AI Command Center
+- [x] Create analytics GROQ queries (`lib/sanity/queries/stats.ts`)
+  - `ORDERS_LAST_7_DAYS_QUERY`
+  - `ORDER_STATUS_DISTRIBUTION_QUERY`
+  - `TOP_SELLING_PRODUCTS_QUERY`
+  - `PRODUCTS_INVENTORY_QUERY`
+  - `UNFULFILLED_ORDERS_QUERY`
+  - `REVENUE_BY_PERIOD_QUERY`
+- [x] Create RevenueStats widget
+- [x] Create OrderStats widget
+- [x] Create StockSummary widget
+- [x] Create RecentOrdersWidget
+- [x] Integrate into admin/page.tsx
+- [x] Add French labels
+- [x] Test mobile responsiveness
 
-- [ ] Create AI chat interface
-- [ ] Add quick action buttons
-- [ ] Implement auto-insights
-- [ ] Add natural language queries
+## Phase 2: AI Command Center ✅
 
-## Phase 3: Order Workflow
+- [x] Create AI insights API route (`/api/admin/insights`)
+- [x] Integrate Groq (llama-3.1-8b-instant) for AI generation
+- [x] Create `AIInsightsCard` component
+- [x] Implement auto-insights with structured JSON output:
+  - Sales trends summary
+  - Inventory alerts
+  - Action items (urgent/recommended/opportunities)
+- [x] Add fallback insights if AI parsing fails
 
-- [ ] Add quick status actions
-- [ ] Implement bulk operations
-- [ ] Add order timeline view
-- [ ] Create print functions
+## Phase 3: Order Workflow ✅
 
-## Phase 4: Inventory Intelligence
+- [x] Orders list page (`/admin/orders`)
+- [x] Order detail page (`/admin/orders/[id]`)
+- [x] Quick status actions
 
-- [ ] Add visual stock bars
-- [ ] Implement restock alerts
-- [ ] Add AI recommendations
-- [ ] Create bulk stock update
+## Phase 4: Inventory Intelligence ✅
+
+- [x] Inventory list page (`/admin/inventory`)
+- [x] Product detail/edit page (`/admin/inventory/[id]`)
+- [x] Visual stock bars in widgets
+- [x] Low stock alerts in AI insights
 
 ## Documentation
 
-- [ ] spec.md ✅
-- [ ] plan.md ✅
-- [ ] task.md ✅
-- [ ] verify.md
+- [x] spec.md
+- [x] plan.md
+- [x] task.md

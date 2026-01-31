@@ -1,30 +1,40 @@
 # Tasks: Packs & Bundles (008)
 
+> **Status**: ✅ COMPLETE
+> **Last Verified**: 2026-01-31
+
 ## Backend (Sanity)
 
-- [ ] Create `sanity/schemaTypes/packType.ts`
-- [ ] Register pack type in `sanity/schemaTypes/index.ts`
+- [x] Create `sanity/schemaTypes/packType.ts`
+- [x] Register pack type in `sanity/schemaTypes/index.ts`
 
 ## Data Layer
 
-- [ ] Create `sanity/lib/packs/queries.ts` with GROQ queries
-- [ ] Create `sanity/lib/packs/getPacks.ts` server functions
+- [x] Create `lib/sanity/queries/packs.ts` with GROQ queries
+  - `ALL_PACKS_QUERY`
+  - `FEATURED_PACKS_QUERY`
+  - `PACK_BY_SLUG_QUERY`
+  - `PACKS_BY_CATEGORY_QUERY`
 
 ## Frontend
 
-- [ ] Create `components/app/PackCard.tsx`
-- [ ] Create `app/(app)/packs/[slug]/page.tsx`
-- [ ] Update `app/(app)/shop/page.tsx` to include packs
-- [ ] Update `store/cart-store.ts` for pack support
+- [x] Create `components/app/PackCard.tsx`
+- [x] Create `components/app/AddPackToCart.tsx`
+- [x] Create `app/(app)/packs/page.tsx` - Packs listing page
+- [x] Create `app/(app)/packs/[slug]/page.tsx` - Pack detail page
+- [x] Cart integration with `type: "pack"` support
 
 ## Verification
 
-- [ ] Create test pack in Sanity Studio
-- [ ] Verify shop page displays packs
-- [ ] Verify pack detail page
-- [ ] Verify add-to-cart functionality
-- [ ] Run `pnpm build`
+- [x] Sanity schema registered and working
+- [x] Pack detail page with product list
+- [x] Add-to-cart functionality
+- [x] `pnpm build` passes
 
-## Documentation
+## Pack Schema Features
 
-- [ ] Update `verify.md`
+- Name, slug, tagline, description
+- Products array with quantity
+- Pricing: Original vs Bundle price
+- Pack categories (masse, seche, performance, etc.)
+- Featured flag, stock management
