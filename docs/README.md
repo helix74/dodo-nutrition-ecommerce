@@ -1,85 +1,74 @@
-# 📚 Dodo Nutrition - Documentation Hub
+# Documentation Hub
 
-> **Central index for all project documentation.**  
-> **Last Updated**: 2026-01-17
-
----
-
-## 🗂️ Document Directory
-
-| Document                                   | Description                                          | Status      |
-| ------------------------------------------ | ---------------------------------------------------- | ----------- |
-| [architecture.md](./architecture.md)       | 🏗️ Full project architecture, tech stack, user flows | ✅ Complete |
-| [database-schema.md](./database-schema.md) | 🗄️ Sanity schemas (Product, Order, Customer)         | ✅ Complete |
-| [components.md](./components.md)           | 🧩 Component library reference                       | ✅ Complete |
-| [ROADMAP.md](../ROADMAP.md)                | 📅 Development phases and features                   | ✅ Current  |
-| [constitution.md](../constitution.md)      | ⚖️ Project rules and tech standards                  | ✅ Current  |
+> **Project**: Dodo Nutrition  
+> **Purpose**: Central index for all documentation
 
 ---
 
-## 🔗 Quick Links
+## Quick Links
 
-### Tech Stack
-
-| Layer        | Technology                           |
-| ------------ | ------------------------------------ |
-| Frontend     | Next.js 16 (App Router)              |
-| CMS          | Sanity.io v4                         |
-| Auth         | Clerk                                |
-| State        | Zustand                              |
-| Style        | Tailwind CSS v4                      |
-| **Payment**  | **COD (Cash on Delivery)**           |
-| **Shipping** | **Ciblex API**                       |
-| **Currency** | **TND (Tunisian Dinar)**             |
-| Design       | Dodo Yellow `#fee257`, Red `#f01b24` |
-
-### Key Directories
-
-- **Schemas**: [sanity/schemaTypes/](../sanity/schemaTypes/)
-- **Components**: [components/](../components/) — 50+ components
-- **AI Agent**: [lib/ai/](../lib/ai/)
+| Document                                       | Purpose                 |
+| ---------------------------------------------- | ----------------------- |
+| [Client Brief](./00-discovery/client-brief.md) | Business context        |
+| [PRD](./01-product/PRD.md)                     | Feature requirements    |
+| [User Stories](./01-product/user-stories.md)   | Functional requirements |
+| [Sitemap](./01-product/sitemap.md)             | All routes              |
 
 ---
 
-## 📊 Current Project Status
+## Architecture
 
-```
-┌─────────────────────────────────────────────────────┐
-│  DODO NUTRITION - STATUS OVERVIEW                   │
-├─────────────────────────────────────────────────────┤
-│  ✅ Core E-commerce: COMPLETE                       │
-│  ✅ Authentication: COMPLETE (Clerk)                │
-│  ⚠️ Checkout: NEEDS COD IMPLEMENTATION              │
-│  ✅ AI Assistant: COMPLETE                          │
-│  ⚠️ Admin Dashboard: NEEDS IMPROVEMENTS             │
-│  ⚠️ Ciblex Integration: PLANNED                     │
-│  ✅ Reviews: BASIC COMPLETE                         │
-└─────────────────────────────────────────────────────┘
-```
+| Document                                              | Purpose             |
+| ----------------------------------------------------- | ------------------- |
+| [System Context](./03-architecture/system-context.md) | System diagram      |
+| [Database Schema](./database-schema.md)               | Sanity schemas      |
+| [API Contracts](./03-architecture/api-contracts.md)   | Endpoint specs      |
+| [Security Model](./03-architecture/security-model.md) | Auth & ACL          |
+| [ADRs](./03-architecture/ADR/decisions.md)            | Technical decisions |
 
 ---
 
-## 🎭 Multi-Agent Architecture
+## Developer Experience
 
-| Agent                | Domain                     | Reference                                  |
-| -------------------- | -------------------------- | ------------------------------------------ |
-| 🎭 Maestro           | Coordination, Architecture | [architecture.md](./architecture.md)       |
-| 🗄️ Database Agent    | Sanity, Schemas, Data      | [database-schema.md](./database-schema.md) |
-| 🎨 Frontend Agent    | UI, Components, Pages      | [components/](../components/)              |
-| 🔌 Integration Agent | Ciblex, Analytics          | Planned                                    |
-| 🤖 AI Agent          | Shopping Assistant         | [lib/ai/](../lib/ai/)                      |
-
----
-
-## 📝 Workflow
-
-1. **Check docs** → Read relevant documentation first
-2. **Create spec** → `/speckit.specify` for new features
-3. **Plan** → `/speckit.plan` for implementation plan
-4. **Implement** → `/speckit.implement` to build
-5. **Verify** → `/speckit.verify` to validate
-6. **Update docs** → Keep documentation current
+| Document                                                 | Purpose               |
+| -------------------------------------------------------- | --------------------- |
+| [Tech Stack](./04-devops/tech-stack.md)                  | Technologies used     |
+| [Contributing](../CONTRIBUTING.md)                       | Code standards        |
+| [Testing Strategy](./05-testing/testing-strategy.md)     | QA approach           |
+| [Security Checklist](./05-testing/security-checklist.md) | Security verification |
 
 ---
 
-**This is the source of truth for project documentation.**
+## Project Status
+
+| Document                               | Purpose            |
+| -------------------------------------- | ------------------ |
+| [Roadmap](../ROADMAP.md)               | Development phases |
+| [Future Work](../FUTURE_WORK.md)       | Planned features   |
+| [Issues Backlog](../ISSUES_BACKLOG.md) | Known issues       |
+| [Changelog](./CHANGELOG.md)            | Version history    |
+
+---
+
+## Feature Specifications
+
+All feature specs are in `/specs`:
+
+| Spec                                     | Feature         |
+| ---------------------------------------- | --------------- |
+| [004](../specs/004-cod-checkout/)        | COD Checkout    |
+| [006](../specs/006-admin-dashboard/)     | Admin Dashboard |
+| [008](../specs/008-packs-bundles/)       | Packs & Bundles |
+| [009](../specs/009-reviews-system/)      | Reviews System  |
+| [010](../specs/010-wishlist/)            | Wishlist        |
+| [011](../specs/011-email-notifications/) | Email System    |
+| [014](../specs/014-mega-menu/)           | Navigation      |
+
+---
+
+## Getting Started
+
+1. Read [Client Brief](./00-discovery/client-brief.md) for context
+2. Review [PRD](./01-product/PRD.md) for scope
+3. Check [Tech Stack](./04-devops/tech-stack.md) for dependencies
+4. Follow [Contributing](../CONTRIBUTING.md) for code standards

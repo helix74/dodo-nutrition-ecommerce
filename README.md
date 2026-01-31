@@ -1,120 +1,142 @@
 # 🦤 Dodo Nutrition
 
-> **E-commerce de nutrition sportive pour le marché tunisien**
+> **Premium E-commerce Platform for Sports Nutrition**  
+> Built for the Tunisian Market
+
+[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue)](https://www.typescriptlang.org/)
+[![Sanity](https://img.shields.io/badge/Sanity-v4-red)](https://sanity.io/)
+[![Clerk](https://img.shields.io/badge/Clerk-Auth-purple)](https://clerk.com/)
 
 ---
 
-## À propos
+## ✨ Features
 
-Dodo Nutrition est une plateforme e-commerce B2C spécialisée dans les compléments alimentaires et la nutrition sportive, conçue pour le marché tunisien.
+### Customer Experience
 
-### Caractéristiques
+- 🛒 **Shopping Cart** with real-time updates
+- 💳 **COD Checkout** (Cash on Delivery)
+- ❤️ **Wishlist** with persistence
+- 🔍 **AI Shopping Assistant** for product discovery
+- ⭐ **Reviews & Testimonials**
+- 📦 **Order Tracking**
 
-- 🛒 Catalogue produits avec 120+ références
-- 🤖 Assistant shopping IA (Claude)
-- 💳 Paiement à la livraison (COD)
-- 📦 Livraison via Ciblex
-- 🌙 Thème sombre premium
-- 🇹🇳 Expérience 100% tunisienne (Français + Darija)
+### Admin Panel
 
----
+- 📊 **Analytics Dashboard** with AI insights
+- 📋 **Order Management** with status updates
+- 📦 **Inventory Management**
+- ✅ **Review Moderation**
 
-## Tech Stack
+### Technical
 
-| Couche   | Technologie             |
-| -------- | ----------------------- |
-| Frontend | Next.js 16 (App Router) |
-| CMS      | Sanity.io v4            |
-| Auth     | Clerk                   |
-| State    | Zustand                 |
-| Style    | Tailwind CSS v4         |
-| AI       | Vercel AI SDK + Claude  |
-
----
-
-## Structure du Projet
-
-```
-app/
-├── (app)/           → Routes client (shop, checkout, orders)
-├── (admin)/         → Dashboard admin
-└── api/             → API routes
-
-components/
-├── app/             → Composants métier
-├── layout/          → Header, Footer, Nav
-└── ui/              → shadcn/ui
-
-lib/
-├── actions/         → Server Actions
-├── ai/              → Shopping Agent
-├── sanity/          → Queries GROQ
-└── store/           → Zustand stores
-
-sanity/
-└── schemaTypes/     → Schemas CMS
-
-docs/                → Documentation
-specs/               → Spécifications features
-```
+- 🚀 **Next.js 16** with App Router
+- 🔐 **Clerk Authentication**
+- 📝 **Sanity CMS**
+- 🤖 **AI-powered** chat and insights
+- 📧 **Email Notifications**
+- 🌙 **Dark Theme**
 
 ---
 
-## Installation
+## 🚀 Quick Start
 
 ```bash
-# Cloner et installer
-git clone <repo>
-cd ecommerce-ai
+# Clone repository
+git clone https://github.com/helix74/dodo-nutrition-ecommerce.git
+cd dodo-nutrition-ecommerce
+
+# Install dependencies
 pnpm install
 
-# Configuration
+# Setup environment
 cp .env.example .env.local
-# Remplir les variables d'environnement
+# Edit .env.local with your keys
 
-# Développement
+# Run development server
 pnpm dev
 ```
 
-### Variables d'Environnement
+**Open**: [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 📁 Project Structure
+
+```
+├── app/                 # Next.js App Router
+│   ├── (admin)/         # Admin routes
+│   ├── (app)/           # Customer routes
+│   └── api/             # API endpoints
+├── components/          # React components
+├── lib/                 # Utilities & logic
+├── sanity/              # CMS config
+├── docs/                # Documentation
+└── specs/               # Feature specs
+```
+
+---
+
+## 🔧 Environment Variables
 
 ```env
-# Sanity
-NEXT_PUBLIC_SANITY_PROJECT_ID=
-NEXT_PUBLIC_SANITY_DATASET=production
-SANITY_API_WRITE_TOKEN=
-
-# Clerk
+# Required
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
+NEXT_PUBLIC_SANITY_PROJECT_ID=
+SANITY_API_WRITE_TOKEN=
+ADMIN_EMAILS=admin@example.com
 
-# AI
-ANTHROPIC_API_KEY=
+# Optional (AI & Email)
+GROQ_API_KEY=
+RESEND_API_KEY=
 ```
 
 ---
 
-## Documentation
+## 📚 Documentation
 
-| Document                             | Description             |
-| ------------------------------------ | ----------------------- |
-| [constitution.md](./constitution.md) | Règles du projet        |
-| [ROADMAP.md](./ROADMAP.md)           | Phases de développement |
-| [docs/](./docs/README.md)            | Hub documentation       |
-
----
-
-## Scripts
-
-```bash
-pnpm dev        # Développement
-pnpm build      # Build production
-pnpm typegen    # Générer types Sanity
-pnpm typecheck  # Vérification TypeScript
-```
+| Document                                                   | Description    |
+| ---------------------------------------------------------- | -------------- |
+| [Documentation Hub](./docs/README.md)                      | All docs index |
+| [Architecture](./docs/03-architecture/system-context.md)   | System diagram |
+| [API Contracts](./docs/03-architecture/api-contracts.md)   | Endpoints      |
+| [Security Model](./docs/03-architecture/security-model.md) | Auth & ACL     |
+| [Contributing](./CONTRIBUTING.md)                          | Code standards |
 
 ---
 
-## Licence
+## 🛡️ Security
 
-Propriétaire - Dodo Nutrition © 2026
+- ✅ Admin routes protected via middleware
+- ✅ Role-based authorization (ADMIN_EMAILS)
+- ✅ Input validation with Zod
+- ✅ Atomic stock operations
+- ✅ Secure session management
+
+---
+
+## 🎨 Tech Stack
+
+| Layer     | Technology           |
+| --------- | -------------------- |
+| Framework | Next.js 16           |
+| Language  | TypeScript           |
+| CMS       | Sanity v4            |
+| Auth      | Clerk                |
+| Styling   | Tailwind CSS         |
+| UI        | Shadcn/UI            |
+| AI        | Vercel AI SDK + Groq |
+| Email     | Resend               |
+
+---
+
+## 📜 License
+
+[MIT](./LICENSE.md)
+
+---
+
+## 🏗️ Built By
+
+Developed for Dodo Nutrition 🦤
