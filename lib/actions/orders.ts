@@ -3,6 +3,7 @@
 import { writeClient } from "@/sanity/lib/client";
 import { revalidatePath } from "next/cache";
 import type { OrderStatusValue } from "@/lib/constants/orderStatus";
+import { requireAdmin } from "@/lib/auth/admin";
 
 /**
  * Update the status of an order
@@ -13,6 +14,9 @@ export async function updateOrderStatus(
   newStatus: OrderStatusValue
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    // Require admin authentication
+    await requireAdmin();
+
     // Validate inputs
     if (!orderId) {
       return { success: false, error: "ID de commande manquant" };

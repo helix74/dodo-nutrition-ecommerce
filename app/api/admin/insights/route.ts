@@ -12,6 +12,7 @@ import {
   UNFULFILLED_ORDERS_QUERY,
   REVENUE_BY_PERIOD_QUERY,
 } from "@/lib/sanity/queries/stats";
+import { isAdmin } from "@/lib/auth/admin";
 
 interface OrderItem {
   quantity: number;
@@ -70,6 +71,15 @@ interface RevenuePeriod {
 
 export async function GET() {
   try {
+    // Check admin authorization
+    const adminCheck = await isAdmin();
+    if (!adminCheck) {
+      return Response.json(
+        { success: false, error: "Accès non autorisé" },
+        { status: 403 }
+      );
+    }
+
     // Calculate date ranges
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);

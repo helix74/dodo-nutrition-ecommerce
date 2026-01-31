@@ -3,6 +3,7 @@
 import { writeClient } from "@/sanity/lib/client";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/lib/auth/admin";
 
 // ============================================
 // Types
@@ -84,6 +85,7 @@ export async function submitReview(data: SubmitReviewData) {
  */
 export async function approveReview(reviewId: string) {
   try {
+    await requireAdmin();
     await writeClient.patch(reviewId).set({ status: "approved" }).commit();
 
     revalidatePath("/");
@@ -101,6 +103,7 @@ export async function approveReview(reviewId: string) {
  */
 export async function rejectReview(reviewId: string) {
   try {
+    await requireAdmin();
     await writeClient
       .patch(reviewId)
       .set({ status: "rejected", featured: false })
@@ -121,6 +124,7 @@ export async function rejectReview(reviewId: string) {
  */
 export async function toggleFeatured(reviewId: string, featured: boolean) {
   try {
+    await requireAdmin();
     await writeClient.patch(reviewId).set({ featured }).commit();
 
     revalidatePath("/");
@@ -138,6 +142,7 @@ export async function toggleFeatured(reviewId: string, featured: boolean) {
  */
 export async function assignCategory(reviewId: string, categoryId: string) {
   try {
+    await requireAdmin();
     await writeClient
       .patch(reviewId)
       .set({
@@ -161,6 +166,7 @@ export async function assignCategory(reviewId: string, categoryId: string) {
  */
 export async function deleteReview(reviewId: string) {
   try {
+    await requireAdmin();
     await writeClient.delete(reviewId);
 
     revalidatePath("/");
@@ -178,6 +184,7 @@ export async function deleteReview(reviewId: string) {
  */
 export async function bulkApproveReviews(reviewIds: string[]) {
   try {
+    await requireAdmin();
     const transaction = writeClient.transaction();
 
     for (const id of reviewIds) {
