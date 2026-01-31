@@ -7,6 +7,7 @@ import { PRODUCTS_BY_IDS_QUERY } from "@/lib/sanity/queries/products";
 import { getOrCreateStripeCustomer } from "@/lib/actions/customer";
 import { resend, senderEmail } from "@/lib/mail";
 import { OrderConfirmation } from "@/emails/OrderConfirmation";
+import { CODOrderSchema } from "@/lib/validations/schemas";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error("STRIPE_SECRET_KEY is not defined");
@@ -294,17 +295,11 @@ export async function createCODOrder(
       return { success: false, error: "Votre panier est vide" };
     }
 
-    // 3. Validate required fields
-    if (!data.address.name || !data.address.line1 || !data.address.city || !data.address.gouvernorat) {
-      return { success: false, error: "Veuillez remplir tous les champs obligatoires" };
-    }
-
-    if (!data.phone) {
-      return { success: false, error: "Le numéro de téléphone est requis" };
-    }
-
-    if (!data.email) {
-      return { success: false, error: "L'adresse email est requise" };
+    // 3. Validate input with Zod
+    const validationResult = CODOrderSchema.safeParse(data);
+    if (!validationResult.success) {
+      const errorMessages = validationResult.error.issues.map((e: { message: string }) => e.message).join(". ");
+      return { success: false, error: errorMessages };
     }
 
     // 4. Fetch current product data from Sanity to validate prices/stock
@@ -384,15 +379,14 @@ export async function createCODOrder(
       createdAt: new Date().toISOString(),
     });
 
-    // 8. Decrement stock for each product (using writeClient)
-    const stockUpdates = orderItems.map((item) =>
-      writeClient
-        .patch(item.product._ref)
-        .dec({ stock: item.quantity })
-        .commit()
-    );
-
-    await Promise.all(stockUpdates);
+    // 8. Decrement stock atomically using transaction
+    const stockTransaction = writeClient.transaction();
+    for (const item of orderItems) {
+      stockTransaction.patch(item.product._ref, {
+        dec: { stock: item.quantity }
+      });
+    }
+    await stockTransaction.commit();
 
     // 9. Send Order Confirmation Email
     if (resend) {

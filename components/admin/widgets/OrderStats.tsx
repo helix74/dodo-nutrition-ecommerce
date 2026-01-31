@@ -1,6 +1,6 @@
 import { sanityFetch } from "@/sanity/lib/live";
 import { ORDERS_BY_STATUS_QUERY } from "@/lib/sanity/queries/analytics";
-import { getOrderStatus } from "@/lib/constants/orderStatus";
+import { getOrderStatus, type OrderStatusValue } from "@/lib/constants/orderStatus";
 import Link from "next/link";
 
 export async function OrderStats() {
@@ -9,10 +9,10 @@ export async function OrderStats() {
   });
 
   const statuses = [
-    { key: "pending", count: data.pending ?? 0 },
-    { key: "confirmed", count: data.confirmed ?? 0 },
-    { key: "shipped", count: data.shipped ?? 0 },
-    { key: "delivered", count: data.delivered ?? 0 },
+    { key: "pending" as OrderStatusValue, count: data.pending ?? 0 },
+    { key: "confirmed" as OrderStatusValue, count: data.confirmed ?? 0 },
+    { key: "shipped" as OrderStatusValue, count: data.shipped ?? 0 },
+    { key: "delivered" as OrderStatusValue, count: data.delivered ?? 0 },
   ];
 
   const total = statuses.reduce((sum, s) => sum + s.count, 0);
@@ -31,7 +31,7 @@ export async function OrderStats() {
 
       <div className="space-y-3">
         {statuses.map((stat) => {
-          const status = getOrderStatus(stat.key as any);
+          const status = getOrderStatus(stat.key);
           const StatusIcon = status.icon;
           const percentage = total > 0 ? (stat.count / total) * 100 : 0;
 

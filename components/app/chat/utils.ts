@@ -9,7 +9,8 @@ export function getMessageText(message: UIMessage): string {
       .map((part) => (part as { type: "text"; text: string }).text)
       .join("\n");
   }
-  return (message as any).content || "";
+  // Fallback for older content format
+  return "content" in message && typeof message.content === "string" ? message.content : "";
 }
 
 // Check if message has tool calls (parts starting with "tool-")
