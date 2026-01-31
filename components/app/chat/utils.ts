@@ -3,13 +3,13 @@ import type { ToolCallPart } from "./types";
 
 // Extract text content from message parts
 export function getMessageText(message: UIMessage): string {
-  if (!message.parts || message.parts.length === 0) {
-    return "";
+  if (message.parts && message.parts.length > 0) {
+    return message.parts
+      .filter((part) => part.type === "text")
+      .map((part) => (part as { type: "text"; text: string }).text)
+      .join("\n");
   }
-  return message.parts
-    .filter((part) => part.type === "text")
-    .map((part) => (part as { type: "text"; text: string }).text)
-    .join("\n");
+  return (message as any).content || "";
 }
 
 // Check if message has tool calls (parts starting with "tool-")

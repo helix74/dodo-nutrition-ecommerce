@@ -6,9 +6,9 @@ interface WelcomeScreenProps {
 }
 
 const productSuggestions = [
-  "Show me oak tables",
-  "Leather sofas under 1000 TND",
-  "What chairs do you have?",
+  "Show me whey protein",
+  "Creatine under 80 TND",
+  "What pre-workouts do you have?",
 ];
 
 const orderSuggestions = [
@@ -31,8 +31,8 @@ export function WelcomeScreen({
       </h3>
       <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 max-w-xs">
         {isSignedIn
-          ? "I can help you find furniture, check your orders, and track deliveries."
-          : "I can help you find furniture by style, material, color, or price. Just ask!"}
+          ? "I can help you find supplements, check your orders, and track deliveries."
+          : "I can help you find proteins, creatine, vitamins, and more. Just ask!"}
       </p>
 
       {/* Product suggestions */}

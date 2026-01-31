@@ -3,7 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { SanityLive } from "@/sanity/lib/live";
 import { Toaster } from "@/components/ui/sonner";
 import { TopBar } from "@/components/layout/TopBar";
-import { Header } from "@/components/app/Header";
+import { HeaderWithMegaMenu } from "@/components/app/HeaderServer";
 import { Footer } from "@/components/layout/Footer";
 import { CartSheet } from "@/components/app/CartSheet";
 import { ChatSheet } from "@/components/app/ChatSheet";
@@ -16,7 +16,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
           <AppShell>
             <div className="flex min-h-screen flex-col">
               <TopBar />
-              <Header />
+              <HeaderWithMegaMenu />
               <main className="flex-1">{children}</main>
               <Footer />
             </div>

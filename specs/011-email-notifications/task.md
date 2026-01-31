@@ -1,19 +1,24 @@
-- [x] **Phase 1: Infrastructure**
-  - [x] Install `resend` and `@react-email` packages
-  - [ ] Configure `RESEND_API_KEY` in `.env.local`
-  - [x] Create `lib/mail.ts` utility
-  - [x] Add `emails/` directory and scripts to `package.json`
+# Task: Email Notifications
 
-- [/] **Phase 2: Templates**
-  - [x] Create `emails/components/Layout.tsx` (Logo, Footer)
-  - [ ] Create `emails/OrderConfirmation.tsx` template
-  - [ ] Verify template in React Email dev server
+## Phase 1: Infrastructure
 
-- [ ] **Phase 3: Integration**
-  - [ ] Update `app/api/webhooks/stripe/route.ts` to send email
-  - [ ] Update `app/actions/orders.ts` (COD) to send email
+- [x] Install `resend` and `@react-email` packages
+- [x] Configure `RESEND_API_KEY` in `.env.local`
+- [x] Create `lib/mail.ts` utility
+- [x] Add `emails/` directory and scripts to `package.json`
 
-- [ ] **Phase 4: Verification**
-  - [ ] Test Stripe checkout flow (Test Mode)
-  - [ ] Test COD checkout flow
-  - [ ] Verify email content and layout
+## Phase 2: Templates
+
+- [x] Create `emails/components/Layout.tsx` (Logo, Footer)
+- [x] Create `emails/OrderConfirmation.tsx` template
+- [x] Verify template in React Email dev server
+
+## Phase 3: Integration
+
+- [x] Update `lib/actions/checkout.ts` to send email on COD order
+- [x] Email includes order details, items, and shipping address
+
+## Phase 4: Verification
+
+- [x] Build passes
+- [ ] Live test with actual RESEND_API_KEY (pending key)

@@ -9,18 +9,23 @@ import { useCartActions, useTotalItems } from "@/lib/store/cart-store-provider";
 import { useChatActions, useIsChatOpen } from "@/lib/store/chat-store-provider";
 import { useWishlistItems } from "@/lib/store/wishlist-store-provider";
 import { SearchDialog } from "@/components/app/SearchDialog";
+import { MegaMenu, CategoriesMegaMenu, BrandsMegaMenu } from "@/components/app/MegaMenu";
 import { useState } from "react";
+import type { Category, Brand } from "@/lib/data/megamenu";
 
 const navLinks = [
   { label: "الرئيسية", href: "/" },
   { label: "المتجر", href: "/shop" },
   { label: "الباقات", href: "/packs", highlight: true },
   { label: "العروض", href: "/promotions", highlight: true },
-  { label: "التصنيفات", href: "/categories" },
-  { label: "الماركات", href: "/brands" },
 ];
 
-export function Header() {
+interface HeaderProps {
+  categories?: Category[];
+  brands?: Brand[];
+}
+
+export function Header({ categories = [], brands = [] }: HeaderProps) {
   const { openCart } = useCartActions();
   const { openChat } = useChatActions();
   const isChatOpen = useIsChatOpen();
@@ -75,6 +80,18 @@ export function Header() {
               )}
             </Link>
           ))}
+          
+          {/* Mega Menus */}
+          {categories.length > 0 && (
+            <MegaMenu label="التصنيفات" href="/categories">
+              <CategoriesMegaMenu categories={categories} />
+            </MegaMenu>
+          )}
+          {brands.length > 0 && (
+            <MegaMenu label="الماركات" href="/brands">
+              <BrandsMegaMenu brands={brands} />
+            </MegaMenu>
+          )}
         </nav>
 
         {/* Actions */}

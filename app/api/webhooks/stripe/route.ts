@@ -16,7 +16,7 @@ if (!process.env.STRIPE_WEBHOOK_SECRET) {
 }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-11-17.clover",
+  apiVersion: "2025-12-15.clover",
 });
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   if (!signature) {
     return NextResponse.json(
       { error: "Missing stripe-signature header" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     console.error("Webhook signature verification failed:", message);
     return NextResponse.json(
       { error: `Webhook Error: ${message}` },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -71,7 +71,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
     if (existingOrder) {
       console.log(
-        `Webhook already processed for payment ${stripePaymentId}, skipping`
+        `Webhook already processed for payment ${stripePaymentId}, skipping`,
       );
       return;
     }
@@ -107,7 +107,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       image?: { asset?: { url?: string } };
     };
     const productsMap = new Map<string, ProductData>(
-      products.map((p: any) => [p._id, p])
+      products.map((p: any) => [p._id, p]),
     );
 
     // Get line items from Stripe
@@ -169,7 +169,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       .reduce(
         (tx, productId, i) =>
           tx.patch(productId, (p) => p.dec({ stock: quantities[i] })),
-        writeClient.transaction()
+        writeClient.transaction(),
       )
       .commit();
 
@@ -178,7 +178,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     // Send Order Confirmation Email
     if (resend) {
       const emailTo = userEmail ?? session.customer_details?.email;
-      
+
       if (emailTo) {
         const emailItems = productIds.map((productId, index) => {
           const product = productsMap.get(productId);
@@ -201,15 +201,14 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
             orderId: orderNumber,
             items: emailItems,
             total: (session.amount_total ?? 0) / 100,
-            shippingAddress: address 
-              ? `${address.line1}\n${address.line2 ? address.line2 + '\n' : ''}${address.postcode} ${address.city}\n${address.country}`
+            shippingAddress: address
+              ? `${address.line1}\n${address.line2 ? address.line2 + "\n" : ""}${address.postcode} ${address.city}\n${address.country}`
               : "Adresse non fournie",
           }),
         });
         console.log(`Order confirmation email sent to ${emailTo}`);
       }
     }
-
   } catch (error) {
     console.error("Error handling checkout.session.completed:", error);
     throw error; // Re-throw to return 500 and trigger Stripe retry

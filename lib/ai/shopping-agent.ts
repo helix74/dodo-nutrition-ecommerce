@@ -1,6 +1,10 @@
-import { gateway, type Tool, ToolLoopAgent } from "ai";
-import { searchProductsTool } from "./tools/search-products";
+import { createGroq } from "@ai-sdk/groq";
+import type { Tool } from "ai";
 import { createGetMyOrdersTool } from "./tools/get-my-orders";
+import { searchProductsTool } from "./tools/search-products";
+
+// Initialize Groq provider (reads GROQ_API_KEY from env)
+const groq = createGroq();
 
 interface ShoppingAgentOptions {
   userId: string | null;
@@ -159,9 +163,9 @@ export function createShoppingAgent({ userId }: ShoppingAgentOptions) {
     tools.getMyOrders = getMyOrdersTool;
   }
 
-  return new ToolLoopAgent({
-    model: gateway("anthropic/claude-sonnet-4.5"),
-    instructions,
+  return {
+    model: groq("llama-3.1-8b-instant"),
+    system: instructions,
     tools,
-  });
+  };
 }

@@ -70,7 +70,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* AI Insights - Disabled until Vercel AI Gateway is configured */}
-      {/* <AIInsightsCard /> */}
+      <AIInsightsCard />
     </div>
   );
 }
