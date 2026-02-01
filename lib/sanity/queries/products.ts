@@ -305,6 +305,50 @@ export const FILTER_PRODUCTS_BY_RELEVANCE_QUERY = defineQuery(
   `*[${PRODUCT_FILTER_CONDITIONS}] | ${RELEVANCE_SCORE} | order(_score desc, name asc) ${FILTERED_PRODUCT_PROJECTION}`
 );
 
+// ============================================
+// Paginated Filter Queries (24 per page)
+// ============================================
+
+const PRODUCTS_PER_PAGE = 24;
+
+/**
+ * Count total products matching filters
+ */
+export const COUNT_FILTERED_PRODUCTS_QUERY = defineQuery(
+  `count(*[${PRODUCT_FILTER_CONDITIONS}])`
+);
+
+/**
+ * Filter products - paginated by name (A-Z)
+ */
+export const FILTER_PRODUCTS_BY_NAME_PAGINATED_QUERY = defineQuery(
+  `*[${PRODUCT_FILTER_CONDITIONS}] | order(name asc) [$offset...$offset + ${PRODUCTS_PER_PAGE}] ${FILTERED_PRODUCT_PROJECTION}`
+);
+
+/**
+ * Filter products - paginated by price ascending
+ */
+export const FILTER_PRODUCTS_BY_PRICE_ASC_PAGINATED_QUERY = defineQuery(
+  `*[${PRODUCT_FILTER_CONDITIONS}] | order(priceRetail asc) [$offset...$offset + ${PRODUCTS_PER_PAGE}] ${FILTERED_PRODUCT_PROJECTION}`
+);
+
+/**
+ * Filter products - paginated by price descending
+ */
+export const FILTER_PRODUCTS_BY_PRICE_DESC_PAGINATED_QUERY = defineQuery(
+  `*[${PRODUCT_FILTER_CONDITIONS}] | order(priceRetail desc) [$offset...$offset + ${PRODUCTS_PER_PAGE}] ${FILTERED_PRODUCT_PROJECTION}`
+);
+
+/**
+ * Filter products - paginated by relevance (when searching)
+ */
+export const FILTER_PRODUCTS_BY_RELEVANCE_PAGINATED_QUERY = defineQuery(
+  `*[${PRODUCT_FILTER_CONDITIONS}] | ${RELEVANCE_SCORE} | order(_score desc, name asc) [$offset...$offset + ${PRODUCTS_PER_PAGE}] ${FILTERED_PRODUCT_PROJECTION}`
+);
+
+/** Products per page constant export */
+export const SHOP_PAGE_SIZE = PRODUCTS_PER_PAGE;
+
 /**
  * Get products on promotion (priceSlashed > priceRetail)
  */
