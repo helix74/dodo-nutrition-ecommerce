@@ -1,7 +1,7 @@
 # Project Roadmap: Dodo Nutrition
 
-> **Last Updated**: 2026-01-31
-> **Status**: Pre-Production
+> **Last Updated**: 2026-02-12
+> **Status**: Ready for Staging Deployment
 
 ---
 
@@ -110,8 +110,10 @@
 
 ## 🎯 Next Action
 
-All core MVP features are complete. Next priorities:
+All core MVP features are complete. Security audit completed (2026-02-12). Next priorities:
 
-1. Push 4 local commits to origin
-2. Ciblex integration (shipping)
-3. Category SEO pages
+1. Deploy to Vercel (staging)
+2. Manual testing of checkout, admin, and auth flows
+3. Register custom email domain with Resend
+4. Ciblex shipping integration
+5. Category SEO pages

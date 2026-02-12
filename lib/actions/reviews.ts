@@ -4,19 +4,26 @@ import { writeClient } from "@/sanity/lib/client";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth/admin";
+import { rateLimit } from "@/lib/rate-limit";
+import { z } from "zod";
 
 // ============================================
-// Types
+// Validation Schemas
 // ============================================
 
-interface SubmitReviewData {
-  authorName: string;
-  rating: number;
-  title?: string;
-  content?: string;
-  reviewType: "general" | "category";
-  categoryId?: string;
-}
+const SubmitReviewInputSchema = z.object({
+  authorName: z.string().min(2, "Nom requis (min 2 caractères)"),
+  rating: z.number().int().min(1, "Note minimum 1").max(5, "Note maximum 5"),
+  title: z.string().optional(),
+  content: z.string().optional(),
+  reviewType: z.enum(["general", "category"]),
+  categoryId: z.string().optional(),
+}).refine(
+  (data) => !(data.reviewType === "category" && !data.categoryId),
+  { message: "Catégorie requise pour ce type d'avis", path: ["categoryId"] }
+);
+
+type SubmitReviewData = z.infer<typeof SubmitReviewInputSchema>;
 
 // ============================================
 // Public Actions
@@ -27,36 +34,42 @@ interface SubmitReviewData {
  * Reviews are created with pending status
  */
 export async function submitReview(data: SubmitReviewData) {
-  // Validate input
-  if (!data.authorName || !data.rating) {
-    throw new Error("Nom et note sont requis");
+  // Validate input with Zod
+  const validationResult = SubmitReviewInputSchema.safeParse(data);
+  if (!validationResult.success) {
+    const errorMessages = validationResult.error.issues.map((e) => e.message).join(". ");
+    throw new Error(errorMessages);
   }
 
-  if (data.rating < 1 || data.rating > 5) {
-    throw new Error("La note doit être entre 1 et 5");
-  }
+  const validated = validationResult.data;
 
-  if (data.reviewType === "category" && !data.categoryId) {
-    throw new Error("Catégorie requise pour ce type d'avis");
+  // Rate limiting: max 3 reviews per hour per IP/user
+  const { userId } = await auth();
+  const identifier = userId || "anonymous";
+  const rateLimitResult = rateLimit(
+    `review:${identifier}`,
+    3,
+    60 * 60 * 1000 // 1 hour
+  );
+
+  if (!rateLimitResult.allowed) {
+    throw new Error("Trop d'avis envoyés. Veuillez réessayer plus tard.");
   }
 
   try {
-    // Get current user if logged in
-    const { userId } = await auth();
-
     // TODO: Check if user has purchased from this category for verifiedPurchase
     // For now, just mark as verified if logged in
     const verifiedPurchase = !!userId;
 
     const review = await writeClient.create({
       _type: "review",
-      reviewType: data.reviewType,
-      authorName: data.authorName.trim(),
-      rating: data.rating,
-      title: data.title?.trim() || null,
-      content: data.content?.trim() || null,
-      category: data.categoryId
-        ? { _type: "reference", _ref: data.categoryId }
+      reviewType: validated.reviewType,
+      authorName: validated.authorName.trim(),
+      rating: validated.rating,
+      title: validated.title?.trim() || null,
+      content: validated.content?.trim() || null,
+      category: validated.categoryId
+        ? { _type: "reference", _ref: validated.categoryId }
         : null,
       status: "pending",
       source: "website",

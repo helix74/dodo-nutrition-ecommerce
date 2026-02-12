@@ -5,6 +5,46 @@
 
 ---
 
+## [1.1.0] - 2026-02-12 — Security Audit & Cleanup
+
+### Added
+
+- Rate limiting on `/api/chat` (10 req/min per IP)
+- Rate limiting on review submissions (3/hour per user)
+- Rate limiting on `/api/admin/insights` (5/min)
+- Security headers in `next.config.ts` (X-Frame-Options, HSTS, CSP-lite, etc.)
+- Shared rate limiter utility (`lib/rate-limit.ts`)
+- Missing spec files (spec.md, plan.md, verification.md) for specs 012-016
+
+### Changed
+
+- **BREAKING**: Renamed `proxy.ts` → `middleware.ts` (fixes Next.js route protection)
+- **BREAKING**: Removed Stripe entirely (COD-only project)
+- Guest checkout now allowed (removed `/checkout` from protected routes)
+- `reviews.ts` now uses Zod validation instead of manual checks
+- `orders.ts` now validates status with Zod `OrderStatusSchema`
+- Chat API error responses now generic (no internal details leak)
+- Package name: `ecommerce-dec-build-sanity-appsdk-clerk` → `dodo-nutrition`
+- Updated `constitution.md` with correct AI stack and rules path
+- Standardized all spec file naming (`tasks.md`, `verification.md`)
+
+### Removed
+
+- `lib/actions/customer.ts` (Stripe customer sync)
+- `components/app/CheckoutButton.tsx` (Stripe checkout button)
+- `app/api/webhooks/stripe/route.ts` (Stripe webhook handler)
+- `root_agent.yaml` (boilerplate file)
+- `stripe` package dependency
+- Stripe env vars from `.env.example`
+
+### Fixed
+
+- Middleware now properly named for Next.js recognition
+- Guest checkout works (was blocked by middleware)
+- Checkout no longer crashes without `STRIPE_SECRET_KEY`
+
+---
+
 ## [Unreleased]
 
 ### Added

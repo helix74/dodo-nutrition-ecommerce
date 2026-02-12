@@ -2,8 +2,8 @@
 
 import { writeClient } from "@/sanity/lib/client";
 import { revalidatePath } from "next/cache";
-import type { OrderStatusValue } from "@/lib/constants/orderStatus";
 import { requireAdmin } from "@/lib/auth/admin";
+import { OrderStatusSchema } from "@/lib/validations/schemas";
 
 /**
  * Update the status of an order
@@ -11,7 +11,7 @@ import { requireAdmin } from "@/lib/auth/admin";
  */
 export async function updateOrderStatus(
   orderId: string,
-  newStatus: OrderStatusValue
+  newStatus: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
     // Require admin authentication
@@ -22,14 +22,16 @@ export async function updateOrderStatus(
       return { success: false, error: "ID de commande manquant" };
     }
 
-    if (!newStatus) {
-      return { success: false, error: "Statut manquant" };
+    // Validate status with Zod schema
+    const statusResult = OrderStatusSchema.safeParse(newStatus);
+    if (!statusResult.success) {
+      return { success: false, error: "Statut invalide" };
     }
 
     // Update order status in Sanity
     await writeClient
       .patch(orderId)
-      .set({ status: newStatus })
+      .set({ status: statusResult.data })
       .commit();
 
     // Revalidate admin pages

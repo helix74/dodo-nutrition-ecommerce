@@ -1,7 +1,7 @@
 # Dodo Nutrition - Issues & Backlog
 
 > **Created**: 2026-01-22
-> **Last Updated**: 2026-01-31
+> **Last Updated**: 2026-02-12
 > **Status**: Active Tracking Document
 
 ---
@@ -78,11 +78,11 @@
 
 ## 🐛 Bugs
 
-| #   | Issue                            | Status                      |
-| --- | -------------------------------- | --------------------------- |
-| B1  | Middleware vs Proxy naming issue | ⏳ Minor (cosmetic warning) |
+| #   | Issue                            | Status                              |
+| --- | -------------------------------- | ----------------------------------- |
+| B1  | Middleware vs Proxy naming issue | ✅ Fixed (renamed to middleware.ts) |
 
-> **B1 Details**: Next.js shows deprecation warning about middleware file convention. Project uses `proxy.ts`. Low priority.
+> **B1 Details**: Next.js requires `middleware.ts` naming convention. Project was using `proxy.ts`. Fixed during security audit 2026-02-12.
 
 ---
 

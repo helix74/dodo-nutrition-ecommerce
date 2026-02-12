@@ -13,6 +13,7 @@ import {
   REVENUE_BY_PERIOD_QUERY,
 } from "@/lib/sanity/queries/stats";
 import { isAdmin } from "@/lib/auth/admin";
+import { rateLimit, getClientIP } from "@/lib/rate-limit";
 
 interface OrderItem {
   quantity: number;
@@ -69,7 +70,7 @@ interface RevenuePeriod {
   previousOrderCount: number;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     // Check admin authorization
     const adminCheck = await isAdmin();
@@ -77,6 +78,16 @@ export async function GET() {
       return Response.json(
         { success: false, error: "Accès non autorisé" },
         { status: 403 }
+      );
+    }
+
+    // Rate limiting: 5 requests per minute
+    const clientIP = getClientIP(request);
+    const rateLimitResult = rateLimit(`admin-insights:${clientIP}`, 5, 60 * 1000);
+    if (!rateLimitResult.allowed) {
+      return Response.json(
+        { success: false, error: "Trop de requêtes. Veuillez patienter." },
+        { status: 429 }
       );
     }
 

@@ -1,7 +1,7 @@
 # Project Constitution: Dodo Nutrition
 
 > **The governing document for all development on this project.**  
-> **Last Updated**: 2026-01-17
+> **Last Updated**: 2026-02-12
 
 ---
 
@@ -52,7 +52,8 @@
 | **Language**   | TypeScript    | Strict mode       |
 | **CMS**        | Sanity        | v4                |
 | **Auth**       | Clerk         | with AgentKit     |
-| **AI**         | Vercel AI SDK | Anthropic Claude  |
+| **AI**         | Vercel AI SDK | Groq (Llama)      |
+| **Payment**    | COD Only      | No Stripe         |
 | **Styling**    | Tailwind CSS  | v4                |
 | **UI Library** | Shadcn/UI     | 23+ components    |
 | **State**      | Zustand       | Cart, Chat stores |
@@ -112,13 +113,13 @@ specs/         → Feature specifications
 
 ## 8. Documentation Index
 
-| Document                                                 | Purpose             |
-| -------------------------------------------------------- | ------------------- |
-| [ROADMAP.md](./ROADMAP.md)                               | Development phases  |
-| [docs/README.md](./docs/README.md)                       | Documentation hub   |
-| [docs/architecture.md](./docs/architecture.md)           | System architecture |
-| [docs/database-schema.md](./docs/database-schema.md)     | Sanity schemas      |
-| [.agent/workflows/rules.md](./.agent/workflows/rules.md) | Coding standards    |
+| Document                                             | Purpose             |
+| ---------------------------------------------------- | ------------------- |
+| [ROADMAP.md](./ROADMAP.md)                           | Development phases  |
+| [docs/README.md](./docs/README.md)                   | Documentation hub   |
+| [docs/architecture.md](./docs/architecture.md)       | System architecture |
+| [docs/database-schema.md](./docs/database-schema.md) | Sanity schemas      |
+| [.agent/rules/rules.md](./.agent/rules/rules.md)     | Coding standards    |
 
 ---
 
