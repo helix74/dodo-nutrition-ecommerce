@@ -151,27 +151,32 @@ export async function createCODOrder(
     }
     await stockTransaction.commit();
 
-    // 9. Send Order Confirmation Email
+    // 9. Send Order Confirmation Email (non-blocking - don't let email failure block checkout)
     if (resend) {
-      const emailItems = data.items.map((item) => ({
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        image: item.image,
-      }));
+      try {
+        const emailItems = data.items.map((item) => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          image: item.image,
+        }));
 
-      await resend.emails.send({
-        from: senderEmail,
-        to: data.email,
-        subject: `Confirmation de commande ${orderNumber} - Dodo Nutrition`,
-        react: OrderConfirmation({
-          customerName: data.address.name,
-          orderId: orderNumber,
-          items: emailItems,
-          total: total,
-          shippingAddress: `${data.address.line1}\n${data.address.city}, ${data.address.gouvernorat} ${data.address.postcode ?? ""}`,
-        }),
-      });
+        await resend.emails.send({
+          from: senderEmail,
+          to: data.email,
+          subject: `Confirmation de commande ${orderNumber} - Dodo Nutrition`,
+          react: OrderConfirmation({
+            customerName: data.address.name,
+            orderId: orderNumber,
+            items: emailItems,
+            total: total,
+            shippingAddress: `${data.address.line1}\n${data.address.city}, ${data.address.gouvernorat} ${data.address.postcode ?? ""}`,
+          }),
+        });
+      } catch (emailError) {
+        // Log but don't fail the order - email is secondary
+        console.error("Failed to send confirmation email:", emailError);
+      }
     }
 
     return {
