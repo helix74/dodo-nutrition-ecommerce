@@ -4,7 +4,7 @@ import { useTransition } from "react";
 import { CheckCircle, Truck, PackageCheck, XCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { updateOrderStatus } from "@/lib/actions/orders";
+import { updateOrderStatus } from "@/lib/actions/admin-mutations";
 import type { OrderStatusValue } from "@/lib/constants/orderStatus";
 
 interface QuickStatusActionsProps {

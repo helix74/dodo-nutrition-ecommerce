@@ -1,95 +1,108 @@
 "use client";
 
-import { Suspense } from "react";
-import {
-  useDocument,
-  useEditDocument,
-  type DocumentHandle,
-} from "@sanity/sdk-react";
+import { useState, useTransition } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
+import { updateOrderAddress } from "@/lib/actions/admin-mutations";
 
-interface AddressEditorProps extends DocumentHandle {}
-
-function AddressField({
-  handle,
-  field,
-  label,
-  placeholder,
-}: {
-  handle: DocumentHandle;
-  field: string;
-  label: string;
-  placeholder?: string;
-}) {
-  const path = `address.${field}`;
-  const { data: value } = useDocument({ ...handle, path });
-  const editField = useEditDocument({ ...handle, path });
-
-  return (
-    <div className="space-y-1.5">
-      <Label htmlFor={field} className="text-xs text-muted-foreground">
-        {label}
-      </Label>
-      <Input
-        id={field}
-        value={(value as string) ?? ""}
-        onChange={(e) => editField(e.target.value)}
-        placeholder={placeholder}
-        className="h-9"
-      />
-    </div>
-  );
+interface Address {
+  name?: string;
+  line1?: string;
+  line2?: string;
+  city?: string;
+  postcode?: string;
+  country?: string;
 }
 
-function AddressEditorContent(handle: AddressEditorProps) {
+interface AddressEditorProps {
+  documentId: string;
+  initialAddress: Address;
+}
+
+export function AddressEditor({ documentId, initialAddress }: AddressEditorProps) {
+  const [address, setAddress] = useState<Address>(initialAddress || {});
+  const [isPending, startTransition] = useTransition();
+
+  function handleFieldChange(field: keyof Address, value: string) {
+    const newAddress = { ...address, [field]: value };
+    setAddress(newAddress);
+  }
+
+  function handleBlur() {
+    startTransition(async () => {
+      await updateOrderAddress(documentId, {
+        street: `${address.line1 || ""}${address.line2 ? `, ${address.line2}` : ""}`,
+        city: address.city,
+        postalCode: address.postcode,
+        country: address.country,
+      });
+    });
+  }
+
+  const fields = [
+    { key: "name" as const, label: "Nom complet", placeholder: "John Doe" },
+    { key: "line1" as const, label: "Adresse ligne 1", placeholder: "123 Rue Principale" },
+    { key: "line2" as const, label: "Adresse ligne 2", placeholder: "Appt 4B (optionnel)" },
+  ];
+
   return (
-    <div className="space-y-3">
-      <Suspense fallback={<Skeleton className="h-16" />}>
-        <AddressField handle={handle} field="name" label="Nom complet" placeholder="John Doe" />
-      </Suspense>
-      <Suspense fallback={<Skeleton className="h-16" />}>
-        <AddressField handle={handle} field="line1" label="Adresse ligne 1" placeholder="123 Rue Principale" />
-      </Suspense>
-      <Suspense fallback={<Skeleton className="h-16" />}>
-        <AddressField handle={handle} field="line2" label="Adresse ligne 2" placeholder="Appt 4B (optionnel)" />
-      </Suspense>
+    <div className={`space-y-3 ${isPending ? "opacity-50" : ""}`}>
+      {fields.map(({ key, label, placeholder }) => (
+        <div key={key} className="space-y-1.5">
+          <Label htmlFor={key} className="text-xs text-muted-foreground">
+            {label}
+          </Label>
+          <Input
+            id={key}
+            value={address[key] ?? ""}
+            onChange={(e) => handleFieldChange(key, e.target.value)}
+            onBlur={handleBlur}
+            placeholder={placeholder}
+            className="h-9"
+          />
+        </div>
+      ))}
       <div className="grid grid-cols-2 gap-3">
-        <Suspense fallback={<Skeleton className="h-16" />}>
-          <AddressField handle={handle} field="city" label="Ville" placeholder="Tunis" />
-        </Suspense>
-        <Suspense fallback={<Skeleton className="h-16" />}>
-          <AddressField handle={handle} field="postcode" label="Code postal" placeholder="1000" />
-        </Suspense>
+        <div className="space-y-1.5">
+          <Label htmlFor="city" className="text-xs text-muted-foreground">
+            Ville
+          </Label>
+          <Input
+            id="city"
+            value={address.city ?? ""}
+            onChange={(e) => handleFieldChange("city", e.target.value)}
+            onBlur={handleBlur}
+            placeholder="Tunis"
+            className="h-9"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="postcode" className="text-xs text-muted-foreground">
+            Code postal
+          </Label>
+          <Input
+            id="postcode"
+            value={address.postcode ?? ""}
+            onChange={(e) => handleFieldChange("postcode", e.target.value)}
+            onBlur={handleBlur}
+            placeholder="1000"
+            className="h-9"
+          />
+        </div>
       </div>
-      <Suspense fallback={<Skeleton className="h-16" />}>
-        <AddressField handle={handle} field="country" label="Pays" placeholder="Tunisie" />
-      </Suspense>
+      <div className="space-y-1.5">
+        <Label htmlFor="country" className="text-xs text-muted-foreground">
+          Pays
+        </Label>
+        <Input
+          id="country"
+          value={address.country ?? ""}
+          onChange={(e) => handleFieldChange("country", e.target.value)}
+          onBlur={handleBlur}
+          placeholder="Tunisie"
+          className="h-9"
+        />
+      </div>
     </div>
   );
 }
-
-function AddressEditorSkeleton() {
-  return (
-    <div className="space-y-3">
-      <Skeleton className="h-16" />
-      <Skeleton className="h-16" />
-      <Skeleton className="h-16" />
-      <div className="grid grid-cols-2 gap-3">
-        <Skeleton className="h-16" />
-        <Skeleton className="h-16" />
-      </div>
-      <Skeleton className="h-16" />
-    </div>
-  );
-}
-
-export function AddressEditor(props: AddressEditorProps) {
-  return (
-    <Suspense fallback={<AddressEditorSkeleton />}>
-      <AddressEditorContent {...props} />
-    </Suspense>
-  );
-}
-

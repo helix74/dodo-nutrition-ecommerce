@@ -1,53 +1,37 @@
 "use client";
 
-import { Suspense, useState } from "react";
-import {
-  useApplyDocumentActions,
-  useDocument,
-  publishDocument,
-  discardDocument,
-  type DocumentHandle,
-} from "@sanity/sdk-react";
+import { useState } from "react";
 import { Save, Check, Loader2, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { publishDocument, unpublishDocument } from "@/lib/actions/admin-mutations";
 
-interface PublishButtonProps extends DocumentHandle {
+interface PublishButtonProps {
+  documentId: string;
+  isDraft?: boolean;
   variant?: "default" | "outline" | "ghost";
   size?: "default" | "sm" | "lg" | "icon";
 }
 
-function PublishButtonContent({
+export function PublishButton({
+  documentId,
+  isDraft,
   variant = "default",
   size = "default",
-  ...handle
 }: PublishButtonProps) {
   const [isPublishing, setIsPublishing] = useState(false);
   const [justPublished, setJustPublished] = useState(false);
-  const apply = useApplyDocumentActions();
 
-  // Get the document to check if it's a draft
-  const { data: document } = useDocument(handle);
-
-  // Check if the document is a draft by looking at the _id
-  const isDraft = document?._id?.startsWith("drafts.");
+  if (!isDraft && !justPublished) return null;
 
   const handlePublish = async () => {
     setIsPublishing(true);
     try {
-      // Use the base ID (without drafts. prefix) for publishing
-      const baseId = handle.documentId.replace("drafts.", "");
-      await apply(
-        publishDocument({
-          documentId: baseId,
-          documentType: handle.documentType,
-        }),
-      );
+      await publishDocument(documentId);
       setJustPublished(true);
       setTimeout(() => setJustPublished(false), 2000);
     } catch (error) {
@@ -56,11 +40,6 @@ function PublishButtonContent({
       setIsPublishing(false);
     }
   };
-
-  // Only show button if there's a draft to publish
-  if (!isDraft && !justPublished) {
-    return null;
-  }
 
   if (justPublished) {
     return (
@@ -94,45 +73,26 @@ function PublishButtonContent({
   );
 }
 
-function PublishButtonSkeleton() {
-  return <Skeleton className="h-10 w-[140px]" />;
-}
-
-export function PublishButton(props: PublishButtonProps) {
-  return (
-    <Suspense fallback={<PublishButtonSkeleton />}>
-      <PublishButtonContent {...props} />
-    </Suspense>
-  );
-}
-
-// Revert Button Component (Icon-only, destructive)
-interface RevertButtonProps extends DocumentHandle {
+interface RevertButtonProps {
+  documentId: string;
+  isDraft?: boolean;
   size?: "default" | "sm" | "lg" | "icon";
 }
 
-function RevertButtonContent({ size = "icon", ...handle }: RevertButtonProps) {
+export function RevertButton({
+  documentId,
+  isDraft,
+  size = "icon",
+}: RevertButtonProps) {
   const [isReverting, setIsReverting] = useState(false);
   const [justReverted, setJustReverted] = useState(false);
-  const apply = useApplyDocumentActions();
 
-  // Get the document to check if it's a draft
-  const { data: document } = useDocument(handle);
-
-  // Check if the document is a draft by looking at the _id
-  const isDraft = document?._id?.startsWith("drafts.");
+  if (!isDraft && !justReverted) return null;
 
   const handleRevert = async () => {
     setIsReverting(true);
     try {
-      // Use the base ID (without drafts. prefix) for discarding
-      const baseId = handle.documentId.replace("drafts.", "");
-      await apply(
-        discardDocument({
-          documentId: baseId,
-          documentType: handle.documentType,
-        }),
-      );
+      await unpublishDocument(documentId);
       setJustReverted(true);
       setTimeout(() => setJustReverted(false), 2000);
     } catch (error) {
@@ -141,11 +101,6 @@ function RevertButtonContent({ size = "icon", ...handle }: RevertButtonProps) {
       setIsReverting(false);
     }
   };
-
-  // Only show button if there's a draft to revert
-  if (!isDraft && !justReverted) {
-    return null;
-  }
 
   if (justReverted) {
     return (
@@ -175,13 +130,5 @@ function RevertButtonContent({ size = "icon", ...handle }: RevertButtonProps) {
         <p>Discard changes</p>
       </TooltipContent>
     </Tooltip>
-  );
-}
-
-export function RevertButton(props: RevertButtonProps) {
-  return (
-    <Suspense fallback={null}>
-      <RevertButtonContent {...props} />
-    </Suspense>
   );
 }

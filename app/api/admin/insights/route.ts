@@ -12,7 +12,7 @@ import {
   UNFULFILLED_ORDERS_QUERY,
   REVENUE_BY_PERIOD_QUERY,
 } from "@/lib/sanity/queries/stats";
-import { isAdmin } from "@/lib/auth/admin";
+import { isAdminAuthenticated } from "@/lib/auth/admin-session";
 import { rateLimit, getClientIP } from "@/lib/rate-limit";
 
 interface OrderItem {
@@ -72,9 +72,9 @@ interface RevenuePeriod {
 
 export async function GET(request: Request) {
   try {
-    // Check admin authorization
-    const adminCheck = await isAdmin();
-    if (!adminCheck) {
+    // Check admin authorization using JWT session
+    const isAuthed = await isAdminAuthenticated();
+    if (!isAuthed) {
       return Response.json(
         { success: false, error: "Accès non autorisé" },
         { status: 403 }

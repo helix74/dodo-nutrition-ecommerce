@@ -1,13 +1,7 @@
 "use client";
 
-import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  useDocument,
-  useDocumentProjection,
-  type DocumentHandle,
-} from "@sanity/sdk-react";
 import { CircleAlert, ExternalLink, Star } from "lucide-react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -19,60 +13,36 @@ import { PriceInput } from "./PriceInput";
 import { FeaturedToggle } from "./FeaturedToggle";
 import { PublishButton, RevertButton } from "./PublishButton";
 
-interface ProductProjection {
+export interface ProductRowData {
+  _id: string;
   name: string;
   slug: string;
   stock: number;
   price: number;
   featured: boolean;
-  category: {
-    title: string;
-  } | null;
-  image: {
-    asset: {
-      url: string;
-    } | null;
-  } | null;
+  isDraft?: boolean;
+  category?: { title?: string; name?: string } | null;
+  image?: { asset?: { url?: string } | null } | null;
 }
 
-function ProductRowContent(handle: DocumentHandle) {
-  const { data } = useDocumentProjection<ProductProjection>({
-    ...handle,
-    projection: `{
-      name,
-      "slug": slug.current,
-      stock,
-      price,
-      featured,
-      category->{
-        title
-      },
-      "image": images[0]{
-        asset->{
-          url
-        }
-      }
-    }`,
-  });
+interface ProductRowProps {
+  product: ProductRowData;
+}
 
-  // Check if document is a draft (unpublished changes)
-  const { data: document } = useDocument(handle);
-  const isDraft = document?._id?.startsWith("drafts.");
-
-  if (!data) return null;
-
-  const lowStock = isLowStock(data.stock);
-  const outOfStock = isOutOfStock(data.stock);
+function ProductRowContent({ product }: ProductRowProps) {
+  const lowStock = isLowStock(product.stock);
+  const outOfStock = isOutOfStock(product.stock);
+  const documentId = product._id.replace("drafts.", "");
 
   return (
     <TableRow className="group">
       {/* Image - Desktop only */}
       <TableCell className="hidden py-3 sm:table-cell">
         <div className="relative h-12 w-12 overflow-hidden rounded-md bg-secondary">
-          {data.image?.asset?.url ? (
+          {product.image?.asset?.url ? (
             <Image
-              src={data.image.asset.url}
-              alt={data.name}
+              src={product.image.asset.url}
+              alt={product.name}
               fill
               className="object-cover"
               sizes="48px"
@@ -85,18 +55,18 @@ function ProductRowContent(handle: DocumentHandle) {
         </div>
       </TableCell>
 
-      {/* Name - Mobile: includes image, price, stock badges */}
+      {/* Name */}
       <TableCell className="py-3 sm:py-4 whitespace-normal max-w-[180px] sm:max-w-[300px]">
         <Link
-          href={`/admin/inventory/${handle.documentId}`}
+          href={`/admin/inventory/${documentId}`}
           className="flex items-start gap-3 sm:block"
         >
           {/* Mobile image */}
           <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-secondary sm:hidden">
-            {data.image?.asset?.url ? (
+            {product.image?.asset?.url ? (
               <Image
-                src={data.image.asset.url}
-                alt={data.name}
+                src={product.image.asset.url}
+                alt={product.name}
                 fill
                 className="object-cover"
                 sizes="48px"
@@ -110,18 +80,18 @@ function ProductRowContent(handle: DocumentHandle) {
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
               <span className="font-medium text-foreground group-hover:text-dodo-yellow line-clamp-2">
-                {data.name || "Produit sans nom"}
+                {product.name || "Produit sans nom"}
               </span>
-              {data.featured && (
+              {product.featured && (
                 <Star className="h-3.5 w-3.5 shrink-0 fill-amber-400 text-amber-400 sm:hidden" />
               )}
-              {data.slug && (
+              {product.slug && (
                 <button
                   type="button"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    window.open(`/products/${data.slug}`, "_blank");
+                    window.open(`/products/${product.slug}`, "_blank");
                   }}
                   className="hidden shrink-0 opacity-0 transition-opacity group-hover:opacity-100 sm:block"
                   aria-label="Voir le produit"
@@ -130,7 +100,7 @@ function ProductRowContent(handle: DocumentHandle) {
                 </button>
               )}
             </div>
-            {isDraft && (
+            {product.isDraft && (
               <div className="mt-1 flex items-center gap-1 sm:hidden">
                 <Badge
                   variant="outline"
@@ -141,19 +111,19 @@ function ProductRowContent(handle: DocumentHandle) {
                 </Badge>
               </div>
             )}
-            {data.category && (
+            {(product.category?.title || product.category?.name) && (
               <p className="truncate text-xs text-muted-foreground">
-                {data.category.title}
+                {product.category.title || product.category.name}
               </p>
             )}
             {/* Mobile: show price and stock inline */}
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs sm:hidden">
               <span className="font-medium text-foreground">
-                {formatPrice(data.price)}
+                {formatPrice(product.price)}
               </span>
               <span className="text-muted-foreground">•</span>
               <span className="text-muted-foreground">
-                {data.stock} en stock
+                {product.stock} en stock
               </span>
               {outOfStock && (
                 <Badge variant="destructive" className="h-5 px-1.5 text-[10px]">
@@ -175,17 +145,13 @@ function ProductRowContent(handle: DocumentHandle) {
 
       {/* Price - Desktop only */}
       <TableCell className="hidden py-4 md:table-cell">
-        <Suspense fallback={<Skeleton className="h-8 w-24" />}>
-          <PriceInput {...handle} />
-        </Suspense>
+        <PriceInput productId={documentId} initialPrice={product.price} />
       </TableCell>
 
       {/* Stock - Desktop only */}
       <TableCell className="hidden py-4 md:table-cell">
         <div className="flex items-center gap-2">
-          <Suspense fallback={<Skeleton className="h-8 w-20" />}>
-            <StockInput {...handle} />
-          </Suspense>
+          <StockInput productId={documentId} initialStock={product.stock} />
           {outOfStock && (
             <Badge variant="destructive" className="text-xs">
               Rupture
@@ -204,20 +170,14 @@ function ProductRowContent(handle: DocumentHandle) {
 
       {/* Featured - Desktop only */}
       <TableCell className="hidden py-4 lg:table-cell">
-        <Suspense fallback={<Skeleton className="h-8 w-8" />}>
-          <FeaturedToggle {...handle} />
-        </Suspense>
+        <FeaturedToggle productId={documentId} initialFeatured={product.featured} />
       </TableCell>
 
       {/* Actions - Desktop only */}
       <TableCell className="hidden py-4 sm:table-cell">
         <div className="flex items-center justify-end gap-2">
-          <Suspense fallback={null}>
-            <RevertButton {...handle} size="sm" />
-          </Suspense>
-          <Suspense fallback={null}>
-            <PublishButton {...handle} size="sm" variant="outline" />
-          </Suspense>
+          <RevertButton documentId={documentId} isDraft={product.isDraft} size="sm" />
+          <PublishButton documentId={documentId} isDraft={product.isDraft} size="sm" variant="outline" />
         </div>
       </TableCell>
     </TableRow>
@@ -259,12 +219,8 @@ function ProductRowSkeleton() {
   );
 }
 
-export function ProductRow(props: DocumentHandle) {
-  return (
-    <Suspense fallback={<ProductRowSkeleton />}>
-      <ProductRowContent {...props} />
-    </Suspense>
-  );
+export function ProductRow({ product }: ProductRowProps) {
+  return <ProductRowContent product={product} />;
 }
 
 export { ProductRowSkeleton };

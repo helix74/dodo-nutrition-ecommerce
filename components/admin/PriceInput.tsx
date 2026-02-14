@@ -1,43 +1,34 @@
 "use client";
 
-import { Suspense } from "react";
-import {
-  useDocument,
-  useEditDocument,
-  type DocumentHandle,
-} from "@sanity/sdk-react";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useTransition } from "react";
+import { updateProductField } from "@/lib/actions/admin-mutations";
 
-interface PriceInputProps extends DocumentHandle {}
-
-function PriceInputContent(handle: PriceInputProps) {
-  const { data: price } = useDocument({ ...handle, path: "price" });
-  const editPrice = useEditDocument({ ...handle, path: "price" });
-
-  return (
-    <div className="flex items-center gap-1">
-      <span className="text-sm text-muted-foreground">TND</span>
-      <Input
-        type="number"
-        min={0}
-        step={0.01}
-        value={(price as number) ?? 0}
-        onChange={(e) => editPrice(parseFloat(e.target.value) || 0)}
-        className="h-8 w-24 text-right"
-      />
-    </div>
-  );
+interface PriceInputProps {
+  productId: string;
+  initialPrice: number;
 }
 
-function PriceInputSkeleton() {
-  return <Skeleton className="h-8 w-24" />;
-}
+export function PriceInput({ productId, initialPrice }: PriceInputProps) {
+  const [price, setPrice] = useState(initialPrice);
+  const [isPending, startTransition] = useTransition();
 
-export function PriceInput(props: PriceInputProps) {
+  function handleBlur() {
+    if (price !== initialPrice) {
+      startTransition(async () => {
+        await updateProductField(productId, "price", price);
+      });
+    }
+  }
+
   return (
-    <Suspense fallback={<PriceInputSkeleton />}>
-      <PriceInputContent {...props} />
-    </Suspense>
+    <input
+      type="number"
+      value={price ?? ""}
+      onChange={(e) => setPrice(Number(e.target.value))}
+      onBlur={handleBlur}
+      min={0}
+      step={0.01}
+      className={`w-24 rounded-md border border-border bg-background px-2 py-1.5 text-sm text-foreground focus:border-dodo-yellow focus:outline-none focus:ring-1 focus:ring-dodo-yellow ${isPending ? "opacity-50" : ""}`}
+    />
   );
 }

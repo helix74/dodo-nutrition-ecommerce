@@ -1,75 +1,48 @@
 "use client";
 
-import { Suspense } from "react";
-import {
-  useDocument,
-  useEditDocument,
-  useApplyDocumentActions,
-  publishDocument,
-  type DocumentHandle,
-} from "@sanity/sdk-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ORDER_STATUS_CONFIG, getOrderStatus, type OrderStatusValue } from "@/lib/constants/orderStatus";
+import { useState, useTransition } from "react";
+import { updateOrderStatus } from "@/lib/actions/admin-mutations";
+import { publishDocument } from "@/lib/actions/admin-mutations";
+import { ORDER_STATUS_VALUES, ORDER_STATUS_CONFIG, getOrderStatus, type OrderStatusValue } from "@/lib/constants/orderStatus";
 
-interface StatusSelectProps extends DocumentHandle {}
+interface StatusSelectProps {
+  documentId: string;
+  initialStatus: string;
+}
 
-function StatusSelectContent(handle: StatusSelectProps) {
-  const { data: status } = useDocument({ ...handle, path: "status" });
-  const editStatus = useEditDocument({ ...handle, path: "status" });
-  const apply = useApplyDocumentActions();
+export function StatusSelect({ documentId, initialStatus }: StatusSelectProps) {
+  const [status, setStatus] = useState(initialStatus);
+  const [isPending, startTransition] = useTransition();
+  const statusInfo = getOrderStatus(status as OrderStatusValue);
+  const StatusIcon = statusInfo.icon;
 
-  const currentStatus = (status as string) ?? "paid";
-  const statusConfig = getOrderStatus(currentStatus);
-  const StatusIcon = statusConfig.icon;
-
-  const handleStatusChange = async (value: string) => {
-    editStatus(value);
-    // Auto-publish status changes so they take effect immediately
-    await apply(publishDocument(handle));
-  };
+  function handleChange(newStatus: string) {
+    setStatus(newStatus);
+    startTransition(async () => {
+      await updateOrderStatus(documentId, newStatus);
+      // Auto-publish the order after status update
+      await publishDocument(documentId);
+    });
+  }
 
   return (
-    <Select value={currentStatus} onValueChange={handleStatusChange}>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue>
-          <div className="flex items-center gap-2">
-            <StatusIcon className="h-4 w-4" />
-            {statusConfig.label}
-          </div>
-        </SelectValue>
-      </SelectTrigger>
-      <SelectContent>
-        {Object.entries(ORDER_STATUS_CONFIG).map(([value, config]) => {
-          const Icon = config.icon;
-          return (
-            <SelectItem key={value} value={value}>
-              <div className="flex items-center gap-2">
-                <Icon className="h-4 w-4" />
-                {config.label}
-              </div>
-            </SelectItem>
-          );
-        })}
-      </SelectContent>
-    </Select>
+    <div className="flex items-center gap-2">
+      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${statusInfo.color}`}>
+        <StatusIcon className="h-4 w-4" />
+      </div>
+      <select
+        value={status}
+        onChange={(e) => handleChange(e.target.value)}
+        disabled={isPending}
+        className={`rounded-md border border-border bg-background px-2 py-1.5 text-sm text-foreground focus:border-dodo-yellow focus:outline-none focus:ring-1 focus:ring-dodo-yellow ${isPending ? "opacity-50" : ""}`}
+      >
+        {ORDER_STATUS_VALUES.map((s: OrderStatusValue) => (
+          <option key={s} value={s}>
+            {ORDER_STATUS_CONFIG[s].label}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }
 
-function StatusSelectSkeleton() {
-  return <Skeleton className="h-10 w-[180px]" />;
-}
-
-export function StatusSelect(props: StatusSelectProps) {
-  return (
-    <Suspense fallback={<StatusSelectSkeleton />}>
-      <StatusSelectContent {...props} />
-    </Suspense>
-  );
-}

@@ -1,13 +1,7 @@
 "use client";
 
-import { useState, useRef, Suspense } from "react";
+import { useState, useRef, useTransition } from "react";
 import Image from "next/image";
-import {
-  useDocument,
-  useEditDocument,
-  useClient,
-  type DocumentHandle,
-} from "@sanity/sdk-react";
 import {
   Upload,
   X,
@@ -17,8 +11,8 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { updateProductImages } from "@/lib/actions/admin-mutations";
 
 interface SanityImageAsset {
   _type: "image";
@@ -38,16 +32,17 @@ interface ImageWithUrl {
   } | null;
 }
 
-function ImageUploaderContent(handle: DocumentHandle) {
+interface ImageUploaderProps {
+  productId: string;
+  initialImages: ImageWithUrl[];
+}
+
+export function ImageUploader({ productId, initialImages }: ImageUploaderProps) {
+  const [images, setImages] = useState<ImageWithUrl[]>(initialImages || []);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string | null>(null);
+  const [, startTransition] = useTransition();
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const client = useClient({ apiVersion: "2024-01-01" });
-  const { data: images } = useDocument({ ...handle, path: "images" });
-  const editImages = useEditDocument({ ...handle, path: "images" });
-
-  const currentImages = (images as ImageWithUrl[] | null) ?? [];
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -57,31 +52,41 @@ function ImageUploaderContent(handle: DocumentHandle) {
     setUploadProgress(`Téléchargement de ${files.length} image(s)...`);
 
     try {
-      const newImages: SanityImageAsset[] = [];
-
+      // Upload images via API route
+      const formData = new FormData();
       for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        setUploadProgress(`Téléchargement ${i + 1} sur ${files.length}...`);
-
-        // Upload the asset to Sanity
-        const asset = await client.assets.upload("image", file, {
-          filename: file.name,
-        });
-
-        // Create the image object with a unique key
-        newImages.push({
-          _type: "image",
-          _key: crypto.randomUUID(),
-          asset: {
-            _type: "reference",
-            _ref: asset._id,
-          },
-        });
+        formData.append("files", files[i]);
       }
+      formData.append("productId", productId);
 
-      // Append new images to existing ones
-      const updatedImages = [...currentImages, ...newImages];
-      editImages(updatedImages);
+      const response = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Upload failed");
+
+      const { images: newImageRefs } = await response.json();
+
+      const newImages: SanityImageAsset[] = newImageRefs.map((ref: string) => ({
+        _type: "image",
+        _key: crypto.randomUUID(),
+        asset: { _type: "reference", _ref: ref },
+      }));
+
+      const updatedImages = [...images, ...newImages];
+      setImages(updatedImages);
+
+      startTransition(async () => {
+        await updateProductImages(
+          productId,
+          updatedImages.map((img) => ({
+            _key: img._key,
+            _type: img._type || "image",
+            asset: { _ref: img.asset?._ref || "" },
+          })),
+        );
+      });
 
       setUploadProgress(null);
     } catch (error) {
@@ -90,7 +95,6 @@ function ImageUploaderContent(handle: DocumentHandle) {
       setTimeout(() => setUploadProgress(null), 3000);
     } finally {
       setIsUploading(false);
-      // Reset the file input
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -98,19 +102,39 @@ function ImageUploaderContent(handle: DocumentHandle) {
   };
 
   const handleRemoveImage = (keyToRemove: string) => {
-    const updatedImages = currentImages.filter(
-      (img) => img._key !== keyToRemove,
-    );
-    editImages(updatedImages.length > 0 ? updatedImages : null);
+    const updatedImages = images.filter((img) => img._key !== keyToRemove);
+    setImages(updatedImages);
+
+    startTransition(async () => {
+      await updateProductImages(
+        productId,
+        updatedImages.map((img) => ({
+          _key: img._key,
+          _type: img._type || "image",
+          asset: { _ref: img.asset?._ref || "" },
+        })),
+      );
+    });
   };
 
   const handleMoveImage = (fromIndex: number, toIndex: number) => {
-    if (toIndex < 0 || toIndex >= currentImages.length) return;
+    if (toIndex < 0 || toIndex >= images.length) return;
 
-    const updatedImages = [...currentImages];
+    const updatedImages = [...images];
     const [movedImage] = updatedImages.splice(fromIndex, 1);
     updatedImages.splice(toIndex, 0, movedImage);
-    editImages(updatedImages);
+    setImages(updatedImages);
+
+    startTransition(async () => {
+      await updateProductImages(
+        productId,
+        updatedImages.map((img) => ({
+          _key: img._key,
+          _type: img._type || "image",
+          asset: { _ref: img.asset?._ref || "" },
+        })),
+      );
+    });
   };
 
   return (
@@ -148,9 +172,9 @@ function ImageUploaderContent(handle: DocumentHandle) {
       </div>
 
       {/* Image Grid */}
-      {currentImages.length > 0 ? (
+      {images.length > 0 ? (
         <div className="grid grid-cols-2 gap-3">
-          {currentImages.map((image, index) => (
+          {images.map((image, index) => (
             <ImageThumbnail
               key={image._key}
               image={image}
@@ -160,7 +184,7 @@ function ImageUploaderContent(handle: DocumentHandle) {
               onMoveUp={() => handleMoveImage(index, index - 1)}
               onMoveDown={() => handleMoveImage(index, index + 1)}
               canMoveUp={index > 0}
-              canMoveDown={index < currentImages.length - 1}
+              canMoveDown={index < images.length - 1}
             />
           ))}
         </div>
@@ -176,9 +200,9 @@ function ImageUploaderContent(handle: DocumentHandle) {
         </div>
       )}
 
-      {currentImages.length > 0 && (
+      {images.length > 0 && (
         <p className="text-xs text-muted-foreground">
-          La première image est l'image principale. Glissez pour réorganiser.
+          La première image est l&apos;image principale. Utilisez les flèches pour réorganiser.
         </p>
       )}
     </div>
@@ -205,12 +229,10 @@ function ImageThumbnail({
   canMoveUp,
   canMoveDown,
 }: ImageThumbnailProps) {
-  // Build URL from asset reference
   const assetRef = image.asset?._ref;
   let imageUrl: string | null = null;
 
   if (assetRef) {
-    // Parse Sanity asset ID: image-{id}-{width}x{height}-{format}
     const match = assetRef.match(/^image-([a-zA-Z0-9]+)-(\d+x\d+)-(\w+)$/);
     if (match) {
       const [, id, dimensions, format] = match;
@@ -240,16 +262,13 @@ function ImageThumbnail({
         </div>
       )}
 
-      {/* First image badge */}
       {isFirst && (
         <div className="absolute left-2 top-2 rounded bg-dodo-yellow px-1.5 py-0.5 text-xs font-medium text-black">
           Principale
         </div>
       )}
 
-      {/* Actions overlay */}
       <div className="absolute inset-0 flex items-center justify-center gap-1 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-        {/* Reorder buttons */}
         <div className="flex flex-col gap-1">
           <Button
             type="button"
@@ -273,7 +292,6 @@ function ImageThumbnail({
           </Button>
         </div>
 
-        {/* Delete button */}
         <Button
           type="button"
           variant="destructive"
@@ -285,25 +303,5 @@ function ImageThumbnail({
         </Button>
       </div>
     </div>
-  );
-}
-
-function ImageUploaderSkeleton() {
-  return (
-    <div className="space-y-4">
-      <Skeleton className="h-10 w-full" />
-      <div className="grid grid-cols-2 gap-3">
-        <Skeleton className="aspect-square rounded-lg" />
-        <Skeleton className="aspect-square rounded-lg" />
-      </div>
-    </div>
-  );
-}
-
-export function ImageUploader(props: DocumentHandle) {
-  return (
-    <Suspense fallback={<ImageUploaderSkeleton />}>
-      <ImageUploaderContent {...props} />
-    </Suspense>
   );
 }

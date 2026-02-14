@@ -1,70 +1,62 @@
 "use client";
 
-import { Suspense } from "react";
 import Link from "next/link";
-import { useDocumentProjection, type DocumentHandle } from "@sanity/sdk-react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getOrderStatus } from "@/lib/constants/orderStatus";
 import { formatPrice, formatDate, formatOrderNumber } from "@/lib/utils";
 
-interface OrderProjection {
+export interface OrderRowData {
+  _id: string;
   orderNumber: string;
-  email: string;
-  total: number;
+  email?: string;
+  customerEmail?: string;
+  total?: number;
+  totalPrice?: number;
   status: string;
-  createdAt: string;
-  itemCount: number;
+  createdAt?: string;
+  _createdAt?: string;
+  itemCount?: number;
 }
 
-function OrderRowContent(handle: DocumentHandle) {
-  const { data } = useDocumentProjection<OrderProjection>({
-    ...handle,
-    projection: `{
-      orderNumber,
-      email,
-      total,
-      status,
-      createdAt,
-      "itemCount": count(items)
-    }`,
-  });
+interface OrderRowProps {
+  order: OrderRowData;
+}
 
-  if (!data) return null;
-
-  const status = getOrderStatus(data.status);
+function OrderRowContent({ order }: OrderRowProps) {
+  const email = order.email || order.customerEmail || "";
+  const total = order.total || order.totalPrice || 0;
+  const createdAt = order.createdAt || order._createdAt || "";
+  const status = getOrderStatus(order.status);
   const StatusIcon = status.icon;
 
   return (
     <TableRow className="group transition-colors hover:bg-muted/50">
-      {/* Order Info - Mobile: includes email, items, total */}
+      {/* Order Info */}
       <TableCell className="py-3 sm:py-4">
-        <Link href={`/admin/orders/${handle.documentId}`} className="block">
+        <Link href={`/admin/orders/${order._id}`} className="block">
           <div className="flex items-center justify-between gap-2 sm:block">
             <span className="font-medium text-foreground">
-              #{formatOrderNumber(data.orderNumber)}
+              #{formatOrderNumber(order.orderNumber)}
             </span>
-            {/* Mobile: Total inline */}
             <span className="font-medium text-foreground sm:hidden">
-              {formatPrice(data.total)}
+              {formatPrice(total)}
             </span>
           </div>
-          {/* Mobile: Email and items */}
           <div className="mt-1 sm:hidden">
             <p className="truncate text-xs text-muted-foreground">
-              {data.email}
+              {email}
             </p>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              {data.itemCount} {data.itemCount === 1 ? "article" : "articles"}
-              {data.createdAt && (
+              {order.itemCount} {order.itemCount === 1 ? "article" : "articles"}
+              {createdAt && (
                 <>
                   {" · "}
-                  {formatDate(data.createdAt, "short")}
+                  {formatDate(createdAt, "short")}
                 </>
               )}
             </p>
-            {/* Mobile: Status Badge */}
             <div className="mt-2">
               <Badge
                 className={`${status.color} flex w-fit items-center gap-1 text-[10px]`}
@@ -79,37 +71,29 @@ function OrderRowContent(handle: DocumentHandle) {
 
       {/* Email - Desktop only */}
       <TableCell className="hidden py-4 text-muted-foreground sm:table-cell">
-        <Link
-          href={`/admin/orders/${handle.documentId}`}
-          className="block truncate"
-        >
-          {data.email}
+        <Link href={`/admin/orders/${order._id}`} className="block truncate">
+          {email}
         </Link>
       </TableCell>
 
       {/* Items - Desktop only */}
       <TableCell className="hidden py-4 text-center md:table-cell">
-        <Link href={`/admin/orders/${handle.documentId}`} className="block text-foreground">
-          {data.itemCount}
+        <Link href={`/admin/orders/${order._id}`} className="block text-foreground">
+          {order.itemCount ?? "—"}
         </Link>
       </TableCell>
 
       {/* Total - Desktop only */}
       <TableCell className="hidden py-4 font-medium text-foreground sm:table-cell">
-        <Link href={`/admin/orders/${handle.documentId}`} className="block">
-          {formatPrice(data.total)}
+        <Link href={`/admin/orders/${order._id}`} className="block">
+          {formatPrice(total)}
         </Link>
       </TableCell>
 
       {/* Status - Desktop only */}
       <TableCell className="hidden py-4 sm:table-cell">
-        <Link
-          href={`/admin/orders/${handle.documentId}`}
-          className="flex justify-start"
-        >
-          <Badge
-            className={`${status.color} flex w-fit items-center gap-1 text-xs`}
-          >
+        <Link href={`/admin/orders/${order._id}`} className="flex justify-start">
+          <Badge className={`${status.color} flex w-fit items-center gap-1 text-xs`}>
             <StatusIcon className="h-3 w-3" />
             <span>{status.label}</span>
           </Badge>
@@ -118,8 +102,8 @@ function OrderRowContent(handle: DocumentHandle) {
 
       {/* Date - Desktop only */}
       <TableCell className="hidden py-4 text-muted-foreground md:table-cell">
-        <Link href={`/admin/orders/${handle.documentId}`} className="block">
-          {formatDate(data.createdAt, "long", "—")}
+        <Link href={`/admin/orders/${order._id}`} className="block">
+          {formatDate(createdAt, "long", "—")}
         </Link>
       </TableCell>
     </TableRow>
@@ -162,12 +146,8 @@ function OrderRowSkeleton() {
   );
 }
 
-export function OrderRow(props: DocumentHandle) {
-  return (
-    <Suspense fallback={<OrderRowSkeleton />}>
-      <OrderRowContent {...props} />
-    </Suspense>
-  );
+export function OrderRow({ order }: OrderRowProps) {
+  return <OrderRowContent order={order} />;
 }
 
 export { OrderRowSkeleton };
