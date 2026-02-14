@@ -5,6 +5,41 @@
 
 ---
 
+## [1.2.0] - 2026-02-14 — Admin Auth Refactor & Doc Cleanup
+
+### Added
+
+- Custom JWT authentication for admin dashboard (`lib/auth/admin-session.ts`)
+- Admin login page (`/admin/login`) with username/password
+- Server actions for all Sanity mutations (`lib/actions/admin-mutations.ts`)
+- Server actions for all Sanity reads (`lib/actions/admin-data.ts`)
+- API routes: `/api/admin/auth`, `/api/admin/products`, `/api/admin/upload`
+- `jose` package for JWT handling
+- Consolidated [ROADMAP.md](./ROADMAP.md) — single source of truth
+
+### Changed
+
+- **BREAKING**: Admin auth switched from Clerk to custom JWT
+- All admin components now use server actions instead of Sanity SDK hooks
+- Inventory/Orders pages converted to server components with client wrappers
+- 10+ admin components refactored (PriceInput, StockInput, FeaturedToggle, StatusSelect, PublishButton, DeleteButton, AddressEditor, ImageUploader, ProductRow, OrderRow)
+- Insights API now uses JWT auth instead of Clerk `isAdmin()`
+- Admin layout no longer wraps with `SanityAppProvider`
+
+### Removed
+
+- `@sanity/sdk-react` dependency from admin routes
+- `Providers.tsx` wrapper from admin layout
+- Clerk auth requirement for admin routes
+- 15 redundant documentation files (content merged into [ROADMAP.md](./ROADMAP.md))
+
+### Fixed
+
+- Order status update "Authentification requise" error (wrong import path)
+- Insights API 403 error (was using Clerk instead of JWT)
+
+---
+
 ## [1.1.0] - 2026-02-12 — Security Audit & Cleanup
 
 ### Added

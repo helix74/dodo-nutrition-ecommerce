@@ -1,7 +1,7 @@
 # Project Constitution: Dodo Nutrition
 
 > **The governing document for all development on this project.**  
-> **Last Updated**: 2026-02-12
+> **Last Updated**: 2026-02-14
 
 ---
 
@@ -46,18 +46,19 @@
 
 ## 4. Tech Stack
 
-| Layer          | Technology    | Version/Notes     |
-| -------------- | ------------- | ----------------- |
-| **Framework**  | Next.js       | 16 (App Router)   |
-| **Language**   | TypeScript    | Strict mode       |
-| **CMS**        | Sanity        | v4                |
-| **Auth**       | Clerk         | with AgentKit     |
-| **AI**         | Vercel AI SDK | Groq (Llama)      |
-| **Payment**    | COD Only      | No Stripe         |
-| **Styling**    | Tailwind CSS  | v4                |
-| **UI Library** | Shadcn/UI     | 23+ components    |
-| **State**      | Zustand       | Cart, Chat stores |
-| **Linting**    | Biome         | (No ESLint)       |
+| Layer            | Technology    | Version/Notes             |
+| ---------------- | ------------- | ------------------------- |
+| **Framework**    | Next.js       | 16 (App Router)           |
+| **Language**     | TypeScript    | Strict mode               |
+| **CMS**          | Sanity        | v4                        |
+| **Auth (Store)** | Clerk         | Customer sign-up/login    |
+| **Auth (Admin)** | Custom JWT    | Username/password, `jose` |
+| **AI**           | Vercel AI SDK | Groq (Llama)              |
+| **Payment**      | COD Only      | No Stripe                 |
+| **Styling**      | Tailwind CSS  | v4                        |
+| **UI Library**   | Shadcn/UI     | 23+ components            |
+| **State**        | Zustand       | Cart, Chat stores         |
+| **Linting**      | Biome         | (No ESLint)               |
 
 ---
 
@@ -113,13 +114,13 @@ specs/         → Feature specifications
 
 ## 8. Documentation Index
 
-| Document                                             | Purpose             |
-| ---------------------------------------------------- | ------------------- |
-| [ROADMAP.md](./ROADMAP.md)                           | Development phases  |
-| [docs/README.md](./docs/README.md)                   | Documentation hub   |
-| [docs/architecture.md](./docs/architecture.md)       | System architecture |
-| [docs/database-schema.md](./docs/database-schema.md) | Sanity schemas      |
-| [.agent/rules/rules.md](./.agent/rules/rules.md)     | Coding standards    |
+| Document                                                                           | Purpose             |
+| ---------------------------------------------------------------------------------- | ------------------- |
+| [docs/ROADMAP.md](./docs/ROADMAP.md)                                               | Development roadmap |
+| [docs/README.md](./docs/README.md)                                                 | Documentation hub   |
+| [docs/03-architecture/system-context.md](./docs/03-architecture/system-context.md) | System architecture |
+| [docs/database-schema.md](./docs/database-schema.md)                               | Sanity schemas      |
+| [docs/CHANGELOG.md](./docs/CHANGELOG.md)                                           | Version history     |
 
 ---
 

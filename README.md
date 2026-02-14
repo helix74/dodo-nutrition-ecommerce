@@ -80,14 +80,21 @@ pnpm dev
 ## 🔧 Environment Variables
 
 ```env
-# Required
+# Required — Sanity
+NEXT_PUBLIC_SANITY_PROJECT_ID=
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_WRITE_TOKEN=
+
+# Required — Clerk (Storefront Auth)
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
-NEXT_PUBLIC_SANITY_PROJECT_ID=
-SANITY_API_WRITE_TOKEN=
-ADMIN_EMAILS=admin@example.com
 
-# Optional (AI & Email)
+# Required — Admin Auth (JWT)
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your-secure-password
+ADMIN_JWT_SECRET=your-random-secret
+
+# Optional — AI & Email
 GROQ_API_KEY=
 RESEND_API_KEY=
 ```
@@ -96,23 +103,25 @@ RESEND_API_KEY=
 
 ## 📚 Documentation
 
-| Document                                                   | Description    |
-| ---------------------------------------------------------- | -------------- |
-| [Documentation Hub](./docs/README.md)                      | All docs index |
-| [Architecture](./docs/03-architecture/system-context.md)   | System diagram |
-| [API Contracts](./docs/03-architecture/api-contracts.md)   | Endpoints      |
-| [Security Model](./docs/03-architecture/security-model.md) | Auth & ACL     |
-| [Contributing](./CONTRIBUTING.md)                          | Code standards |
+| Document                                                   | Description     |
+| ---------------------------------------------------------- | --------------- |
+| [Documentation Hub](./docs/README.md)                      | All docs index  |
+| [Roadmap](./docs/ROADMAP.md)                               | Project roadmap |
+| [Architecture](./docs/03-architecture/system-context.md)   | System diagram  |
+| [API Contracts](./docs/03-architecture/api-contracts.md)   | Endpoints       |
+| [Security Model](./docs/03-architecture/security-model.md) | Auth & ACL      |
+| [Contributing](./CONTRIBUTING.md)                          | Code standards  |
 
 ---
 
 ## 🛡️ Security
 
-- ✅ Admin routes protected via middleware
-- ✅ Role-based authorization (ADMIN_EMAILS)
+- ✅ Admin routes protected via JWT middleware
+- ✅ Custom admin auth (username/password + JWT session)
 - ✅ Input validation with Zod
 - ✅ Atomic stock operations
-- ✅ Secure session management
+- ✅ Secure HTTP-only cookies
+- ✅ Rate limiting on API routes
 
 ---
 
@@ -123,7 +132,7 @@ RESEND_API_KEY=
 | Framework | Next.js 16           |
 | Language  | TypeScript           |
 | CMS       | Sanity v4            |
-| Auth      | Clerk                |
+| Auth      | Clerk + Custom JWT   |
 | Styling   | Tailwind CSS         |
 | UI        | Shadcn/UI            |
 | AI        | Vercel AI SDK + Groq |
