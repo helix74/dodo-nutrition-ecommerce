@@ -215,6 +215,56 @@ export type Product = {
   metaDescription?: string;
 };
 
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type HeroSlide = {
+  _id: string;
+  _type: "heroSlide";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  headline?: string;
+  subtitle?: string;
+  ctaLabel?: string;
+  ctaLink?: string;
+  secondaryCtaLabel?: string;
+  secondaryCtaLink?: string;
+  isActive?: boolean;
+  order?: number;
+};
+
 export type Customer = {
   _id: string;
   _type: "customer";
@@ -326,20 +376,15 @@ export type SanityImageDimensions = {
   aspectRatio?: number;
 };
 
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
+export type SanityImageMetadata = {
+  _type: "sanity.imageMetadata";
+  location?: Geopoint;
+  dimensions?: SanityImageDimensions;
+  palette?: SanityImagePalette;
+  lqip?: string;
+  blurHash?: string;
+  hasAlpha?: boolean;
+  isOpaque?: boolean;
 };
 
 export type SanityFileAsset = {
@@ -362,6 +407,13 @@ export type SanityFileAsset = {
   path?: string;
   url?: string;
   source?: SanityAssetSourceData;
+};
+
+export type SanityAssetSourceData = {
+  _type: "sanity.assetSourceData";
+  name?: string;
+  id?: string;
+  url?: string;
 };
 
 export type SanityImageAsset = {
@@ -387,17 +439,6 @@ export type SanityImageAsset = {
   source?: SanityAssetSourceData;
 };
 
-export type SanityImageMetadata = {
-  _type: "sanity.imageMetadata";
-  location?: Geopoint;
-  dimensions?: SanityImageDimensions;
-  palette?: SanityImagePalette;
-  lqip?: string;
-  blurHash?: string;
-  hasAlpha?: boolean;
-  isOpaque?: boolean;
-};
-
 export type Geopoint = {
   _type: "geopoint";
   lat?: number;
@@ -405,20 +446,7 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
-export type SanityAssetSourceData = {
-  _type: "sanity.assetSourceData";
-  name?: string;
-  id?: string;
-  url?: string;
-};
-
-export type AllSanitySchemaTypes = Review | Order | Pack | Product | Customer | Category | Brand | Banner | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = Review | Order | Pack | Product | SanityImageCrop | SanityImageHotspot | Slug | HeroSlide | Customer | Category | Brand | Banner | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./lib/sanity/queries/analytics.ts
 // Variable: ANALYTICS_SUMMARY_QUERY
@@ -512,7 +540,7 @@ export type ACTIVE_BANNERS_QUERYResult = Array<{
 
 // Source: ./lib/sanity/queries/categories.ts
 // Variable: ALL_CATEGORIES_QUERY
-// Query: *[  _type == "category"] | order(title asc) {  _id,  title,  description,  "slug": slug.current,  "image": image{    asset->{      _id,      url    },    hotspot  }}
+// Query: *[  _type == "category"] | order(title asc) {  _id,  title,  description,  "slug": slug.current,  "image": image{    asset->{      _id,      url    },    hotspot  },  "productCount": count(*[_type == "product" && references(^._id)])}
 export type ALL_CATEGORIES_QUERYResult = Array<{
   _id: string;
   title: string | null;
@@ -563,6 +591,25 @@ export type CUSTOMER_BY_STRIPE_ID_QUERYResult = {
   stripeCustomerId: string | null;
   createdAt: string | null;
 } | null;
+
+// Source: ./lib/sanity/queries/hero.ts
+// Variable: ACTIVE_HERO_SLIDES_QUERY
+// Query: *[    _type == "heroSlide"    && isActive == true  ] | order(order asc) {    _id,    image {      asset-> {        _id,        url      }    },    headline,    subtitle,    ctaLabel,    ctaLink,    secondaryCtaLabel,    secondaryCtaLink  }
+export type ACTIVE_HERO_SLIDES_QUERYResult = Array<{
+  _id: string;
+  image: {
+    asset: {
+      _id: string;
+      url: string | null;
+    } | null;
+  } | null;
+  headline: string | null;
+  subtitle: string | null;
+  ctaLabel: string | null;
+  ctaLink: string | null;
+  secondaryCtaLabel: string | null;
+  secondaryCtaLink: string | null;
+}>;
 
 // Source: ./lib/sanity/queries/orders.ts
 // Variable: ORDERS_BY_USER_QUERY
@@ -657,7 +704,7 @@ export type ALL_PACKS_QUERYResult = Array<{
   }> | null;
 }>;
 // Variable: FEATURED_PACKS_QUERY
-// Query: *[_type == "pack" && featured == true] | order(name asc) [0...4] {  _id,  name,  slug,  tagline,  "imageUrl": image.asset->url,  priceOriginal,  priceBundle,  packCategory,  stock,  "productCount": count(products)}
+// Query: *[_type == "pack" && featured == true] | order(name asc) [0...4] {  _id,  name,  slug,  tagline,  "imageUrl": image.asset->url,  priceOriginal,  priceBundle,  packCategory,  stock,  "productCount": count(products),  products[] {    quantity,    "product": product-> {      _id,      name,      slug,      "imageUrl": images[0].asset->url    }  }}
 export type FEATURED_PACKS_QUERYResult = Array<{
   _id: string;
   name: string | null;
@@ -669,6 +716,15 @@ export type FEATURED_PACKS_QUERYResult = Array<{
   packCategory: "debutant" | "endurance" | "force" | "masse" | "performance" | "sante" | "seche" | null;
   stock: number | null;
   productCount: number | null;
+  products: Array<{
+    quantity: number | null;
+    product: {
+      _id: string;
+      name: string | null;
+      slug: Slug | null;
+      imageUrl: string | null;
+    } | null;
+  }> | null;
 }>;
 // Variable: PACK_BY_SLUG_QUERY
 // Query: *[_type == "pack" && slug.current == $slug][0] {  _id,  name,  slug,  tagline,  description,  "imageUrl": image.asset->url,  priceOriginal,  priceBundle,  featured,  packCategory,  stock,  products[] {    quantity,    "product": product-> {      _id,      name,      slug,      priceRetail,      stock,      "imageUrl": images[0].asset->url,      "brand": brand->name,      "category": category->title    }  }}
@@ -755,7 +811,7 @@ export type ALL_PRODUCTS_QUERYResult = Array<{
   featured: boolean | null;
 }>;
 // Variable: FEATURED_PRODUCTS_QUERY
-// Query: *[  _type == "product"  && featured == true  && stock > 0] | order(name asc) [0...6] {  _id,  name,  "slug": slug.current,  description,  priceRetail,  priceSlashed,  unit,  quantity,  "images": images[]{    _key,    asset->{      _id,      url    },    hotspot  },  category->{    _id,    title,    "slug": slug.current  },  brand->{    _id,    name,    "slug": slug.current  },  stock}
+// Query: *[  _type == "product"  && featured == true  && stock > 0] | order(name asc) [0...8] {  _id,  name,  "slug": slug.current,  description,  priceRetail,  priceSlashed,  unit,  quantity,  "images": images[]{    _key,    asset->{      _id,      url    },    hotspot  },  category->{    _id,    title,    "slug": slug.current  },  brand->{    _id,    name,    "slug": slug.current  },  stock}
 export type FEATURED_PRODUCTS_QUERYResult = Array<{
   _id: string;
   name: string | null;
@@ -782,6 +838,49 @@ export type FEATURED_PRODUCTS_QUERYResult = Array<{
     _id: string;
     name: string | null;
     slug: string | null;
+  } | null;
+  stock: number | null;
+}>;
+// Variable: NEW_PRODUCTS_QUERY
+// Query: *[  _type == "product"  && stock > 0] | order(_createdAt desc) [0...8] {  _id,  name,  "slug": slug.current,  priceRetail,  priceSlashed,  images[] {    asset-> { _id, url }  },  brand-> { name },  category-> { title, "slug": slug.current },  stock,  _createdAt}
+export type NEW_PRODUCTS_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  slug: string | null;
+  priceRetail: number | null;
+  priceSlashed: number | null;
+  images: Array<{
+    asset: {
+      _id: string;
+      url: string | null;
+    } | null;
+  }> | null;
+  brand: {
+    name: string | null;
+  } | null;
+  category: {
+    title: string | null;
+    slug: string | null;
+  } | null;
+  stock: number | null;
+  _createdAt: string;
+}>;
+// Variable: PROMO_PRODUCTS_QUERY
+// Query: *[  _type == "product"  && defined(priceSlashed)  && priceSlashed < priceRetail  && stock > 0] | order(priceSlashed asc) [0...8] {  _id,  name,  "slug": slug.current,  priceRetail,  priceSlashed,  images[] {    asset-> { _id, url }  },  brand-> { name },  stock}
+export type PROMO_PRODUCTS_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  slug: string | null;
+  priceRetail: number | null;
+  priceSlashed: number | null;
+  images: Array<{
+    asset: {
+      _id: string;
+      url: string | null;
+    } | null;
+  }> | null;
+  brand: {
+    name: string | null;
   } | null;
   stock: number | null;
 }>;
@@ -923,101 +1022,23 @@ export type SEARCH_PRODUCTS_QUERYResult = Array<{
   stock: number | null;
 }>;
 // Variable: FILTER_PRODUCTS_BY_NAME_QUERY
-// Query: *[  _type == "product"  && ($categorySlug == "" || category->slug.current == $categorySlug)  && ($brandSlug == "" || brand->slug.current == $brandSlug)  && ($minPrice == 0 || priceRetail >= $minPrice)  && ($maxPrice == 0 || priceRetail <= $maxPrice)  && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")  && ($inStock == false || stock > 0)] | order(name asc) {  _id,  name,  "slug": slug.current,  priceRetail,  priceSlashed,  unit,  quantity,  "images": images[0...4]{    _key,    asset->{      _id,      url    }  },  category->{    _id,    title,    "slug": slug.current  },  brand->{    _id,    name,    "slug": slug.current  },  flavors,  certifications,  stock}
-export type FILTER_PRODUCTS_BY_NAME_QUERYResult = Array<{
-  _id: string;
-  name: string | null;
-  slug: string | null;
-  priceRetail: number | null;
-  priceSlashed: number | null;
-  unit: "capsule" | "comprim\xE9" | "g\xE9lule" | "gramme" | "kilogramme" | "millilitre" | null;
-  quantity: number | null;
-  images: Array<{
-    _key: string;
-    asset: {
-      _id: string;
-      url: string | null;
-    } | null;
-  }> | null;
-  category: {
-    _id: string;
-    title: string | null;
-    slug: string | null;
-  } | null;
-  brand: {
-    _id: string;
-    name: string | null;
-    slug: string | null;
-  } | null;
-  flavors: Array<string> | null;
-  certifications: Array<string> | null;
-  stock: number | null;
-}>;
+// Query: *[  _type == "product"  && (    (count($categorySlugs) > 0 && category->slug.current in $categorySlugs)    || (count($categorySlugs) == 0 && ($categorySlug == "" || category->slug.current == $categorySlug))  )  && ($brandSlug == "" || brand->slug.current == $brandSlug)  && ($minPrice == 0 || priceRetail >= $minPrice)  && ($maxPrice == 0 || priceRetail <= $maxPrice)  && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")  && ($inStock == false || stock > 0)] | order(name asc) {  _id,  name,  "slug": slug.current,  priceRetail,  priceSlashed,  unit,  quantity,  "images": images[0...4]{    _key,    asset->{      _id,      url    }  },  category->{    _id,    title,    "slug": slug.current  },  brand->{    _id,    name,    "slug": slug.current  },  flavors,  certifications,  stock}
+export type FILTER_PRODUCTS_BY_NAME_QUERYResult = Array<never>;
 // Variable: FILTER_PRODUCTS_BY_PRICE_ASC_QUERY
-// Query: *[  _type == "product"  && ($categorySlug == "" || category->slug.current == $categorySlug)  && ($brandSlug == "" || brand->slug.current == $brandSlug)  && ($minPrice == 0 || priceRetail >= $minPrice)  && ($maxPrice == 0 || priceRetail <= $maxPrice)  && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")  && ($inStock == false || stock > 0)] | order(priceRetail asc) {  _id,  name,  "slug": slug.current,  priceRetail,  priceSlashed,  unit,  quantity,  "images": images[0...4]{    _key,    asset->{      _id,      url    }  },  category->{    _id,    title,    "slug": slug.current  },  brand->{    _id,    name,    "slug": slug.current  },  flavors,  certifications,  stock}
-export type FILTER_PRODUCTS_BY_PRICE_ASC_QUERYResult = Array<{
-  _id: string;
-  name: string | null;
-  slug: string | null;
-  priceRetail: number | null;
-  priceSlashed: number | null;
-  unit: "capsule" | "comprim\xE9" | "g\xE9lule" | "gramme" | "kilogramme" | "millilitre" | null;
-  quantity: number | null;
-  images: Array<{
-    _key: string;
-    asset: {
-      _id: string;
-      url: string | null;
-    } | null;
-  }> | null;
-  category: {
-    _id: string;
-    title: string | null;
-    slug: string | null;
-  } | null;
-  brand: {
-    _id: string;
-    name: string | null;
-    slug: string | null;
-  } | null;
-  flavors: Array<string> | null;
-  certifications: Array<string> | null;
-  stock: number | null;
-}>;
+// Query: *[  _type == "product"  && (    (count($categorySlugs) > 0 && category->slug.current in $categorySlugs)    || (count($categorySlugs) == 0 && ($categorySlug == "" || category->slug.current == $categorySlug))  )  && ($brandSlug == "" || brand->slug.current == $brandSlug)  && ($minPrice == 0 || priceRetail >= $minPrice)  && ($maxPrice == 0 || priceRetail <= $maxPrice)  && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")  && ($inStock == false || stock > 0)] | order(priceRetail asc) {  _id,  name,  "slug": slug.current,  priceRetail,  priceSlashed,  unit,  quantity,  "images": images[0...4]{    _key,    asset->{      _id,      url    }  },  category->{    _id,    title,    "slug": slug.current  },  brand->{    _id,    name,    "slug": slug.current  },  flavors,  certifications,  stock}
+export type FILTER_PRODUCTS_BY_PRICE_ASC_QUERYResult = Array<never>;
 // Variable: FILTER_PRODUCTS_BY_PRICE_DESC_QUERY
-// Query: *[  _type == "product"  && ($categorySlug == "" || category->slug.current == $categorySlug)  && ($brandSlug == "" || brand->slug.current == $brandSlug)  && ($minPrice == 0 || priceRetail >= $minPrice)  && ($maxPrice == 0 || priceRetail <= $maxPrice)  && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")  && ($inStock == false || stock > 0)] | order(priceRetail desc) {  _id,  name,  "slug": slug.current,  priceRetail,  priceSlashed,  unit,  quantity,  "images": images[0...4]{    _key,    asset->{      _id,      url    }  },  category->{    _id,    title,    "slug": slug.current  },  brand->{    _id,    name,    "slug": slug.current  },  flavors,  certifications,  stock}
-export type FILTER_PRODUCTS_BY_PRICE_DESC_QUERYResult = Array<{
-  _id: string;
-  name: string | null;
-  slug: string | null;
-  priceRetail: number | null;
-  priceSlashed: number | null;
-  unit: "capsule" | "comprim\xE9" | "g\xE9lule" | "gramme" | "kilogramme" | "millilitre" | null;
-  quantity: number | null;
-  images: Array<{
-    _key: string;
-    asset: {
-      _id: string;
-      url: string | null;
-    } | null;
-  }> | null;
-  category: {
-    _id: string;
-    title: string | null;
-    slug: string | null;
-  } | null;
-  brand: {
-    _id: string;
-    name: string | null;
-    slug: string | null;
-  } | null;
-  flavors: Array<string> | null;
-  certifications: Array<string> | null;
-  stock: number | null;
-}>;
+// Query: *[  _type == "product"  && (    (count($categorySlugs) > 0 && category->slug.current in $categorySlugs)    || (count($categorySlugs) == 0 && ($categorySlug == "" || category->slug.current == $categorySlug))  )  && ($brandSlug == "" || brand->slug.current == $brandSlug)  && ($minPrice == 0 || priceRetail >= $minPrice)  && ($maxPrice == 0 || priceRetail <= $maxPrice)  && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")  && ($inStock == false || stock > 0)] | order(priceRetail desc) {  _id,  name,  "slug": slug.current,  priceRetail,  priceSlashed,  unit,  quantity,  "images": images[0...4]{    _key,    asset->{      _id,      url    }  },  category->{    _id,    title,    "slug": slug.current  },  brand->{    _id,    name,    "slug": slug.current  },  flavors,  certifications,  stock}
+export type FILTER_PRODUCTS_BY_PRICE_DESC_QUERYResult = Array<never>;
 // Variable: FILTER_PRODUCTS_BY_RELEVANCE_QUERY
-// Query: *[  _type == "product"  && ($categorySlug == "" || category->slug.current == $categorySlug)  && ($brandSlug == "" || brand->slug.current == $brandSlug)  && ($minPrice == 0 || priceRetail >= $minPrice)  && ($maxPrice == 0 || priceRetail <= $maxPrice)  && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")  && ($inStock == false || stock > 0)] | score(  boost(name match $searchQuery + "*", 3),  boost(description match $searchQuery + "*", 1),  boost(brand->name match $searchQuery + "*", 2)) | order(_score desc, name asc) {  _id,  name,  "slug": slug.current,  priceRetail,  priceSlashed,  unit,  quantity,  "images": images[0...4]{    _key,    asset->{      _id,      url    }  },  category->{    _id,    title,    "slug": slug.current  },  brand->{    _id,    name,    "slug": slug.current  },  flavors,  certifications,  stock}
-export type FILTER_PRODUCTS_BY_RELEVANCE_QUERYResult = Array<{
+// Query: *[  _type == "product"  && (    (count($categorySlugs) > 0 && category->slug.current in $categorySlugs)    || (count($categorySlugs) == 0 && ($categorySlug == "" || category->slug.current == $categorySlug))  )  && ($brandSlug == "" || brand->slug.current == $brandSlug)  && ($minPrice == 0 || priceRetail >= $minPrice)  && ($maxPrice == 0 || priceRetail <= $maxPrice)  && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")  && ($inStock == false || stock > 0)] | score(  boost(name match $searchQuery + "*", 3),  boost(description match $searchQuery + "*", 1),  boost(brand->name match $searchQuery + "*", 2)) | order(_score desc, name asc) {  _id,  name,  "slug": slug.current,  priceRetail,  priceSlashed,  unit,  quantity,  "images": images[0...4]{    _key,    asset->{      _id,      url    }  },  category->{    _id,    title,    "slug": slug.current  },  brand->{    _id,    name,    "slug": slug.current  },  flavors,  certifications,  stock}
+export type FILTER_PRODUCTS_BY_RELEVANCE_QUERYResult = Array<never>;
+// Variable: COUNT_FILTERED_PRODUCTS_QUERY
+// Query: count(*[  _type == "product"  && (    (count($categorySlugs) > 0 && category->slug.current in $categorySlugs)    || (count($categorySlugs) == 0 && ($categorySlug == "" || category->slug.current == $categorySlug))  )  && ($brandSlug == "" || brand->slug.current == $brandSlug)  && ($minPrice == 0 || priceRetail >= $minPrice)  && ($maxPrice == 0 || priceRetail <= $maxPrice)  && ($searchQuery == "" || name match $searchQuery + "*" || description match $searchQuery + "*")  && ($inStock == false || stock > 0)])
+export type COUNT_FILTERED_PRODUCTS_QUERYResult = number;
+// Variable: PROMOTIONS_QUERY
+// Query: *[  _type == "product"  && priceSlashed > priceRetail  && stock > 0] | order(priceRetail asc) {  _id,  name,  "slug": slug.current,  priceRetail,  priceSlashed,  unit,  quantity,  "images": images[0...4]{    _key,    asset->{      _id,      url    }  },  category->{    _id,    title,    "slug": slug.current  },  brand->{    _id,    name,    "slug": slug.current  },  flavors,  certifications,  stock}
+export type PROMOTIONS_QUERYResult = Array<{
   _id: string;
   name: string | null;
   slug: string | null;
@@ -1361,27 +1382,32 @@ declare module "@sanity/client" {
     "\n  *[_type == \"order\"] | order(createdAt desc) [0...5] {\n    _id,\n    orderNumber,\n    total,\n    status,\n    createdAt,\n    \"customerName\": address.name,\n    \"itemCount\": count(items)\n  }\n": RECENT_ORDERS_DASHBOARD_QUERYResult;
     "\n  *[_type == \"order\" && createdAt >= $startDate && createdAt <= $endDate] {\n    _id,\n    total,\n    createdAt,\n    status\n  } | order(createdAt asc)\n": ORDERS_DATE_RANGE_QUERYResult;
     "\n  *[_type == \"banner\" && isActive == true && (\n    !defined(startDate) || startDate <= now()\n  ) && (\n    !defined(endDate) || endDate > now()\n  )] | order(order asc) {\n    _id,\n    title,\n    image {\n      asset-> {\n        _id,\n        url\n      }\n    },\n    alt,\n    link,\n    order\n  }\n": ACTIVE_BANNERS_QUERYResult;
-    "*[\n  _type == \"category\"\n] | order(title asc) {\n  _id,\n  title,\n  description,\n  \"slug\": slug.current,\n  \"image\": image{\n    asset->{\n      _id,\n      url\n    },\n    hotspot\n  }\n}": ALL_CATEGORIES_QUERYResult;
+    "*[\n  _type == \"category\"\n] | order(title asc) {\n  _id,\n  title,\n  description,\n  \"slug\": slug.current,\n  \"image\": image{\n    asset->{\n      _id,\n      url\n    },\n    hotspot\n  },\n  \"productCount\": count(*[_type == \"product\" && references(^._id)])\n}": ALL_CATEGORIES_QUERYResult;
     "*[\n  _type == \"category\"\n  && slug.current == $slug\n][0] {\n  _id,\n  title,\n  \"slug\": slug.current,\n  \"image\": image{\n    asset->{\n      _id,\n      url\n    },\n    hotspot\n  }\n}": CATEGORY_BY_SLUG_QUERYResult;
     "*[\n  _type == \"customer\"\n  && email == $email\n][0]{\n  _id,\n  email,\n  name,\n  clerkUserId,\n  stripeCustomerId,\n  createdAt\n}": CUSTOMER_BY_EMAIL_QUERYResult;
     "*[\n  _type == \"customer\"\n  && stripeCustomerId == $stripeCustomerId\n][0]{\n  _id,\n  email,\n  name,\n  clerkUserId,\n  stripeCustomerId,\n  createdAt\n}": CUSTOMER_BY_STRIPE_ID_QUERYResult;
+    "\n  *[\n    _type == \"heroSlide\"\n    && isActive == true\n  ] | order(order asc) {\n    _id,\n    image {\n      asset-> {\n        _id,\n        url\n      }\n    },\n    headline,\n    subtitle,\n    ctaLabel,\n    ctaLink,\n    secondaryCtaLabel,\n    secondaryCtaLink\n  }\n": ACTIVE_HERO_SLIDES_QUERYResult;
     "*[\n  _type == \"order\"\n  && clerkUserId == $clerkUserId\n] | order(createdAt desc) {\n  _id,\n  orderNumber,\n  total,\n  status,\n  createdAt,\n  \"itemCount\": count(items),\n  \"itemNames\": items[].product->name,\n  \"itemImages\": items[].product->images[0].asset->url\n}": ORDERS_BY_USER_QUERYResult;
     "*[\n  _type == \"order\"\n  && _id == $id\n][0] {\n  _id,\n  orderNumber,\n  clerkUserId,\n  email,\n  items[]{\n    _key,\n    quantity,\n    priceAtPurchase,\n    product->{\n      _id,\n      name,\n      \"slug\": slug.current,\n      \"image\": images[0]{\n        asset->{\n          _id,\n          url\n        }\n      }\n    }\n  },\n  total,\n  status,\n  address{\n    name,\n    line1,\n    line2,\n    city,\n    postcode,\n    country\n  },\n  stripePaymentId,\n  createdAt\n}": ORDER_BY_ID_QUERYResult;
     "*[\n  _type == \"order\"\n] | order(createdAt desc) [0...$limit] {\n  _id,\n  orderNumber,\n  email,\n  total,\n  status,\n  createdAt\n}": RECENT_ORDERS_QUERYResult;
     "*[\n  _type == \"order\"\n  && stripePaymentId == $stripePaymentId\n][0]{ _id }": ORDER_BY_STRIPE_PAYMENT_ID_QUERYResult;
     "*[_type == \"pack\"] | order(featured desc, name asc) {\n  _id,\n  name,\n  slug,\n  tagline,\n  description,\n  \"imageUrl\": image.asset->url,\n  priceOriginal,\n  priceBundle,\n  featured,\n  packCategory,\n  stock,\n  products[] {\n    quantity,\n    \"product\": product-> {\n      _id,\n      name,\n      slug,\n      priceRetail,\n      stock,\n      \"imageUrl\": images[0].asset->url\n    }\n  }\n}": ALL_PACKS_QUERYResult;
-    "*[_type == \"pack\" && featured == true] | order(name asc) [0...4] {\n  _id,\n  name,\n  slug,\n  tagline,\n  \"imageUrl\": image.asset->url,\n  priceOriginal,\n  priceBundle,\n  packCategory,\n  stock,\n  \"productCount\": count(products)\n}": FEATURED_PACKS_QUERYResult;
+    "*[_type == \"pack\" && featured == true] | order(name asc) [0...4] {\n  _id,\n  name,\n  slug,\n  tagline,\n  \"imageUrl\": image.asset->url,\n  priceOriginal,\n  priceBundle,\n  packCategory,\n  stock,\n  \"productCount\": count(products),\n  products[] {\n    quantity,\n    \"product\": product-> {\n      _id,\n      name,\n      slug,\n      \"imageUrl\": images[0].asset->url\n    }\n  }\n}": FEATURED_PACKS_QUERYResult;
     "*[_type == \"pack\" && slug.current == $slug][0] {\n  _id,\n  name,\n  slug,\n  tagline,\n  description,\n  \"imageUrl\": image.asset->url,\n  priceOriginal,\n  priceBundle,\n  featured,\n  packCategory,\n  stock,\n  products[] {\n    quantity,\n    \"product\": product-> {\n      _id,\n      name,\n      slug,\n      priceRetail,\n      stock,\n      \"imageUrl\": images[0].asset->url,\n      \"brand\": brand->name,\n      \"category\": category->title\n    }\n  }\n}": PACK_BY_SLUG_QUERYResult;
     "*[_type == \"pack\" && packCategory == $category] | order(featured desc, name asc) {\n  _id,\n  name,\n  slug,\n  tagline,\n  \"imageUrl\": image.asset->url,\n  priceOriginal,\n  priceBundle,\n  packCategory,\n  stock,\n  \"productCount\": count(products)\n}": PACKS_BY_CATEGORY_QUERYResult;
     "*[\n  _type == \"product\"\n] | order(name asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  priceRetail,\n  pricePurchase,\n  priceWholesale,\n  priceSlashed,\n  unit,\n  quantity,\n  servings,\n  \"images\": images[]{\n    _key,\n    asset->{\n      _id,\n      url\n    },\n    hotspot\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  flavors,\n  benefits,\n  allergens,\n  certifications,\n  dosage,\n  stock,\n  featured\n}": ALL_PRODUCTS_QUERYResult;
-    "*[\n  _type == \"product\"\n  && featured == true\n  && stock > 0\n] | order(name asc) [0...6] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"images\": images[]{\n    _key,\n    asset->{\n      _id,\n      url\n    },\n    hotspot\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  stock\n}": FEATURED_PRODUCTS_QUERYResult;
+    "*[\n  _type == \"product\"\n  && featured == true\n  && stock > 0\n] | order(name asc) [0...8] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"images\": images[]{\n    _key,\n    asset->{\n      _id,\n      url\n    },\n    hotspot\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  stock\n}": FEATURED_PRODUCTS_QUERYResult;
+    "*[\n  _type == \"product\"\n  && stock > 0\n] | order(_createdAt desc) [0...8] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  images[] {\n    asset-> { _id, url }\n  },\n  brand-> { name },\n  category-> { title, \"slug\": slug.current },\n  stock,\n  _createdAt\n}": NEW_PRODUCTS_QUERYResult;
+    "*[\n  _type == \"product\"\n  && defined(priceSlashed)\n  && priceSlashed < priceRetail\n  && stock > 0\n] | order(priceSlashed asc) [0...8] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  images[] {\n    asset-> { _id, url }\n  },\n  brand-> { name },\n  stock\n}": PROMO_PRODUCTS_QUERYResult;
     "*[\n  _type == \"product\"\n  && category->slug.current == $categorySlug\n] | order(name asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"image\": images[0]{\n    asset->{\n      _id,\n      url\n    },\n    hotspot\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  stock\n}": PRODUCTS_BY_CATEGORY_QUERYResult;
     "*[\n  _type == \"product\"\n  && slug.current == $slug\n][0] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  content,\n  priceRetail,\n  pricePurchase,\n  priceWholesale,\n  priceSlashed,\n  unit,\n  quantity,\n  servings,\n  \"images\": images[]{\n    _key,\n    asset->{\n      _id,\n      url\n    },\n    hotspot\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current,\n    logo{\n      asset->{\n        _id,\n        url\n      }\n    }\n  },\n  flavors,\n  benefits,\n  allergens,\n  certifications,\n  dosage,\n  metaTitle,\n  metaDescription,\n  stock,\n  featured\n}": PRODUCT_BY_SLUG_QUERYResult;
     "*[\n  _type == \"product\"\n  && (\n    name match $searchQuery + \"*\"\n    || description match $searchQuery + \"*\"\n    || brand->name match $searchQuery + \"*\"\n  )\n] | score(\n  boost(name match $searchQuery + \"*\", 3),\n  boost(description match $searchQuery + \"*\", 1),\n  boost(brand->name match $searchQuery + \"*\", 2)\n) | order(_score desc) {\n  _id,\n  _score,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"image\": images[0]{\n    asset->{\n      _id,\n      url\n    },\n    hotspot\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  stock\n}": SEARCH_PRODUCTS_QUERYResult;
-    "*[\n  _type == \"product\"\n  && ($categorySlug == \"\" || category->slug.current == $categorySlug)\n  && ($brandSlug == \"\" || brand->slug.current == $brandSlug)\n  && ($minPrice == 0 || priceRetail >= $minPrice)\n  && ($maxPrice == 0 || priceRetail <= $maxPrice)\n  && ($searchQuery == \"\" || name match $searchQuery + \"*\" || description match $searchQuery + \"*\")\n  && ($inStock == false || stock > 0)\n] | order(name asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"images\": images[0...4]{\n    _key,\n    asset->{\n      _id,\n      url\n    }\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  flavors,\n  certifications,\n  stock\n}": FILTER_PRODUCTS_BY_NAME_QUERYResult;
-    "*[\n  _type == \"product\"\n  && ($categorySlug == \"\" || category->slug.current == $categorySlug)\n  && ($brandSlug == \"\" || brand->slug.current == $brandSlug)\n  && ($minPrice == 0 || priceRetail >= $minPrice)\n  && ($maxPrice == 0 || priceRetail <= $maxPrice)\n  && ($searchQuery == \"\" || name match $searchQuery + \"*\" || description match $searchQuery + \"*\")\n  && ($inStock == false || stock > 0)\n] | order(priceRetail asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"images\": images[0...4]{\n    _key,\n    asset->{\n      _id,\n      url\n    }\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  flavors,\n  certifications,\n  stock\n}": FILTER_PRODUCTS_BY_PRICE_ASC_QUERYResult;
-    "*[\n  _type == \"product\"\n  && ($categorySlug == \"\" || category->slug.current == $categorySlug)\n  && ($brandSlug == \"\" || brand->slug.current == $brandSlug)\n  && ($minPrice == 0 || priceRetail >= $minPrice)\n  && ($maxPrice == 0 || priceRetail <= $maxPrice)\n  && ($searchQuery == \"\" || name match $searchQuery + \"*\" || description match $searchQuery + \"*\")\n  && ($inStock == false || stock > 0)\n] | order(priceRetail desc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"images\": images[0...4]{\n    _key,\n    asset->{\n      _id,\n      url\n    }\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  flavors,\n  certifications,\n  stock\n}": FILTER_PRODUCTS_BY_PRICE_DESC_QUERYResult;
-    "*[\n  _type == \"product\"\n  && ($categorySlug == \"\" || category->slug.current == $categorySlug)\n  && ($brandSlug == \"\" || brand->slug.current == $brandSlug)\n  && ($minPrice == 0 || priceRetail >= $minPrice)\n  && ($maxPrice == 0 || priceRetail <= $maxPrice)\n  && ($searchQuery == \"\" || name match $searchQuery + \"*\" || description match $searchQuery + \"*\")\n  && ($inStock == false || stock > 0)\n] | score(\n  boost(name match $searchQuery + \"*\", 3),\n  boost(description match $searchQuery + \"*\", 1),\n  boost(brand->name match $searchQuery + \"*\", 2)\n) | order(_score desc, name asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"images\": images[0...4]{\n    _key,\n    asset->{\n      _id,\n      url\n    }\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  flavors,\n  certifications,\n  stock\n}": FILTER_PRODUCTS_BY_RELEVANCE_QUERYResult;
+    "*[\n  _type == \"product\"\n  && (\n    (count($categorySlugs) > 0 && category->slug.current in $categorySlugs)\n    || (count($categorySlugs) == 0 && ($categorySlug == \"\" || category->slug.current == $categorySlug))\n  )\n  && ($brandSlug == \"\" || brand->slug.current == $brandSlug)\n  && ($minPrice == 0 || priceRetail >= $minPrice)\n  && ($maxPrice == 0 || priceRetail <= $maxPrice)\n  && ($searchQuery == \"\" || name match $searchQuery + \"*\" || description match $searchQuery + \"*\")\n  && ($inStock == false || stock > 0)\n] | order(name asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"images\": images[0...4]{\n    _key,\n    asset->{\n      _id,\n      url\n    }\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  flavors,\n  certifications,\n  stock\n}": FILTER_PRODUCTS_BY_NAME_QUERYResult;
+    "*[\n  _type == \"product\"\n  && (\n    (count($categorySlugs) > 0 && category->slug.current in $categorySlugs)\n    || (count($categorySlugs) == 0 && ($categorySlug == \"\" || category->slug.current == $categorySlug))\n  )\n  && ($brandSlug == \"\" || brand->slug.current == $brandSlug)\n  && ($minPrice == 0 || priceRetail >= $minPrice)\n  && ($maxPrice == 0 || priceRetail <= $maxPrice)\n  && ($searchQuery == \"\" || name match $searchQuery + \"*\" || description match $searchQuery + \"*\")\n  && ($inStock == false || stock > 0)\n] | order(priceRetail asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"images\": images[0...4]{\n    _key,\n    asset->{\n      _id,\n      url\n    }\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  flavors,\n  certifications,\n  stock\n}": FILTER_PRODUCTS_BY_PRICE_ASC_QUERYResult;
+    "*[\n  _type == \"product\"\n  && (\n    (count($categorySlugs) > 0 && category->slug.current in $categorySlugs)\n    || (count($categorySlugs) == 0 && ($categorySlug == \"\" || category->slug.current == $categorySlug))\n  )\n  && ($brandSlug == \"\" || brand->slug.current == $brandSlug)\n  && ($minPrice == 0 || priceRetail >= $minPrice)\n  && ($maxPrice == 0 || priceRetail <= $maxPrice)\n  && ($searchQuery == \"\" || name match $searchQuery + \"*\" || description match $searchQuery + \"*\")\n  && ($inStock == false || stock > 0)\n] | order(priceRetail desc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"images\": images[0...4]{\n    _key,\n    asset->{\n      _id,\n      url\n    }\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  flavors,\n  certifications,\n  stock\n}": FILTER_PRODUCTS_BY_PRICE_DESC_QUERYResult;
+    "*[\n  _type == \"product\"\n  && (\n    (count($categorySlugs) > 0 && category->slug.current in $categorySlugs)\n    || (count($categorySlugs) == 0 && ($categorySlug == \"\" || category->slug.current == $categorySlug))\n  )\n  && ($brandSlug == \"\" || brand->slug.current == $brandSlug)\n  && ($minPrice == 0 || priceRetail >= $minPrice)\n  && ($maxPrice == 0 || priceRetail <= $maxPrice)\n  && ($searchQuery == \"\" || name match $searchQuery + \"*\" || description match $searchQuery + \"*\")\n  && ($inStock == false || stock > 0)\n] | score(\n  boost(name match $searchQuery + \"*\", 3),\n  boost(description match $searchQuery + \"*\", 1),\n  boost(brand->name match $searchQuery + \"*\", 2)\n) | order(_score desc, name asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"images\": images[0...4]{\n    _key,\n    asset->{\n      _id,\n      url\n    }\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  flavors,\n  certifications,\n  stock\n}": FILTER_PRODUCTS_BY_RELEVANCE_QUERYResult;
+    "count(*[\n  _type == \"product\"\n  && (\n    (count($categorySlugs) > 0 && category->slug.current in $categorySlugs)\n    || (count($categorySlugs) == 0 && ($categorySlug == \"\" || category->slug.current == $categorySlug))\n  )\n  && ($brandSlug == \"\" || brand->slug.current == $brandSlug)\n  && ($minPrice == 0 || priceRetail >= $minPrice)\n  && ($maxPrice == 0 || priceRetail <= $maxPrice)\n  && ($searchQuery == \"\" || name match $searchQuery + \"*\" || description match $searchQuery + \"*\")\n  && ($inStock == false || stock > 0)\n])": COUNT_FILTERED_PRODUCTS_QUERYResult;
+    "*[\n  _type == \"product\"\n  && priceSlashed > priceRetail\n  && stock > 0\n] | order(priceRetail asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  priceSlashed,\n  unit,\n  quantity,\n  \"images\": images[0...4]{\n    _key,\n    asset->{\n      _id,\n      url\n    }\n  },\n  category->{\n    _id,\n    title,\n    \"slug\": slug.current\n  },\n  brand->{\n    _id,\n    name,\n    \"slug\": slug.current\n  },\n  flavors,\n  certifications,\n  stock\n}": PROMOTIONS_QUERYResult;
     "*[\n  _type == \"product\"\n  && _id in $ids\n] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  priceRetail,\n  unit,\n  quantity,\n  \"image\": images[0]{\n    asset->{\n      _id,\n      url\n    },\n    hotspot\n  },\n  stock\n}": PRODUCTS_BY_IDS_QUERYResult;
     "*[\n  _type == \"product\"\n  && stock > 0\n  && stock <= 5\n] | order(stock asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  stock,\n  priceRetail,\n  brand->{name},\n  \"image\": images[0]{\n    asset->{\n      _id,\n      url\n    }\n  }\n}": LOW_STOCK_PRODUCTS_QUERYResult;
     "*[\n  _type == \"product\"\n  && stock == 0\n] | order(name asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  brand->{name},\n  \"image\": images[0]{\n    asset->{\n      _id,\n      url\n    }\n  }\n}": OUT_OF_STOCK_PRODUCTS_QUERYResult;

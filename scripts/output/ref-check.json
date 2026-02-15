@@ -1,0 +1,716 @@
+﻿[
+  {
+    "brandExists": true,
+    "brandRef": "brand-applied-nutrition",
+    "catExists": true,
+    "catRef": "category-bruleurs"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-applied-nutrition",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-applied-nutrition",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-applied-nutrition",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-applied-nutrition",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-applied-nutrition",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-applied-nutrition",
+    "catExists": true,
+    "catRef": "category-proteines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-applied-nutrition",
+    "catExists": true,
+    "catRef": "category-proteines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-applied-nutrition",
+    "catExists": true,
+    "catRef": "category-accessoires"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-applied-nutrition",
+    "catExists": true,
+    "catRef": "category-bruleurs"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-applied-nutrition",
+    "catExists": true,
+    "catRef": "category-bruleurs"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-big-ramy-labs",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-biotech-usa",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-bpi-sports",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-bpi-sports",
+    "catExists": true,
+    "catRef": "category-bruleurs"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-dy-nutrition-dorian-yates",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-eric-favre",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-eric-favre",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-gsn",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-gsn",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-gsn",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-gsn",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-gsn",
+    "catExists": true,
+    "catRef": "category-proteines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-gsn",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-gsn",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-gsn",
+    "catExists": true,
+    "catRef": "category-proteines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-gsn",
+    "catExists": true,
+    "catRef": "category-proteines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-gsn",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-gym-hub",
+    "catExists": true,
+    "catRef": "category-accessoires"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-acides-amines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-acides-amines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-pre-workout"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-acides-amines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-acides-amines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-impact-nutrition",
+    "catExists": true,
+    "catRef": "category-proteines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-longevity-plus",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-longevity-plus",
+    "catExists": true,
+    "catRef": "category-bruleurs"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-longevity-plus",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-longevity-plus",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-bruleurs"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-miravella",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-muscletech",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-muscletech",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-nutrex",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-nutrex",
+    "catExists": true,
+    "catRef": "category-proteines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-nutrex",
+    "catExists": true,
+    "catRef": "category-bruleurs"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-nutrex",
+    "catExists": true,
+    "catRef": "category-bruleurs"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-olimp",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-olimp",
+    "catExists": true,
+    "catRef": "category-proteines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-ostrovit",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-pre-workout"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-acides-amines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-acides-amines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-acides-amines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-acides-amines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-bruleurs"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-bruleurs"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-pre-workout"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-boosters"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-real-pharm",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-rule-1",
+    "catExists": true,
+    "catRef": "category-pre-workout"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-rule-1",
+    "catExists": true,
+    "catRef": "category-proteines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-scenit-nutrition",
+    "catExists": true,
+    "catRef": "category-acides-amines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-scenit-nutrition",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-scenit-nutrition",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-scenit-nutrition",
+    "catExists": true,
+    "catRef": "category-acides-amines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-scenit-nutrition",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-scenit-nutrition",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-scenit-nutrition",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-scenit-nutrition",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-v-shape-supplements",
+    "catExists": true,
+    "catRef": "category-bruleurs"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-v-shape-supplements",
+    "catExists": true,
+    "catRef": "category-creatine"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-v-shape-supplements",
+    "catExists": true,
+    "catRef": "category-pre-workout"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-v-shape-supplements",
+    "catExists": true,
+    "catRef": "category-proteines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-v-shape-supplements",
+    "catExists": true,
+    "catRef": "category-proteines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-v-shape-supplements",
+    "catExists": true,
+    "catRef": "category-proteines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-william-bonac-the-legend-series",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-yava-labs",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-yava-labs",
+    "catExists": true,
+    "catRef": "category-gainers"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-yava-labs",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-yava-labs",
+    "catExists": true,
+    "catRef": "category-acides-amines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-yava-labs",
+    "catExists": true,
+    "catRef": "category-bruleurs"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-yava-labs",
+    "catExists": true,
+    "catRef": "category-acides-amines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-yava-labs",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-yava-labs",
+    "catExists": true,
+    "catRef": "category-vitamines"
+  },
+  {
+    "brandExists": true,
+    "brandRef": "brand-yava-labs",
+    "catExists": true,
+    "catRef": "category-proteines"
+  }
+]

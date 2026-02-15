@@ -1,0 +1,24 @@
+feat(018): dataset cleanup, product import and full verification
+
+Spec 018 - Complete backend pipeline for production-ready product data:
+
+- CSV Cleaning: Transform raw 120-product CSV into 119 clean,
+  deduplicated products with proper categorization, descriptions,
+  benefits, certifications, SEO meta, and placeholder prices
+- NDJSON Import: 149 documents (21 brands, 9 categories, 119 products)
+  with unique product-{brand}-{slug} IDs to prevent collisions
+- Sanity Cleanup: Force-deleted 80 old product-N duplicates,
+  4 duplicate categories, 1 orphan brand, and all test data
+- Export: products-database.csv for manual price/stock/featured updates
+- Pack templates: template-packs.csv and example-packs.csv for future import
+
+Verification (all passing):
+- 119 products, 10 categories, 21 brands - 0 broken references
+- TypeScript: 0 errors, Schema extraction: success, TypeGen: success
+- All front-end queries return valid data
+- All GOAL_CATEGORIES slugs match real categories
+
+Scripts: fix-products-csv.ts, csv-to-ndjson.ts, force-cleanup.ts,
+cleanup-sanity.ts, export-products-csv.ts
+
+Docs: specs/018-dataset-cleanup/ (spec, plan, tasks, verification)
