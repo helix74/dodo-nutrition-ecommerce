@@ -1,145 +1,230 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Truck, ShieldCheck, Banknote, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { urlFor } from "@/sanity/lib/image";
 
-const heroSlides = [
-  {
-    id: 1,
-    title: "Performance. Force. Résultats.",
-    subtitle: "Suppléments premium pour athlètes exigeants",
-    cta: { label: "اكتشف المتجر", href: "/shop" },
-    image: "/hero-1.jpg", // Placeholder - will use gradient fallback
-    gradient: "from-amber-500/20 via-transparent to-transparent",
-  },
-  {
-    id: 2,
-    title: "Nouvelles Arrivées",
-    subtitle: "Les dernières innovations en nutrition sportive",
-    cta: { label: "الجديد", href: "/shop?sort=newest" },
-    image: "/hero-2.jpg",
-    gradient: "from-red-500/20 via-transparent to-transparent",
-  },
-  {
-    id: 3,
-    title: "Offres Exclusives",
-    subtitle: "Jusqu'à -30% sur une sélection de produits",
-    cta: { label: "العروض", href: "/promotions" },
-    image: "/hero-3.jpg",
-    gradient: "from-green-500/20 via-transparent to-transparent",
-  },
+interface HeroSlide {
+  _id: string;
+  image?: {
+    asset?: {
+      _id: string;
+      url: string | null;
+    } | null;
+  } | null;
+  headline: string | null;
+  subtitle?: string | null;
+  ctaLabel?: string | null;
+  ctaLink?: string | null;
+  secondaryCtaLabel?: string | null;
+  secondaryCtaLink?: string | null;
+}
+
+interface HeroSectionProps {
+  slides: HeroSlide[];
+}
+
+const AUTO_SLIDE_DELAY = 6000; // 6 seconds
+
+const trustBadges = [
+  { icon: Truck, text: "Livraison 24-48h" },
+  { icon: ShieldCheck, text: "100% Authentique" },
+  { icon: Banknote, text: "Paiement à la livraison" },
+  { icon: RefreshCw, text: "Retour 14j" },
 ];
 
-export function HeroSection() {
-  const [currentSlide, setCurrentSlide] = useState(0);
+export function HeroSection({ slides }: HeroSectionProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Reset and start the auto-slide timer
+  const resetTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+    if (slides.length > 1) {
+      timerRef.current = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % slides.length);
+      }, AUTO_SLIDE_DELAY);
+    }
+  }, [slides.length]);
+
+  // Manual navigation - resets timer
+  const goToSlide = useCallback(
+    (index: number) => {
+      setCurrentIndex(index);
+      resetTimer();
+    },
+    [resetTimer]
+  );
 
   const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-  }, []);
+    goToSlide((currentIndex + 1) % slides.length);
+  }, [currentIndex, slides.length, goToSlide]);
 
   const prevSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
-  }, []);
+    goToSlide((currentIndex - 1 + slides.length) % slides.length);
+  }, [currentIndex, slides.length, goToSlide]);
 
-  // Auto-advance slides
+  // Start timer on mount
   useEffect(() => {
-    const timer = setInterval(nextSlide, 6000);
-    return () => clearInterval(timer);
-  }, [nextSlide]);
+    resetTimer();
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [resetTimer]);
 
-  const slide = heroSlides[currentSlide];
+  // Fallback if no slides
+  if (!slides || slides.length === 0) {
+    return (
+      <section className="relative min-h-[500px] md:min-h-[600px] overflow-hidden bg-gradient-to-br from-dodo-yellow/10 via-background to-background">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center px-4">
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
+              Dodo Nutrition
+            </h1>
+            <p className="text-xl text-muted-foreground mb-8">
+              Suppléments premium pour athlètes exigeants
+            </p>
+            <Button asChild size="lg" className="bg-dodo-yellow text-black hover:bg-dodo-yellow-hover">
+              <Link href="/shop">Découvrir le shop</Link>
+            </Button>
+          </div>
+        </div>
+
+        {/* Trust Strip */}
+        <div className="absolute bottom-0 left-0 right-0 bg-card/80 backdrop-blur-sm border-t border-border">
+          <div className="mx-auto max-w-7xl px-4 py-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {trustBadges.map((badge, index) => {
+                const Icon = badge.icon;
+                return (
+                  <div key={index} className="flex items-center gap-2 justify-center">
+                    <Icon className="h-5 w-5 text-dodo-yellow flex-shrink-0" />
+                    <span className="text-sm text-foreground">{badge.text}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const currentSlide = slides[currentIndex];
+  const imageUrl = currentSlide.image?.asset?.url
+    ? urlFor(currentSlide.image).width(1920).height(800).url()
+    : null;
 
   return (
-    <section className="relative h-[500px] md:h-[600px] overflow-hidden bg-background">
-      {/* Background with subtle gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-background" />
-      
-      {/* Decorative elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className={`absolute -top-1/2 -right-1/4 w-full h-full bg-gradient-radial ${slide.gradient} blur-3xl opacity-20`} />
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
-      </div>
+    <section className="relative min-h-[500px] md:min-h-[600px] overflow-hidden">
+      {/* Background Image */}
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt={currentSlide.headline ?? "Hero"}
+          fill
+          priority={currentIndex === 0}
+          className="object-cover"
+          sizes="100vw"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-dodo-yellow/10 via-background to-background" />
+      )}
+
+      {/* Dark Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
 
       {/* Content */}
-      <div className="relative h-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-full flex-col items-center justify-center text-center">
-          {/* Animated Container - Re-renders on slide change */}
-          <div key={currentSlide} className="flex flex-col items-center">
-            {/* Badge */}
-            <span className="mb-6 inline-block rounded-full bg-dodo-yellow/10 px-4 py-1.5 text-sm font-medium text-dodo-yellow animate-fade-in-down">
-              Dodo Nutrition
-            </span>
-
-            {/* Title */}
-            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-7xl lg:text-8xl animate-fade-in-up">
-              {slide.title}
+      <div className="relative h-full min-h-[500px] md:min-h-[600px] flex items-center">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+          <div className="max-w-3xl">
+            {/* Headline */}
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
+              {currentSlide.headline}
             </h1>
 
             {/* Subtitle */}
-            <p className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl md:text-2xl animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-              {slide.subtitle}
-            </p>
+            {currentSlide.subtitle && (
+              <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-md">
+                {currentSlide.subtitle}
+              </p>
+            )}
 
-            {/* CTA */}
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-              <Button
-                asChild
-                size="lg"
-                className="bg-dodo-yellow text-black font-bold text-lg h-14 px-8 hover:bg-dodo-yellow-hover hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(254,226,87,0.3)] hover:shadow-[0_0_30px_rgba(254,226,87,0.5)]"
-              >
-                <Link href={slide.cta.href}>
-                  {slide.cta.label}
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="border-zinc-700 text-foreground h-14 px-8 hover:bg-zinc-800 hover:text-white hover:border-zinc-600 transition-all duration-300"
-              >
-                <Link href="/categories">
-                  تصفح التصنيفات
-                </Link>
-              </Button>
+            {/* CTAs */}
+            <div className="flex flex-wrap gap-4">
+              {currentSlide.ctaLabel && currentSlide.ctaLink && (
+                <Button asChild size="lg" className="bg-dodo-yellow text-black hover:bg-dodo-yellow-hover">
+                  <Link href={currentSlide.ctaLink}>{currentSlide.ctaLabel}</Link>
+                </Button>
+              )}
+              {currentSlide.secondaryCtaLabel && currentSlide.secondaryCtaLink && (
+                <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                  <Link href={currentSlide.secondaryCtaLink}>{currentSlide.secondaryCtaLabel}</Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>
       </div>
 
       {/* Navigation Arrows */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-card/50 text-foreground backdrop-blur-sm transition-all hover:bg-card sm:left-8 sm:h-12 sm:w-12"
-        aria-label="Slide précédente"
-      >
-        <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
-      </button>
-      <button
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-card/50 text-foreground backdrop-blur-sm transition-all hover:bg-card sm:right-8 sm:h-12 sm:w-12"
-        aria-label="Slide suivante"
-      >
-        <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
-      </button>
-
-      {/* Dots */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
-        {heroSlides.map((_, index) => (
+      {slides.length > 1 && (
+        <>
           <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              index === currentSlide
-                ? "w-8 bg-dodo-yellow"
-                : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
-            }`}
-            aria-label={`Aller à la slide ${index + 1}`}
-          />
-        ))}
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+        </>
+      )}
+
+      {/* Dots Navigation */}
+      {slides.length > 1 && (
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`h-2 rounded-full transition-all ${
+                index === currentIndex ? "w-8 bg-dodo-yellow" : "w-2 bg-white/50 hover:bg-white/70"
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Trust Strip */}
+      <div className="absolute bottom-0 left-0 right-0 bg-card/80 backdrop-blur-sm border-t border-border">
+        <div className="mx-auto max-w-7xl px-4 py-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {trustBadges.map((badge, index) => {
+              const Icon = badge.icon;
+              return (
+                <div key={index} className="flex items-center gap-2 justify-center">
+                  <Icon className="h-5 w-5 text-dodo-yellow flex-shrink-0" />
+                  <span className="text-sm text-foreground">{badge.text}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </section>
   );

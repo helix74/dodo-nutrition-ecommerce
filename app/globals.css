@@ -212,4 +212,36 @@
     border-color: var(--dodo-yellow);
     box-shadow: 0 0 20px rgba(254, 226, 87, 0.1);
   }
+
+  /* Brands Marquee - infinite scroll */
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  .marquee-container {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 10%,
+      black 90%,
+      transparent
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 10%,
+      black 90%,
+      transparent
+    );
+  }
+  .marquee-track {
+    animation: marquee 30s linear infinite;
+  }
+  .group\/marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
 }

@@ -41,7 +41,16 @@ export const FEATURED_PACKS_QUERY = defineQuery(`*[_type == "pack" && featured =
   priceBundle,
   packCategory,
   stock,
-  "productCount": count(products)
+  "productCount": count(products),
+  products[] {
+    quantity,
+    "product": product-> {
+      _id,
+      name,
+      slug,
+      "imageUrl": images[0].asset->url
+    }
+  }
 }`);
 
 /**

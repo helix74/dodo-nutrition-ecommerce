@@ -13,6 +13,8 @@ interface AddToCartButtonProps {
   image?: string;
   stock: number;
   className?: string;
+  /** Custom label for the add button (default: "Add to Basket") */
+  label?: string;
 }
 
 export function AddToCartButton({
@@ -22,6 +24,7 @@ export function AddToCartButton({
   image,
   stock,
   className,
+  label = "Add to Basket",
 }: AddToCartButtonProps) {
   const { addItem, updateQuantity } = useCartActions();
   const cartItem = useCartItem(productId);
@@ -61,7 +64,7 @@ export function AddToCartButton({
     return (
       <Button onClick={handleAdd} className={cn("h-11 w-full", className)}>
         <ShoppingBag className="mr-2 h-4 w-4" />
-        Add to Basket
+        {label}
       </Button>
     );
   }

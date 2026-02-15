@@ -525,6 +525,7 @@ export type ALL_CATEGORIES_QUERYResult = Array<{
     } | null;
     hotspot: SanityImageHotspot | null;
   } | null;
+  productCount: number;
 }>;
 // Variable: CATEGORY_BY_SLUG_QUERY
 // Query: *[  _type == "category"  && slug.current == $slug][0] {  _id,  title,  "slug": slug.current,  "image": image{    asset->{      _id,      url    },    hotspot  }}

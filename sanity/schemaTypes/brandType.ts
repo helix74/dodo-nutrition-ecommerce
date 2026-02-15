@@ -23,10 +23,10 @@ export const brandType = defineType({
     }),
     defineField({
       name: "logo",
+      title: "Logo",
       type: "image",
-      options: {
-        hotspot: true,
-      },
+      options: { hotspot: true },
+      description: "Logo de la marque (PNG sans background recommandé)",
     }),
     defineField({
       name: "description",

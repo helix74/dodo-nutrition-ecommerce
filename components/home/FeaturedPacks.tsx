@@ -1,6 +1,23 @@
+"use client";
+
 import Link from "next/link";
 import { Package, ArrowRight } from "lucide-react";
-import { PackCard } from "@/components/app/PackCard";
+import { FeaturedPackCard } from "@/components/home/FeaturedPackCard";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+
+interface PackProduct {
+  quantity: number;
+  product: {
+    _id: string;
+    name: string | null;
+    slug: { current?: string } | null;
+    imageUrl: string | null;
+  } | null;
+}
 
 interface Pack {
   _id: string;
@@ -12,6 +29,7 @@ interface Pack {
   priceBundle: number | null;
   packCategory: string | null;
   stock: number | null;
+  products?: PackProduct[] | null;
   productCount?: number | null;
 }
 
@@ -27,14 +45,16 @@ export function FeaturedPacks({ packs }: FeaturedPacksProps) {
   return (
     <section className="bg-card/50 py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+        {/* Header — الباكات / Packs & Deals */}
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Package className="h-8 w-8 text-dodo-yellow" />
             <div>
-              <h2 className="text-2xl font-bold text-foreground">Packs Économiques</h2>
+              <h2 className="text-2xl font-bold text-foreground">
+                الباكات — Packs & Deals
+              </h2>
               <p className="text-sm text-muted-foreground">
-                Économisez en achetant nos packs combinés
+                وفّر مع الباكات المميزة
               </p>
             </div>
           </div>
@@ -47,20 +67,36 @@ export function FeaturedPacks({ packs }: FeaturedPacksProps) {
           </Link>
         </div>
 
-        {/* Packs Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Mobile: Carousel */}
+        <div className="md:hidden">
+          <Carousel opts={{ align: "start", loop: true }}>
+            <CarouselContent className="-ml-4">
+              {packs.map((pack) => (
+                <CarouselItem
+                  key={pack._id}
+                  className="basis-[85%] pl-4 sm:basis-[75%]"
+                >
+                  <FeaturedPackCard pack={pack} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+        </div>
+
+        {/* Desktop: Grid 2–3 columns */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {packs.slice(0, 4).map((pack) => (
-            <PackCard key={pack._id} pack={pack} />
+            <FeaturedPackCard key={pack._id} pack={pack} />
           ))}
         </div>
 
         {/* Mobile "See All" Link */}
-        <div className="mt-8 text-center sm:hidden">
+        <div className="mt-8 text-center md:hidden">
           <Link
             href="/packs"
             className="inline-flex items-center gap-2 rounded-lg bg-dodo-yellow px-6 py-3 font-medium text-black hover:bg-dodo-yellow-hover transition-colors"
           >
-            Voir tous les packs
+            شوف كل الباكات
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

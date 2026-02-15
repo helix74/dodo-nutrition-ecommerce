@@ -17,7 +17,8 @@ export const ALL_CATEGORIES_QUERY = defineQuery(`*[
       url
     },
     hotspot
-  }
+  },
+  "productCount": count(*[_type == "product" && references(^._id)])
 }`);
 
 /**

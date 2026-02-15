@@ -10,6 +10,7 @@ import {
   ALL_BRANDS_QUERY,
 } from "@/lib/sanity/queries/products";
 import { ALL_CATEGORIES_QUERY } from "@/lib/sanity/queries/categories";
+import { GOAL_CATEGORIES, GOALS } from "@/lib/constants/goals";
 import { ProductSection } from "@/components/app/ProductSection";
 import { ProductFiltersSkeleton } from "@/components/app/ProductFiltersSkeleton";
 import { ProductGridSkeleton } from "@/components/app/ProductGridSkeleton";
@@ -25,6 +26,7 @@ interface PageProps {
   searchParams: Promise<{
     q?: string;
     category?: string;
+    goal?: string;
     brand?: string;
     minPrice?: string;
     maxPrice?: string;
@@ -39,6 +41,7 @@ export default async function ShopPage({ searchParams }: PageProps) {
 
   const searchQuery = params.q ?? "";
   const categorySlug = params.category ?? "";
+  const goalParam = params.goal ?? "";
   const brandSlug = params.brand ?? "";
   const minPrice = Number(params.minPrice) || 0;
   const maxPrice = Number(params.maxPrice) || 0;
@@ -46,6 +49,15 @@ export default async function ShopPage({ searchParams }: PageProps) {
   const inStock = params.inStock === "true";
   const currentPage = Math.max(1, Number(params.page) || 1);
   const offset = (currentPage - 1) * SHOP_PAGE_SIZE;
+
+  // Goal filter: map goal to category slugs when valid and category not explicitly set
+  const validGoalIds = Object.keys(GOAL_CATEGORIES) as Array<keyof typeof GOAL_CATEGORIES>;
+  const isGoalValid = goalParam !== "" && validGoalIds.includes(goalParam as keyof typeof GOAL_CATEGORIES);
+  const goalLabel = isGoalValid ? (GOALS.find((g) => g.id === goalParam)?.subtitle ?? goalParam) : "";
+  const categorySlugs =
+    categorySlug === "" && isGoalValid
+      ? [...GOAL_CATEGORIES[goalParam as keyof typeof GOAL_CATEGORIES]]
+      : [];
 
   // Select paginated query based on sort parameter
   const getQuery = () => {
@@ -67,7 +79,8 @@ export default async function ShopPage({ searchParams }: PageProps) {
 
   const filterParams = {
     searchQuery,
-    categorySlug,
+    categorySlug: categorySlugs.length > 0 ? "" : categorySlug,
+    categorySlugs,
     brandSlug,
     minPrice,
     maxPrice,
@@ -104,6 +117,7 @@ export default async function ShopPage({ searchParams }: PageProps) {
   const searchParamsForPagination: Record<string, string> = {};
   if (params.q) searchParamsForPagination.q = params.q;
   if (params.category) searchParamsForPagination.category = params.category;
+  if (params.goal) searchParamsForPagination.goal = params.goal;
   if (params.brand) searchParamsForPagination.brand = params.brand;
   if (params.minPrice) searchParamsForPagination.minPrice = params.minPrice;
   if (params.maxPrice) searchParamsForPagination.maxPrice = params.maxPrice;
@@ -120,10 +134,16 @@ export default async function ShopPage({ searchParams }: PageProps) {
             <a href="/" className="hover:text-dodo-yellow">Accueil</a>
             <span className="mx-2">/</span>
             <span className="text-foreground">Shop</span>
-            {categorySlug && (
+            {(categorySlug || goalParam) && (
               <>
                 <span className="mx-2">/</span>
-                <span className="text-foreground capitalize">{categorySlug.replace(/-/g, ' ')}</span>
+                <span className="text-foreground">
+                  {categorySlug
+                    ? categorySlug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+                    : isGoalValid
+                      ? `${GOALS.find((g) => g.id === goalParam)?.title ?? goalParam} (${goalLabel})`
+                      : goalParam}
+                </span>
               </>
             )}
           </nav>
@@ -131,11 +151,13 @@ export default async function ShopPage({ searchParams }: PageProps) {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                {categorySlug 
-                  ? categorySlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) 
-                  : brandSlug
-                  ? `Produits ${brandSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}`
-                  : "Tous les Produits"}
+                {categorySlug
+                  ? categorySlug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+                  : categorySlugs.length > 0
+                    ? `${GOALS.find((g) => g.id === goalParam)?.title ?? goalParam} — ${goalLabel}`
+                    : brandSlug
+                      ? `Produits ${brandSlug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}`
+                      : "Tous les Produits"}
               </h1>
               <p className="mt-2 text-muted-foreground">
                 {searchQuery 

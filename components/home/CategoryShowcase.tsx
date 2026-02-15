@@ -1,18 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import type { ALL_CATEGORIES_QUERYResult } from "@/sanity.types";
-
-// Icons for each category (matching nutrition categories)
-const categoryIcons: Record<string, string> = {
-  proteines: "🥛",
-  creatine: "💪",
-  "pre-workout": "⚡",
-  vitamines: "💊",
-  mineraux: "🧬",
-  "bruleurs-de-graisse": "🔥",
-  "boosters-hormonaux": "🚀",
-  supplements: "✨",
-};
 
 interface CategoryShowcaseProps {
   categories: ALL_CATEGORIES_QUERYResult;
@@ -25,8 +14,8 @@ export function CategoryShowcase({ categories }: CategoryShowcaseProps) {
         {/* Section Header */}
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
-              Nos Catégories
+            <h2 className="font-arabic text-2xl font-bold text-foreground sm:text-3xl">
+              تصنيفات
             </h2>
             <p className="mt-2 text-muted-foreground">
               Trouvez les suppléments adaptés à vos objectifs
@@ -41,32 +30,50 @@ export function CategoryShowcase({ categories }: CategoryShowcaseProps) {
           </Link>
         </div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:gap-6">
+        {/* Categories Grid - 5 cols desktop, 2 cols mobile */}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-6">
           {categories.map((category) => {
             const slug = category.slug ?? "";
-            const icon = categoryIcons[slug] || "📦";
-            
+            const imageUrl = category.image?.asset?.url;
+            const productCount = category.productCount ?? 0;
+
             return (
               <Link
                 key={category._id}
                 href={`/shop?category=${slug}`}
-                className="group relative flex flex-col items-center justify-center rounded-xl border border-border bg-card p-6 transition-all duration-300 hover:border-dodo-yellow hover:shadow-lg hover:shadow-dodo-yellow/10"
+                className="group relative aspect-[4/3] overflow-hidden rounded-xl transition-transform duration-300 hover:scale-[1.02]"
               >
-                {/* Icon */}
-                <span className="text-4xl mb-3 transition-transform duration-300 group-hover:scale-110">
-                  {icon}
-                </span>
+                {/* Image background or gradient placeholder */}
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt={category.title ?? "Catégorie"}
+                    fill
+                    className="object-cover transition-all duration-300 group-hover:brightness-110"
+                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0 bg-gradient-to-br from-dodo-yellow/20 to-dodo-yellow/5"
+                    aria-hidden
+                  />
+                )}
 
-                {/* Title */}
-                <h3 className="text-sm font-semibold text-foreground text-center">
-                  {category.title}
-                </h3>
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-opacity duration-300 group-hover:from-black/70 group-hover:via-black/30" />
 
-                {/* Hover indicator */}
-                <div className="mt-3 flex items-center gap-1 text-xs text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
-                  <span>Explorer</span>
-                  <ArrowRight className="h-3 w-3" />
+                {/* Content overlay */}
+                <div className="absolute inset-0 flex flex-col justify-end p-4">
+                  <h3 className="text-sm font-semibold text-white drop-shadow-sm sm:text-base">
+                    {category.title}
+                  </h3>
+                  <p className="mt-1 text-xs text-white/90">
+                    {productCount} produit{productCount !== 1 ? "s" : ""}
+                  </p>
+                  <div className="mt-2 flex items-center gap-1 text-xs text-white/80 opacity-0 transition-opacity group-hover:opacity-100">
+                    <span>Explorer</span>
+                    <ArrowRight className="h-3 w-3" />
+                  </div>
                 </div>
               </Link>
             );

@@ -77,68 +77,58 @@ export function BannerSection({ banners }: BannerSectionProps) {
   }
 
   return (
-    <section className="py-8 bg-background">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section header */}
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-foreground">
-            🔥 Offres Spéciales
-          </h2>
-          {banners.length > 1 && (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={prevSlide}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground transition-all hover:bg-secondary hover:border-dodo-yellow"
-                aria-label="Banner précédent"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <span className="text-sm text-muted-foreground tabular-nums">
-                {currentIndex + 1} / {banners.length}
-              </span>
-              <button
-                onClick={nextSlide}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground transition-all hover:bg-secondary hover:border-dodo-yellow"
-                aria-label="Banner suivant"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Banner - TALLER aspect ratio to fit image */}
-        <div className="relative group">
-          {currentBanner.link ? (
-            <Link href={currentBanner.link} className="block">
-              <div className="relative aspect-[2/1] md:aspect-[2.5/1] w-full overflow-hidden rounded-xl">
-                <Image
-                  src={imageUrl}
-                  alt={currentBanner.alt ?? "Banner promotionnel"}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                  sizes="(max-width: 768px) 100vw, 1280px"
-                  priority
-                />
-              </div>
-            </Link>
-          ) : (
-            <div className="relative aspect-[2/1] md:aspect-[2.5/1] w-full overflow-hidden rounded-xl">
+    <section className="relative w-full bg-background">
+      {/* Full-bleed banner — edge-to-edge, no padding */}
+      <div className="relative group w-full">
+        {currentBanner.link ? (
+          <Link href={currentBanner.link} className="block w-full">
+            <div className="relative aspect-[2/1] md:aspect-[2.5/1] w-full overflow-hidden">
               <Image
                 src={imageUrl}
                 alt={currentBanner.alt ?? "Banner promotionnel"}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                sizes="(max-width: 768px) 100vw, 1280px"
+                sizes="100vw"
                 priority
               />
             </div>
-          )}
-        </div>
+          </Link>
+        ) : (
+          <div className="relative aspect-[2/1] md:aspect-[2.5/1] w-full overflow-hidden">
+            <Image
+              src={imageUrl}
+              alt={currentBanner.alt ?? "Banner promotionnel"}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              sizes="100vw"
+              priority
+            />
+          </div>
+        )}
 
-        {/* Dots */}
+        {/* Nav arrows — overlaid on banner */}
         {banners.length > 1 && (
-          <div className="mt-4 flex justify-center gap-2">
+          <>
+            <button
+              onClick={prevSlide}
+              className="absolute left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60"
+              aria-label="Banner précédent"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="absolute right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60"
+              aria-label="Banner suivant"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </>
+        )}
+
+        {/* Dots — overlaid at bottom */}
+        {banners.length > 1 && (
+          <div className="absolute bottom-4 left-0 right-0 z-10 flex justify-center gap-2">
             {banners.map((_, index) => (
               <button
                 key={index}
@@ -146,7 +136,7 @@ export function BannerSection({ banners }: BannerSectionProps) {
                 className={`h-2 rounded-full transition-all duration-300 ${
                   index === currentIndex
                     ? "w-8 bg-dodo-yellow"
-                    : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                    : "w-2 bg-white/50 hover:bg-white/80"
                 }`}
                 aria-label={`Aller au banner ${index + 1}`}
               />

@@ -34,6 +34,7 @@ export function ProductFilters({ categories, brands = [] }: ProductFiltersProps)
 
   const currentSearch = searchParams.get("q") ?? "";
   const currentCategory = searchParams.get("category") ?? "";
+  const currentGoal = searchParams.get("goal") ?? "";
   const currentBrand = searchParams.get("brand") ?? "";
   const currentSort = searchParams.get("sort") ?? "name";
   const urlMinPrice = Number(searchParams.get("minPrice")) || 0;
@@ -99,7 +100,7 @@ export function ProductFilters({ categories, brands = [] }: ProductFiltersProps)
   };
 
   const handleClearFilters = () => {
-    router.push("/", { scroll: false });
+    router.push("/shop", { scroll: false });
   };
 
   const clearSingleFilter = (key: string) => {

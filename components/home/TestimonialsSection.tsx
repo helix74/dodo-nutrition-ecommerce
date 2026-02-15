@@ -176,8 +176,8 @@ export function TestimonialsSection({ reviews, stats }: TestimonialsSectionProps
             </>
           )}
 
-          {/* Cards Grid */}
-          <div className="grid gap-6 md:grid-cols-3">
+          {/* Desktop: Carousel with 3 cards */}
+          <div className="hidden md:grid gap-6 md:grid-cols-3">
             {visibleReviews.map((review) => (
               <TestimonialCard key={review._id} review={review} />
             ))}

@@ -8,7 +8,10 @@ import { LOW_STOCK_THRESHOLD } from "@/lib/constants/stock";
 /** Common filter conditions for product filtering - NUTRITION */
 const PRODUCT_FILTER_CONDITIONS = `
   _type == "product"
-  && ($categorySlug == "" || category->slug.current == $categorySlug)
+  && (
+    (count($categorySlugs) > 0 && category->slug.current in $categorySlugs)
+    || (count($categorySlugs) == 0 && ($categorySlug == "" || category->slug.current == $categorySlug))
+  )
   && ($brandSlug == "" || brand->slug.current == $brandSlug)
   && ($minPrice == 0 || priceRetail >= $minPrice)
   && ($maxPrice == 0 || priceRetail <= $maxPrice)
@@ -110,7 +113,7 @@ export const FEATURED_PRODUCTS_QUERY = defineQuery(`*[
   _type == "product"
   && featured == true
   && stock > 0
-] | order(name asc) [0...6] {
+] | order(name asc) [0...8] {
   _id,
   name,
   "slug": slug.current,
@@ -137,6 +140,48 @@ export const FEATURED_PRODUCTS_QUERY = defineQuery(`*[
     name,
     "slug": slug.current
   },
+  stock
+}`);
+
+/**
+ * New products (8 most recent)
+ */
+export const NEW_PRODUCTS_QUERY = defineQuery(`*[
+  _type == "product"
+  && stock > 0
+] | order(_createdAt desc) [0...8] {
+  _id,
+  name,
+  "slug": slug.current,
+  priceRetail,
+  priceSlashed,
+  images[] {
+    asset-> { _id, url }
+  },
+  brand-> { name },
+  category-> { title, "slug": slug.current },
+  stock,
+  _createdAt
+}`);
+
+/**
+ * Promo products (8 with slashed price)
+ */
+export const PROMO_PRODUCTS_QUERY = defineQuery(`*[
+  _type == "product"
+  && defined(priceSlashed)
+  && priceSlashed < priceRetail
+  && stock > 0
+] | order(priceSlashed asc) [0...8] {
+  _id,
+  name,
+  "slug": slug.current,
+  priceRetail,
+  priceSlashed,
+  images[] {
+    asset-> { _id, url }
+  },
+  brand-> { name },
   stock
 }`);
 
