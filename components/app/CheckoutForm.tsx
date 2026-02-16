@@ -57,10 +57,12 @@ export function CheckoutForm({ onSubmit, isLoading = false, disabled = false }: 
       newErrors.phone = "Format invalide (ex: +216 XX XXX XXX)";
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = "L'email est requis";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Email invalide";
+    if (!isAuthenticated) {
+      if (!formData.email.trim()) {
+        newErrors.email = "L'email est requis";
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        newErrors.email = "Email invalide";
+      }
     }
 
     if (!formData.line1.trim()) {

@@ -24,7 +24,7 @@ export function AddToCartButton({
   image,
   stock,
   className,
-  label = "Add to Basket",
+  label = "زيدو للقضيّة",
 }: AddToCartButtonProps) {
   const { addItem, updateQuantity } = useCartActions();
   const cartItem = useCartItem(productId);
@@ -54,7 +54,7 @@ export function AddToCartButton({
         variant="secondary"
         className={cn("h-11 w-full", className)}
       >
-        Out of Stock
+        Rupture de stock
       </Button>
     );
   }
@@ -80,18 +80,18 @@ export function AddToCartButton({
       <Button
         variant="ghost"
         size="icon"
-        className="h-full flex-1 rounded-r-none"
+        className="h-full flex-1 rounded-r-none text-foreground"
         onClick={handleDecrement}
       >
         <Minus className="h-4 w-4" />
       </Button>
-      <span className="flex-1 text-center text-sm font-semibold tabular-nums">
+      <span className="flex-1 text-center text-sm font-semibold tabular-nums text-foreground">
         {quantityInCart}
       </span>
       <Button
         variant="ghost"
         size="icon"
-        className="h-full flex-1 rounded-l-none disabled:opacity-20"
+        className="h-full flex-1 rounded-l-none text-foreground disabled:opacity-20"
         onClick={handleAdd}
         disabled={isAtMax}
       >

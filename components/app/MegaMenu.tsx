@@ -94,7 +94,7 @@ export function CategoriesMegaMenu({ categories }: CategoriesMegaMenuProps) {
   return (
     <div className="min-w-[320px]">
       <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-        التصنيفات
+        Catégories
       </p>
       <div className="grid grid-cols-2 gap-x-6 gap-y-1">
         {[col1, col2].map((col, colIndex) => (
@@ -116,7 +116,7 @@ export function CategoriesMegaMenu({ categories }: CategoriesMegaMenuProps) {
         href="/categories"
         className="block text-center text-sm font-medium text-dodo-yellow hover:underline"
       >
-        عرض الكل →
+        Voir tout →
       </Link>
     </div>
   );
@@ -135,46 +135,64 @@ interface BrandsMegaMenuProps {
 }
 
 export function BrandsMegaMenu({ brands }: BrandsMegaMenuProps) {
+  const visibleBrands = brands.slice(0, 18);
+  const hasMore = brands.length > 18;
+
   return (
-    <div className="w-[700px]">
+    <div className="w-[640px] max-h-[420px] overflow-hidden">
       <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
-        الماركات
+        Marques
       </p>
-      <div className="grid grid-cols-6 gap-3">
-        {brands.map((brand) => (
+      <div className="grid grid-cols-6 gap-2">
+        {visibleBrands.map((brand) => (
           <Link
             key={brand._id}
             href={`/brands/${brand.slug}`}
-            className="group flex flex-col items-center gap-2 p-3 rounded-lg border border-transparent hover:border-dodo-yellow/50 hover:bg-secondary transition-all"
+            className="group flex flex-col items-center gap-1.5 p-2 rounded-lg border border-transparent hover:border-dodo-yellow/50 hover:bg-secondary transition-all"
           >
             {brand.logo ? (
-              <div className="relative w-16 h-16 flex items-center justify-center">
+              <div className="relative w-14 h-14 flex items-center justify-center">
                 <Image
                   src={brand.logo}
                   alt={brand.name}
-                  width={64}
-                  height={64}
-                  className="object-contain max-h-16 filter brightness-0 invert opacity-70 group-hover:opacity-100 transition-opacity"
+                  width={56}
+                  height={56}
+                  className="object-contain max-h-14 filter brightness-0 invert opacity-70 group-hover:opacity-100 transition-opacity"
                 />
               </div>
             ) : (
-              <div className="w-16 h-16 flex items-center justify-center bg-secondary rounded-lg text-muted-foreground text-lg font-bold">
+              <div className="w-14 h-14 flex items-center justify-center bg-secondary rounded-lg text-muted-foreground text-base font-bold">
                 {brand.name.charAt(0)}
               </div>
             )}
-            <span className="text-[11px] text-center text-muted-foreground group-hover:text-foreground leading-tight min-h-[28px] flex items-center">
+            <span className="text-[10px] text-center text-muted-foreground group-hover:text-foreground leading-tight min-h-[24px] flex items-center">
               {brand.name}
             </span>
           </Link>
         ))}
       </div>
-      <hr className="my-4 border-border" />
-      <Link
-        href="/brands"
-        className="block text-center text-sm font-medium text-dodo-yellow hover:underline"
-      >
-        عرض الكل →
-      </Link>
+      {hasMore && (
+        <>
+          <hr className="my-3 border-border" />
+          <Link
+            href="/brands"
+            className="block text-center text-sm font-medium text-dodo-yellow hover:underline"
+          >
+            Voir les {brands.length} marques →
+          </Link>
+        </>
+      )}
+      {!hasMore && (
+        <>
+          <hr className="my-3 border-border" />
+          <Link
+            href="/brands"
+            className="block text-center text-sm font-medium text-dodo-yellow hover:underline"
+          >
+            Voir tout →
+          </Link>
+        </>
+      )}
     </div>
   );
 }

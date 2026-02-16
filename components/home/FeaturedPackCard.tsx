@@ -45,7 +45,7 @@ export function FeaturedPackCard({ pack }: FeaturedPackCardProps) {
     <article className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300 hover:shadow-md">
       {/* Large pack image at top */}
       <Link href={`/packs/${pack.slug?.current ?? pack._id}`} className="block">
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-secondary">
+        <div className="relative aspect-4/3 w-full overflow-hidden bg-secondary">
           {pack.imageUrl ? (
             <Image
               src={pack.imageUrl}
@@ -89,7 +89,7 @@ export function FeaturedPackCard({ pack }: FeaturedPackCardProps) {
           </span>
           {savings > 0 && (
             <span className="rounded-full bg-dodo-red px-2.5 py-0.5 text-xs font-bold text-white">
-              وفّر {savings} TND
+              -{savings} TND
             </span>
           )}
         </div>
@@ -138,7 +138,7 @@ export function FeaturedPackCard({ pack }: FeaturedPackCardProps) {
             href={`/packs/${pack.slug?.current ?? pack._id}`}
             className="inline-flex w-full items-center justify-center rounded-lg bg-dodo-yellow px-4 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-dodo-yellow-hover"
           >
-            شوف الباك
+            Voir le pack
           </Link>
         </div>
       </div>

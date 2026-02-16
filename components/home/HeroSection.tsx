@@ -82,7 +82,7 @@ export function HeroSection({ slides }: HeroSectionProps) {
   // Fallback if no slides
   if (!slides || slides.length === 0) {
     return (
-      <section className="relative min-h-[500px] md:min-h-[600px] overflow-hidden bg-gradient-to-br from-dodo-yellow/10 via-background to-background">
+      <section className="relative min-h-[500px] md:min-h-[600px] overflow-hidden bg-linear-to-br from-dodo-yellow/10 via-background to-background">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center px-4">
             <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
@@ -99,14 +99,14 @@ export function HeroSection({ slides }: HeroSectionProps) {
 
         {/* Trust Strip */}
         <div className="absolute bottom-0 left-0 right-0 bg-card/80 backdrop-blur-sm border-t border-border">
-          <div className="mx-auto max-w-7xl px-4 py-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="mx-auto max-w-7xl px-4 py-3 sm:py-4">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:justify-between md:gap-4">
               {trustBadges.map((badge, index) => {
                 const Icon = badge.icon;
                 return (
-                  <div key={index} className="flex items-center gap-2 justify-center">
-                    <Icon className="h-5 w-5 text-dodo-yellow flex-shrink-0" />
-                    <span className="text-sm text-foreground">{badge.text}</span>
+                  <div key={index} className="flex items-center gap-2">
+                    <Icon className="h-5 w-5 text-dodo-yellow shrink-0" />
+                    <span className="text-xs sm:text-sm text-foreground whitespace-nowrap">{badge.text}</span>
                   </div>
                 );
               })}
@@ -123,7 +123,7 @@ export function HeroSection({ slides }: HeroSectionProps) {
     : null;
 
   return (
-    <section className="relative min-h-[500px] md:min-h-[600px] overflow-hidden">
+    <section className="relative min-h-[380px] sm:min-h-[450px] md:min-h-[600px] overflow-hidden">
       {/* Background Image */}
       {imageUrl ? (
         <Image
@@ -131,28 +131,30 @@ export function HeroSection({ slides }: HeroSectionProps) {
           alt={currentSlide.headline ?? "Hero"}
           fill
           priority={currentIndex === 0}
-          className="object-cover"
+          className="object-cover object-center"
           sizes="100vw"
         />
       ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-dodo-yellow/10 via-background to-background" />
+        <div className="absolute inset-0 bg-linear-to-br from-dodo-yellow/10 via-background to-background" />
       )}
 
       {/* Dark Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/50 to-black/30" />
 
       {/* Content */}
-      <div className="relative h-full min-h-[500px] md:min-h-[600px] flex items-center">
+      <div className="relative h-full min-h-[380px] sm:min-h-[450px] md:min-h-[600px] flex items-center">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
           <div className="max-w-3xl">
             {/* Headline */}
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
-              {currentSlide.headline}
-            </h1>
+            {currentSlide.headline && (
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
+                {currentSlide.headline}
+              </h1>
+            )}
 
             {/* Subtitle */}
             {currentSlide.subtitle && (
-              <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-md">
+              <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-8 drop-shadow-md">
                 {currentSlide.subtitle}
               </p>
             )}
@@ -165,7 +167,7 @@ export function HeroSection({ slides }: HeroSectionProps) {
                 </Button>
               )}
               {currentSlide.secondaryCtaLabel && currentSlide.secondaryCtaLink && (
-                <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10 hover:text-white">
                   <Link href={currentSlide.secondaryCtaLink}>{currentSlide.secondaryCtaLabel}</Link>
                 </Button>
               )}
@@ -212,14 +214,14 @@ export function HeroSection({ slides }: HeroSectionProps) {
 
       {/* Trust Strip */}
       <div className="absolute bottom-0 left-0 right-0 bg-card/80 backdrop-blur-sm border-t border-border">
-        <div className="mx-auto max-w-7xl px-4 py-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="mx-auto max-w-7xl px-4 py-3 sm:py-4">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:justify-between md:gap-4">
             {trustBadges.map((badge, index) => {
               const Icon = badge.icon;
               return (
-                <div key={index} className="flex items-center gap-2 justify-center">
-                  <Icon className="h-5 w-5 text-dodo-yellow flex-shrink-0" />
-                  <span className="text-sm text-foreground">{badge.text}</span>
+                <div key={index} className="flex items-center gap-2">
+                  <Icon className="h-5 w-5 text-dodo-yellow shrink-0" />
+                  <span className="text-xs sm:text-sm text-foreground whitespace-nowrap">{badge.text}</span>
                 </div>
               );
             })}

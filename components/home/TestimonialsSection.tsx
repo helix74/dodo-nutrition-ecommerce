@@ -129,11 +129,11 @@ export function TestimonialsSection({ reviews, stats }: TestimonialsSectionProps
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-12 text-center">
-          <h2 className="font-arabic text-3xl font-bold text-foreground md:text-4xl">
-            شنوا قالوا عليّنا ⭐
+          <h2 className="text-3xl font-bold text-foreground md:text-4xl">
+            Ce que disent nos clients ⭐
           </h2>
           <p className="mt-2 text-lg text-muted-foreground">
-            Ce que disent nos clients
+            Avis vérifiés de notre communauté
           </p>
 
           {/* Stats */}

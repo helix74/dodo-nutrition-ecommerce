@@ -170,6 +170,7 @@ The user follows a "speckit" methodology:
 - Contains: `spec.md` (main), `plan.md`, `tasks.md`, `verification.md`
 - User calls the AI agent "Maestro" and expects structured, documented work
 - User communicates in **Tunisian Darija** (mix of Arabic + French) — respond normally in English/French
+- **Speckit skill**: Use the `speckit` skill (`.cursor/skills/speckit/SKILL.md`) for `/speckit.*` commands
 
 ### User Preferences
 
@@ -178,3 +179,37 @@ The user follows a "speckit" methodology:
 - Expects git commits with detailed messages
 - Likes CSV exports for manual data review
 - Values documentation (specs, plans, checklists)
+
+---
+
+## Agent Configuration
+
+### Rules (`.cursor/rules/`)
+
+| Rule | Scope | Purpose |
+|------|-------|---------|
+| `ProjectHandover.mdc` | Always | Project context, state, architecture |
+| `Agents.mdc` | Always | Core coding standards, Sanity, GROQ |
+| `TunisianContext.mdc` | Always | Language, currency, cultural context |
+| `DodoDesignSystem.mdc` | Components/UI | Dark theme, colors, typography |
+| `DodoEcommerce.mdc` | Cart/Checkout/Orders | E-commerce patterns |
+| `NextjsPatterns.mdc` | App Router files | Next.js patterns |
+| `GROQQueries.mdc` | Queries | GROQ query conventions |
+| `SanitySchemas.mdc` | Schema files | Sanity schema patterns |
+| `Performance.mdc` | Components/Config | Optimization targets |
+| `AdminDashboard.mdc` | Admin files | Admin patterns |
+| `AIChat.mdc` | Chat files | AI assistant patterns |
+| `Shadcn.mdc` | On demand | shadcn/ui reference |
+| `Clerk.mdc` | On demand | Clerk auth patterns |
+| `sanityAppSDK.mdc` | On demand | Sanity App SDK |
+| `sanityAppSDKTypegen.mdc` | On demand | TypeGen |
+
+### Skills (`.cursor/skills/`)
+
+| Skill | Trigger |
+|-------|---------|
+| `speckit` | `/speckit.*` commands, feature planning |
+| `feature-development` | New feature implementation |
+| `component-creation` | Creating React components |
+| `sanity-data-pipeline` | Data import/export |
+| `deployment-checklist` | Pre-deployment verification |

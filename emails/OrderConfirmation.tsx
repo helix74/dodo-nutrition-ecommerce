@@ -55,34 +55,37 @@ export const OrderConfirmation = ({
           Commande #{orderId}
         </Text>
         
-        {items.map((item, index) => (
-          <Row key={index} className="mb-4 border-b border-zinc-800 pb-4 last:border-0 last:mb-0 last:pb-0">
-            <Column className="w-16 pr-4">
-              {item.image && (
-                <Img
-                  src={item.image}
-                  alt={item.name}
-                  width="64"
-                  height="64"
-                  className="rounded-md object-cover"
-                />
-              )}
-            </Column>
-            <Column>
-              <Text className="m-0 text-sm font-medium text-foreground">
-                {item.name}
-              </Text>
-              <Text className="m-0 text-xs text-zinc-400">
-                Qté: {item.quantity}
-              </Text>
-            </Column>
-            <Column className="text-right">
-              <Text className="m-0 text-sm font-medium text-primary">
-                {item.price.toFixed(2)} TND
-              </Text>
-            </Column>
-          </Row>
-        ))}
+        {items.map((item, index) => {
+          const isLast = index === items.length - 1;
+          return (
+            <Row key={index} className={isLast ? "" : "mb-4 border-b border-zinc-800 pb-4"}>
+              <Column className="w-16 pr-4">
+                {item.image && (
+                  <Img
+                    src={item.image}
+                    alt={item.name}
+                    width="64"
+                    height="64"
+                    className="rounded-md object-cover"
+                  />
+                )}
+              </Column>
+              <Column>
+                <Text className="m-0 text-sm font-medium text-foreground">
+                  {item.name}
+                </Text>
+                <Text className="m-0 text-xs text-zinc-400">
+                  Qté: {item.quantity}
+                </Text>
+              </Column>
+              <Column className="text-right">
+                <Text className="m-0 text-sm font-medium text-primary">
+                  {item.price.toFixed(2)} TND
+                </Text>
+              </Column>
+            </Row>
+          );
+        })}
 
         <Row className="mt-4 pt-4 border-t border-zinc-700">
           <Column>

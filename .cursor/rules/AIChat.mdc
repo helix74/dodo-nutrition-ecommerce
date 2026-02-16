@@ -1,0 +1,52 @@
+---
+description: AI shopping assistant patterns for Dodo Nutrition — Vercel AI SDK, GROQ LLM, tool calling. Apply when working on the chat feature.
+globs: "{app/api/chat/**/*.ts,lib/ai/**/*.ts,components/app/chat/**/*.tsx,components/app/ChatSheet.tsx}"
+alwaysApply: false
+---
+
+# AI Shopping Assistant
+
+## Stack
+
+- **Vercel AI SDK** for streaming chat
+- **GROQ** provider with `llama-3.1-8b-instant` model
+- Tool calling for product search and order lookup
+
+## Architecture
+
+```
+components/app/ChatSheet.tsx  → Chat UI (Sheet component)
+components/app/chat/          → Chat sub-components
+lib/ai/shopping-agent.ts      → Agent configuration
+lib/ai/types.ts               → Type definitions
+lib/ai/tools/                 → Tool definitions
+app/api/chat/route.ts         → API endpoint
+lib/store/chat-store.ts       → Zustand chat state
+```
+
+## Tools
+
+| Tool | File | Purpose |
+|------|------|---------|
+| `search-products` | `lib/ai/tools/search-products.ts` | Search products by query |
+| `get-my-orders` | `lib/ai/tools/get-my-orders.ts` | Retrieve user's orders |
+
+## Chat Widgets
+
+- `ProductCardWidget` — Renders product cards inline in chat
+- `OrderCardWidget` — Renders order info inline
+- `ToolCallUI` — Shows tool execution status
+
+## Agent Rules
+
+- Respond in French or Darija depending on user language
+- Use TND for all prices
+- Always mention stock availability
+- Recommend packs when relevant
+- Keep responses helpful and concise
+
+## State Management
+
+- Zustand store: `lib/store/chat-store.ts`
+- Provider: `lib/store/chat-store-provider.tsx`
+- Persisted with localStorage

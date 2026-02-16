@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Package, ShoppingBag, Sparkles, User, Heart, Search, Menu, X } from "lucide-react";
+import { Package, ShoppingBag, Sparkles, User, Heart, Search, Menu, X, ChevronDown, Grid3X3, Tag } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { useCartActions, useTotalItems } from "@/lib/store/cart-store-provider";
@@ -14,10 +15,10 @@ import { useState } from "react";
 import type { Category, Brand } from "@/lib/data/megamenu";
 
 const navLinks = [
-  { label: "الرئيسية", href: "/" },
-  { label: "المتجر", href: "/shop" },
-  { label: "الباقات", href: "/packs", highlight: true },
-  { label: "العروض", href: "/promotions", highlight: true },
+  { label: "Accueil", href: "/" },
+  { label: "Boutique", href: "/shop" },
+  { label: "Packs", href: "/packs", highlight: true },
+  { label: "Promos", href: "/promotions", highlight: true },
 ];
 
 interface HeaderProps {
@@ -83,12 +84,12 @@ export function Header({ categories = [], brands = [] }: HeaderProps) {
           
           {/* Mega Menus */}
           {categories.length > 0 && (
-            <MegaMenu label="التصنيفات" href="/categories">
+            <MegaMenu label="Catégories" href="/categories">
               <CategoriesMegaMenu categories={categories} />
             </MegaMenu>
           )}
           {brands.length > 0 && (
-            <MegaMenu label="الماركات" href="/brands">
+            <MegaMenu label="Marques" href="/brands">
               <BrandsMegaMenu brands={brands} />
             </MegaMenu>
           )}
@@ -96,15 +97,15 @@ export function Header({ categories = [], brands = [] }: HeaderProps) {
 
         {/* Actions */}
         <div className="flex items-center gap-1 sm:gap-2">
-          {/* Search Button - Desktop */}
+          {/* Search Button */}
           <Button
             variant="ghost"
             size="icon"
-            className="hidden sm:flex text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground"
             onClick={() => setSearchOpen(true)}
           >
             <Search className="h-5 w-5" />
-            <span className="sr-only">بحث</span>
+            <span className="sr-only">Recherche</span>
           </Button>
 
           {/* AI Shopping Assistant */}
@@ -144,7 +145,7 @@ export function Header({ categories = [], brands = [] }: HeaderProps) {
                   {wishlistItems.length > 99 ? "99+" : wishlistItems.length}
                 </span>
               )}
-              <span className="sr-only">المفضلة</span>
+              <span className="sr-only">Favoris</span>
             </Link>
           </Button>
 
@@ -161,7 +162,7 @@ export function Header({ categories = [], brands = [] }: HeaderProps) {
                 {totalItems > 99 ? "99+" : totalItems}
               </span>
             )}
-            <span className="sr-only">القفة ({totalItems})</span>
+            <span className="sr-only">Panier ({totalItems})</span>
           </Button>
 
           {/* My Orders - Only when signed in (Desktop) */}
@@ -174,7 +175,7 @@ export function Header({ categories = [], brands = [] }: HeaderProps) {
             >
               <Link href="/orders">
                 <Package className="h-5 w-5" />
-                <span className="sr-only">طلباتي</span>
+                <span className="sr-only">Mes commandes</span>
               </Link>
             </Button>
           </SignedIn>
@@ -191,12 +192,12 @@ export function Header({ categories = [], brands = [] }: HeaderProps) {
             >
               <UserButton.MenuItems>
                 <UserButton.Link
-                  label="طلباتي"
+                  label="Mes commandes"
                   labelIcon={<Package className="h-4 w-4" />}
                   href="/orders"
                 />
                 <UserButton.Link
-                  label="المفضلة"
+                  label="Favoris"
                   labelIcon={<Heart className="h-4 w-4" />}
                   href="/wishlist"
                 />
@@ -207,7 +208,7 @@ export function Header({ categories = [], brands = [] }: HeaderProps) {
             <SignInButton mode="modal">
               <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
                 <User className="h-5 w-5" />
-                <span className="sr-only">دخول</span>
+                <span className="sr-only">Connexion</span>
               </Button>
             </SignInButton>
           </SignedOut>
@@ -216,51 +217,167 @@ export function Header({ categories = [], brands = [] }: HeaderProps) {
 
       {/* Mobile Navigation Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-border bg-background">
-          <nav className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
-            <div className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`px-4 py-3 text-sm font-medium transition-colors rounded-lg ${
-                    link.highlight
-                      ? "text-dodo-red bg-dodo-red/5"
-                      : "text-foreground hover:bg-secondary"
-                  }`}
-                >
-                  {link.label}
-                  {link.highlight && (
-                    <span className="ml-2 inline-flex h-2 w-2 rounded-full bg-dodo-red animate-pulse" />
-                  )}
-                </Link>
-              ))}
-              <hr className="my-2 border-border" />
-              <Link
-                href="/wishlist"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-foreground hover:bg-secondary rounded-lg"
-              >
-                <Heart className="h-4 w-4" />
-                Ma Wishlist
-              </Link>
-              <SignedIn>
-                <Link
-                  href="/orders"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-foreground hover:bg-secondary rounded-lg"
-                >
-                  <Package className="h-4 w-4" />
-                  Mes Commandes
-                </Link>
-              </SignedIn>
-            </div>
-          </nav>
-        </div>
+        <MobileMenu
+          categories={categories}
+          brands={brands}
+          onClose={() => setMobileMenuOpen(false)}
+        />
       )}
       {/* Search Dialog */}
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
+  );
+}
+
+/* ─── Mobile Menu Component ─── */
+function MobileMenu({
+  categories,
+  brands,
+  onClose,
+}: {
+  categories: Category[];
+  brands: Brand[];
+  onClose: () => void;
+}) {
+  const router = useRouter();
+  const [mobileSearch, setMobileSearch] = useState("");
+  const [showCategories, setShowCategories] = useState(false);
+  const [showBrands, setShowBrands] = useState(false);
+
+  const handleMobileSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!mobileSearch.trim()) return;
+    router.push(`/shop?search=${encodeURIComponent(mobileSearch.trim())}`);
+    onClose();
+  };
+
+  return (
+    <div className="lg:hidden border-t border-border bg-background max-h-[80vh] overflow-y-auto">
+      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
+        {/* Mobile Search */}
+        <form onSubmit={handleMobileSearch} className="mb-4">
+          <div className="flex items-center rounded-lg border border-border bg-card px-3">
+            <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+            <input
+              type="text"
+              value={mobileSearch}
+              onChange={(e) => setMobileSearch(e.target.value)}
+              placeholder="Rechercher des produits..."
+              className="w-full bg-transparent px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+              autoFocus
+            />
+          </div>
+        </form>
+
+        <div className="flex flex-col gap-1">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={onClose}
+              className={`px-4 py-3 text-sm font-medium transition-colors rounded-lg ${
+                link.highlight
+                  ? "text-dodo-red bg-dodo-red/5"
+                  : "text-foreground hover:bg-secondary"
+              }`}
+            >
+              {link.label}
+              {link.highlight && (
+                <span className="ml-2 inline-flex h-2 w-2 rounded-full bg-dodo-red animate-pulse" />
+              )}
+            </Link>
+          ))}
+
+          {/* Categories Accordion */}
+          {categories.length > 0 && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setShowCategories(!showCategories)}
+                className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium text-foreground hover:bg-secondary rounded-lg"
+              >
+                <span className="flex items-center gap-3">
+                  <Grid3X3 className="h-4 w-4" />
+                  Catégories
+                </span>
+                <ChevronDown className={`h-4 w-4 transition-transform ${showCategories ? "rotate-180" : ""}`} />
+              </button>
+              {showCategories && (
+                <div className="ml-4 flex flex-col gap-0.5 pb-1">
+                  {categories.map((cat) => (
+                    <Link
+                      key={cat._id}
+                      href={`/categories/${cat.slug}`}
+                      onClick={onClose}
+                      className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg"
+                    >
+                      {cat.title}
+                    </Link>
+                  ))}
+                  <Link
+                    href="/categories"
+                    onClick={onClose}
+                    className="px-4 py-2 text-sm font-medium text-dodo-yellow hover:bg-secondary rounded-lg"
+                  >
+                    Voir toutes les catégories
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Brands Accordion */}
+          {brands.length > 0 && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setShowBrands(!showBrands)}
+                className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium text-foreground hover:bg-secondary rounded-lg"
+              >
+                <span className="flex items-center gap-3">
+                  <Tag className="h-4 w-4" />
+                  Marques
+                </span>
+                <ChevronDown className={`h-4 w-4 transition-transform ${showBrands ? "rotate-180" : ""}`} />
+              </button>
+              {showBrands && (
+                <div className="ml-4 grid grid-cols-2 gap-0.5 pb-1">
+                  {brands.map((brand) => (
+                    <Link
+                      key={brand._id}
+                      href={`/brands/${brand.slug}`}
+                      onClick={onClose}
+                      className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg"
+                    >
+                      {brand.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          <hr className="my-2 border-border" />
+          <Link
+            href="/wishlist"
+            onClick={onClose}
+            className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-foreground hover:bg-secondary rounded-lg"
+          >
+            <Heart className="h-4 w-4" />
+            Ma Wishlist
+          </Link>
+          <SignedIn>
+            <Link
+              href="/orders"
+              onClick={onClose}
+              className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-foreground hover:bg-secondary rounded-lg"
+            >
+              <Package className="h-4 w-4" />
+              Mes Commandes
+            </Link>
+          </SignedIn>
+        </div>
+      </div>
+    </div>
   );
 }

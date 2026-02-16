@@ -60,7 +60,7 @@ function ProductCard({
       </span>
     ) : badge === "new" ? (
       <span className="absolute left-3 top-3 z-10 rounded-full bg-emerald-500 px-3 py-1 text-xs font-bold text-white shadow-lg">
-        جديد
+        Nouveau
       </span>
     ) : badge === "promo" && hasPromo ? (
       <span className="absolute left-3 top-3 z-10 rounded-full bg-dodo-red px-3 py-1 text-xs font-bold text-white shadow-lg">
@@ -69,7 +69,7 @@ function ProductCard({
     ) : null;
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-transparent bg-card/50 transition-all duration-300 hover:-translate-y-1 hover:border-dodo-yellow/50 hover:shadow-[0_10px_40px_-10px_rgba(254,226,87,0.15)] dark:bg-zinc-900/50">
+    <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-transparent bg-card/50 transition-all duration-300 hover:-translate-y-1 hover:border-dodo-yellow/50 hover:shadow-[0_10px_40px_-10px_rgba(254,226,87,0.15)] dark:bg-zinc-900/50">
       <div className="relative aspect-4/5 overflow-hidden">
         <Link href={`/products/${product.slug}`} className="block h-full w-full">
           {mainImage ? (
@@ -129,7 +129,7 @@ function ProductCard({
           price={priceRetail}
           image={mainImage}
           stock={stock}
-          label="زيدو للقضية"
+          label="زيدو للقضيّة"
           className="mt-auto bg-dodo-yellow text-black font-semibold hover:bg-dodo-yellow/90"
         />
       </div>
@@ -194,31 +194,19 @@ export function FeaturedProducts({
   return (
     <section className="py-16 bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <span className="text-sm font-medium text-dodo-yellow uppercase tracking-wider">
-              Best-sellers
-            </span>
-            <h2 className="mt-1 text-2xl font-bold text-foreground sm:text-3xl">
-              الأفضل عندنا
-            </h2>
-          </div>
-          <Button
-            asChild
-            variant="outline"
-            className="hidden sm:flex border-border text-foreground hover:bg-secondary"
-          >
-            <Link href="/shop">
-              Voir tout
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+        <div className="text-center mb-10">
+          <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
+            منتوجاتنا المميّزة
+          </h2>
+          <p className="mt-2 text-muted-foreground">
+            أهم العروض الحصريّة و الأكثر مبيعات و الجديد اللي عندنا
+          </p>
         </div>
 
         <Tabs defaultValue="best-sellers" className="w-full">
-          <TabsList className="mb-6 grid w-full max-w-md grid-cols-3 bg-muted p-1">
+          <TabsList className="mb-6 mx-auto grid w-full max-w-md grid-cols-3 bg-muted p-1">
             <TabsTrigger value="best-sellers">Best-sellers</TabsTrigger>
-            <TabsTrigger value="new">جداد</TabsTrigger>
+            <TabsTrigger value="new">Nouveautés</TabsTrigger>
             <TabsTrigger value="promos">Promos</TabsTrigger>
           </TabsList>
 
@@ -245,13 +233,13 @@ export function FeaturedProducts({
           </TabsContent>
         </Tabs>
 
-        <div className="mt-8 text-center sm:hidden">
+        <div className="mt-8 text-center">
           <Button
             asChild
             className="bg-dodo-yellow text-black font-semibold hover:bg-dodo-yellow/90"
           >
             <Link href="/shop">
-              Voir tous les produits
+              شوف الكل
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>

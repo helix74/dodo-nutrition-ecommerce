@@ -77,7 +77,7 @@ export function LoginPromptDialog({
 
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full hover:text-foreground"
               size="lg"
               onClick={handleContinueAsGuest}
             >

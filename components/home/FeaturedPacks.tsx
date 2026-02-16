@@ -51,10 +51,10 @@ export function FeaturedPacks({ packs }: FeaturedPacksProps) {
             <Package className="h-8 w-8 text-dodo-yellow" />
             <div>
               <h2 className="text-2xl font-bold text-foreground">
-                الباكات — Packs & Deals
+                Packs & Deals
               </h2>
               <p className="text-sm text-muted-foreground">
-                وفّر مع الباكات المميزة
+                Économisez avec nos packs exclusifs
               </p>
             </div>
           </div>
@@ -96,7 +96,7 @@ export function FeaturedPacks({ packs }: FeaturedPacksProps) {
             href="/packs"
             className="inline-flex items-center gap-2 rounded-lg bg-dodo-yellow px-6 py-3 font-medium text-black hover:bg-dodo-yellow-hover transition-colors"
           >
-            شوف كل الباكات
+            Voir tous les packs
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

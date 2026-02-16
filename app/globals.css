@@ -75,8 +75,8 @@
   --secondary-foreground: #ffffff;
   --muted: #1a1a1a;
   --muted-foreground: #999999;
-  --accent: #fee257;
-  --accent-foreground: #0a0a0a;
+  --accent: #1a1a1a;
+  --accent-foreground: #fafafa;
   --destructive: #f01b24;
   --border: #222222;
   --input: #1a1a1a;
@@ -140,8 +140,8 @@
   --secondary-foreground: #ffffff;
   --muted: #1a1a1a;
   --muted-foreground: #999999;
-  --accent: #fee257;
-  --accent-foreground: #0a0a0a;
+  --accent: #1a1a1a;
+  --accent-foreground: #fafafa;
   --destructive: #f01b24;
   --border: #222222;
   --input: #1a1a1a;
@@ -239,7 +239,10 @@
     );
   }
   .marquee-track {
-    animation: marquee 30s linear infinite;
+    animation: marquee 12s linear infinite;
+  }
+  .marquee-reverse .marquee-track {
+    animation-direction: reverse;
   }
   .group\/marquee:hover .marquee-track {
     animation-play-state: paused;

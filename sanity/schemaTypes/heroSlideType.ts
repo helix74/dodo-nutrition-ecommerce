@@ -18,8 +18,7 @@ export const heroSlideType = defineType({
       name: "headline",
       title: "Titre Principal",
       type: "string",
-      description: "Ex: علاش Dodo Nutrition ?",
-      validation: (rule) => [rule.required().error("Le titre est requis")],
+      description: "Optionnel — laissez vide si seule l'image suffit",
     }),
     defineField({
       name: "subtitle",

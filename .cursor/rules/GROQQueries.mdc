@@ -1,0 +1,88 @@
+---
+description: GROQ query patterns for Dodo Nutrition Sanity CMS. Apply when writing or modifying GROQ queries.
+globs: "{lib/sanity/queries/**/*.ts,sanity/**/*.ts}"
+alwaysApply: false
+---
+
+# GROQ Query Patterns
+
+## Naming
+
+- `SCREAMING_SNAKE_CASE` for all query variables
+- Use `defineQuery()` from `next-sanity`
+
+## Structure
+
+- Explicit projections — NEVER use `...` spread
+- Each filter condition on its own line
+- Each projected field on its own line
+- Use parameters (`$slug`) — NEVER string interpolation
+
+```ts
+import { defineQuery } from "next-sanity";
+
+export const PRODUCT_BY_SLUG_QUERY = defineQuery(`*[
+  _type == "product"
+  && slug.current == $slug
+][0]{
+  _id,
+  name,
+  "slug": slug.current,
+  priceRetail,
+  priceSlashed,
+  stock,
+  description,
+  brand->{
+    _id,
+    name,
+    "slug": slug.current
+  },
+  category->{
+    _id,
+    title,
+    "slug": slug.current
+  }
+}`);
+```
+
+## Query Files
+
+| File | Content |
+|------|---------|
+| `lib/sanity/queries/products.ts` | Product queries |
+| `lib/sanity/queries/categories.ts` | Category queries |
+| `lib/sanity/queries/packs.ts` | Pack queries |
+| `lib/sanity/queries/reviews.ts` | Review queries |
+| `lib/sanity/queries/banners.ts` | Banner queries |
+| `lib/sanity/queries/hero.ts` | Hero slide queries |
+| `lib/sanity/queries/orders.ts` | Order queries |
+| `lib/sanity/queries/customers.ts` | Customer queries |
+| `lib/sanity/queries/stats.ts` | Statistics queries |
+| `lib/sanity/queries/analytics.ts` | Analytics queries |
+
+## Common Patterns
+
+```groq
+// Dereference with projection
+brand->{ _id, name, "slug": slug.current }
+
+// Slug access
+"slug": slug.current
+
+// Array slicing for pagination
+*[_type == "product"][($page - 1) * $limit...$page * $limit]
+
+// Count
+count(*[_type == "product"])
+
+// Ordering
+| order(name asc)
+| order(_createdAt desc)
+```
+
+## TypeGen
+
+After any query change, regenerate types:
+```bash
+npx sanity schema extract && npx sanity typegen generate --enforce-required-fields
+```

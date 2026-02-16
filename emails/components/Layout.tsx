@@ -20,8 +20,6 @@ interface LayoutProps {
 export const Layout = ({ preview, children }: LayoutProps) => {
   return (
     <Html>
-      <Head />
-      {preview && <Preview>{preview}</Preview>}
       <Tailwind
         config={{
           theme: {
@@ -38,6 +36,8 @@ export const Layout = ({ preview, children }: LayoutProps) => {
           },
         }}
       >
+        <Head />
+        {preview && <Preview>{preview}</Preview>}
         <Body className="bg-background font-sans text-foreground">
           <Container className="mx-auto my-10 max-w-[600px] rounded-lg border border-zinc-800 bg-card p-8 shadow-xl">
             {/* Logo */}

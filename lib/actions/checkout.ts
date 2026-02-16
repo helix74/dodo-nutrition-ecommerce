@@ -1,6 +1,6 @@
 "use server";
 
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { client, writeClient } from "@/sanity/lib/client";
 import { PRODUCTS_BY_IDS_QUERY } from "@/lib/sanity/queries/products";
 import { resend, senderEmail } from "@/lib/mail";
@@ -49,9 +49,8 @@ export async function createCODOrder(
   data: CODOrderData
 ): Promise<CODOrderResult> {
   try {
-    // 1. Get user if authenticated (optional for COD)
+    // 1. Get user ID if authenticated (optional for COD)
     const { userId } = await auth();
-    const user = userId ? await currentUser() : null;
 
     // 2. Validate cart is not empty
     if (!data.items || data.items.length === 0) {

@@ -1,0 +1,50 @@
+---
+description: E-commerce patterns for Dodo Nutrition — cart, checkout, orders, pricing, stock management. Apply when working on cart, checkout, orders, or pricing features.
+globs: "{app/**/*checkout*,app/**/*cart*,app/**/*order*,lib/actions/checkout*,lib/actions/orders*,lib/store/cart*,components/app/Cart*,components/app/Checkout*}"
+alwaysApply: false
+---
+
+# Dodo Nutrition E-Commerce Patterns
+
+## Pricing
+
+- Currency: **TND** (Tunisian Dinar), always displayed AFTER amount: `89.00 TND`
+- Use `priceRetail` as display price, NEVER `price`
+- `priceSlashed` = old price for promo display (strikethrough)
+- Format: `Number.toFixed(2)` + ` TND`
+
+```tsx
+// ✅ Correct
+<span>{product.priceRetail?.toFixed(2)} TND</span>
+
+// ❌ Wrong
+<span>{product.price} DT</span>
+```
+
+## Cart (Zustand)
+
+- Store: `lib/store/cart-store.ts` with localStorage persistence
+- Provider: `lib/store/cart-store-provider.tsx`
+- ALWAYS check stock before adding to cart
+- Stock threshold: `LOW_STOCK_THRESHOLD = 5` from `lib/constants/stock.ts`
+
+## Checkout
+
+- **COD only** (Cash on Delivery) — no online payment
+- Governorate select from `lib/constants/gouvernorats.ts` (24 Tunisian governorates)
+- Validation via Zod schemas in `lib/validations/schemas.ts`
+- Server action: `lib/actions/checkout.ts`
+- On success: create order in Sanity, decrement stock, send email via Resend
+
+## Orders
+
+- Status flow: `pending → confirmed → shipped → delivered` (or `cancelled`)
+- Order number format: auto-generated
+- Queries: `lib/sanity/queries/orders.ts`
+- Admin mutations: `lib/actions/admin-mutations.ts`
+
+## Stock Management
+
+- Check stock server-side before checkout
+- Atomic stock decrement (transaction)
+- Low stock alerts in admin when `stock <= 5`

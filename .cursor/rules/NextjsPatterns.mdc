@@ -1,0 +1,60 @@
+---
+description: Next.js 16 App Router patterns for Dodo Nutrition — route groups, server/client components, data fetching, layouts.
+globs: "{app/**/*.tsx,app/**/*.ts}"
+alwaysApply: false
+---
+
+# Next.js App Router Patterns
+
+## Route Groups
+
+- `(app)` — Public storefront (Clerk auth, SanityLive, Header/Footer)
+- `(admin)` — Admin dashboard (JWT auth, separate layout)
+- `studio` — Sanity Studio (mounted at `/studio`)
+
+## Server vs Client Components
+
+- **Default**: Server Components (no `"use client"` directive)
+- **Client**: Only when needed (interactivity, hooks, browser APIs)
+- Client components suffixed with `Client.tsx` when paired with server page
+
+```tsx
+// app/(app)/wishlist/page.tsx (Server)
+export default function WishlistPage() {
+  return <WishlistClient />;
+}
+
+// app/(app)/wishlist/WishlistClient.tsx (Client)
+"use client";
+export function WishlistClient() { ... }
+```
+
+## Data Fetching
+
+- ALWAYS use `sanityFetch()` from `sanity/lib/live.ts` (NOT raw `client.fetch`)
+- Homepage uses 10 parallel queries via `Promise.all`
+- Use `searchParams` and `params` as async in Next.js 16+
+
+```tsx
+// ✅ Correct
+const { data } = await sanityFetch({ query: PRODUCTS_QUERY, params: { slug } });
+
+// ❌ Wrong
+const data = await client.fetch(PRODUCTS_QUERY, { slug });
+```
+
+## Loading States
+
+- Every route with data fetching should have a `loading.tsx`
+- Use skeleton components from `components/app/*Skeleton.tsx`
+
+## API Routes
+
+- Located in `app/api/`
+- Use rate limiting from `lib/rate-limit.ts`
+- Admin routes check auth via `lib/auth/admin.ts`
+
+## Metadata
+
+- Export `metadata` or `generateMetadata` from page files
+- Include OG tags for social sharing

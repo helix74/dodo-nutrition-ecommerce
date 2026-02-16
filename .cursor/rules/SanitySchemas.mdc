@@ -1,0 +1,62 @@
+---
+description: Sanity schema patterns for Dodo Nutrition — document types, ID conventions, references. Apply when working on Sanity schemas.
+globs: "{sanity/schemaTypes/**/*.ts,sanity/*.ts}"
+alwaysApply: false
+---
+
+# Sanity Schema Patterns
+
+## Document Types (9 total)
+
+| Type | File | ID Pattern |
+|------|------|------------|
+| product | `productType.ts` | `product-{brand-slug}-{product-slug}` |
+| category | `categoryType.ts` | `category-{slug}` |
+| brand | `brandType.ts` | `brand-{slug}` |
+| pack | `packType.ts` | `pack-{slug}` |
+| heroSlide | `heroSlideType.ts` | Auto |
+| banner | `bannerType.ts` | Auto |
+| review | `reviewType.ts` | Auto |
+| order | `orderType.ts` | Auto |
+| customer | `customerType.ts` | `customer-{clerkId}` |
+
+## ID Conventions (CRITICAL)
+
+```ts
+// Product IDs prevent collisions across brands
+_id: "product-applied-nutrition-iso-xp"
+_id: "product-optimum-nutrition-gold-standard"
+
+// Category IDs are stable slugs
+_id: "category-proteines"
+_id: "category-creatine"
+
+// Brand IDs
+_id: "brand-applied-nutrition"
+```
+
+## Studio Structure
+
+```
+Marketing → Hero Slides, Banners
+Catalogue → Products, Packs, Categories, Brands
+Commerce → Orders, Customers, Reviews
+```
+
+## Schema Rules (from Agents.mdc)
+
+- Use `defineType`, `defineField`, `defineArrayMember`
+- Every type needs `icon` from `@sanity/icons`
+- Every type needs customized `preview`
+- Use `groups` for types with many fields
+- `image` fields must have `options.hotspot: true`
+- Avoid `boolean` — use `string` with `options.list`
+- Required fields must have validation with error messages
+
+## After Schema Changes
+
+```bash
+npx tsc --noEmit          # TypeScript check
+npx sanity schema extract && npx sanity typegen generate --enforce-required-fields
+pnpm build                # Build check
+```

@@ -12,22 +12,13 @@ export function CategoryShowcase({ categories }: CategoryShowcaseProps) {
     <section className="py-16 bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <h2 className="font-arabic text-2xl font-bold text-foreground sm:text-3xl">
-              تصنيفات
-            </h2>
-            <p className="mt-2 text-muted-foreground">
-              Trouvez les suppléments adaptés à vos objectifs
-            </p>
-          </div>
-          <Link
-            href="/categories"
-            className="hidden sm:flex items-center gap-2 text-sm font-medium text-dodo-yellow hover:underline"
-          >
-            Voir tout
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+        <div className="text-center mb-10">
+          <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
+            التصنيفات متاعنا
+          </h2>
+          <p className="mt-2 text-muted-foreground">
+            لقا المكمّلات اللي تناسب أهدافك
+          </p>
         </div>
 
         {/* Categories Grid - 5 cols desktop, 2 cols mobile */}
@@ -41,7 +32,7 @@ export function CategoryShowcase({ categories }: CategoryShowcaseProps) {
               <Link
                 key={category._id}
                 href={`/shop?category=${slug}`}
-                className="group relative aspect-[4/3] overflow-hidden rounded-xl transition-transform duration-300 hover:scale-[1.02]"
+                className="group relative aspect-4/3 overflow-hidden rounded-xl transition-transform duration-300 hover:scale-[1.02]"
               >
                 {/* Image background or gradient placeholder */}
                 {imageUrl ? (
@@ -54,13 +45,13 @@ export function CategoryShowcase({ categories }: CategoryShowcaseProps) {
                   />
                 ) : (
                   <div
-                    className="absolute inset-0 bg-gradient-to-br from-dodo-yellow/20 to-dodo-yellow/5"
+                    className="absolute inset-0 bg-linear-to-br from-dodo-yellow/20 to-dodo-yellow/5"
                     aria-hidden
                   />
                 )}
 
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-opacity duration-300 group-hover:from-black/70 group-hover:via-black/30" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent transition-opacity duration-300 group-hover:from-black/70 group-hover:via-black/30" />
 
                 {/* Content overlay */}
                 <div className="absolute inset-0 flex flex-col justify-end p-4">
@@ -80,13 +71,13 @@ export function CategoryShowcase({ categories }: CategoryShowcaseProps) {
           })}
         </div>
 
-        {/* Mobile "See All" link */}
-        <div className="mt-6 text-center sm:hidden">
+        {/* See All link */}
+        <div className="mt-8 text-center">
           <Link
             href="/categories"
-            className="inline-flex items-center gap-2 text-sm font-medium text-dodo-yellow"
+            className="inline-flex items-center gap-2 rounded-md bg-dodo-yellow px-6 py-2.5 text-sm font-semibold text-black hover:bg-dodo-yellow/90 transition-colors"
           >
-            Voir toutes les catégories
+            شوف الكل
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

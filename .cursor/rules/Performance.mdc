@@ -1,0 +1,54 @@
+---
+description: Performance optimization rules for Dodo Nutrition — Lighthouse targets, Core Web Vitals, image optimization, caching.
+globs: "{app/**/*.tsx,components/**/*.tsx,next.config.ts}"
+alwaysApply: false
+---
+
+# Performance Optimization
+
+## Targets
+
+- Lighthouse Score: > 80
+- LCP (Largest Contentful Paint): < 2.5s
+- CLS (Cumulative Layout Shift): < 0.1
+- FID (First Input Delay): < 100ms
+
+## Image Optimization
+
+- Use Next.js `<Image>` component, NEVER raw `<img>`
+- Set explicit `width` and `height` to prevent CLS
+- Use `priority` on above-the-fold images (hero, first product)
+- Sanity images via `sanity/lib/image.ts` URL builder
+- Format: prefer WebP
+
+```tsx
+import Image from "next/image";
+import { urlFor } from "@/sanity/lib/image";
+
+<Image
+  src={urlFor(product.image).width(400).height(400).url()}
+  alt={product.name}
+  width={400}
+  height={400}
+  className="object-cover"
+/>
+```
+
+## Data Fetching
+
+- Homepage: 10 parallel queries via `Promise.all` (already implemented)
+- Use `Suspense` boundaries for streaming
+- Skeleton components for loading states
+- Avoid waterfalls — fetch in parallel at page level
+
+## Bundle Size
+
+- Server components by default — minimize client JS
+- Dynamic imports for heavy client components
+- React Compiler enabled in `next.config.ts`
+
+## Caching
+
+- Sanity queries use `sanityFetch()` with built-in caching
+- Static pages where possible
+- Revalidation via SanityLive webhooks

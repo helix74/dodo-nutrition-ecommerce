@@ -1,0 +1,62 @@
+---
+description: Admin dashboard patterns for Dodo Nutrition — JWT auth, server actions, admin components. Apply when working on admin features.
+globs: "{app/(admin)/**/*.tsx,app/(admin)/**/*.ts,app/api/admin/**/*.ts,components/admin/**/*.tsx,lib/actions/admin*,lib/auth/admin*}"
+alwaysApply: false
+---
+
+# Admin Dashboard Patterns
+
+## Authentication
+
+- **NOT Clerk** — uses separate JWT system via `jose`
+- Auth utilities: `lib/auth/admin.ts` and `lib/auth/admin-session.ts`
+- Login: `app/(admin)/admin/login/page.tsx`
+- API auth: `app/api/admin/auth/route.ts`
+- Admin emails in `ADMIN_EMAILS` env var
+
+```ts
+// Always verify admin in server actions
+import { requireAdmin } from "@/lib/auth/admin";
+await requireAdmin(); // Throws if not admin
+```
+
+## Layout
+
+- Separate layout: `app/(admin)/admin/layout.tsx`
+- No Header/Footer from public storefront
+- Admin-specific sidebar navigation
+
+## Server Actions
+
+- Data fetching: `lib/actions/admin-data.ts`
+- Mutations: `lib/actions/admin-mutations.ts`
+- Always use `requireAdmin()` guard
+
+## Admin Components (in `components/admin/`)
+
+| Component | Purpose |
+|-----------|---------|
+| `StatCard` | Dashboard metric card |
+| `RecentOrders` | Recent orders table |
+| `LowStockAlert` | Low stock warning |
+| `OrderRow` | Order table row |
+| `ProductRow` | Product table row |
+| `StatusSelect` | Order status dropdown |
+| `PriceInput` / `StockInput` | Inline editing |
+| `ImageUploader` | Product image upload |
+| `AIInsightsCard` | AI-generated insights |
+
+## Admin Widgets (in `components/admin/widgets/`)
+
+- `OrderStats`, `RevenueStats`, `StockSummary`, `RecentOrdersWidget`
+
+## Pages
+
+| Route | Purpose |
+|-------|---------|
+| `/admin` | Dashboard overview |
+| `/admin/orders` | Order management |
+| `/admin/orders/[id]` | Order detail |
+| `/admin/inventory` | Product inventory |
+| `/admin/inventory/[id]` | Product detail editing |
+| `/admin/reviews` | Review moderation |

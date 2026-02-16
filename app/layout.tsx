@@ -21,8 +21,9 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "E-Commerce AI App",
-  description: "E-Commerce AI App",
+  title: "Dodo Nutrition | Suppléments & Nutrition Sportive en Tunisie",
+  description:
+    "Votre partenaire nutrition sportive en Tunisie. Protéines, créatine, pre-workout, vitamines et suppléments de qualité premium.",
 };
 
 export default function RootLayout({

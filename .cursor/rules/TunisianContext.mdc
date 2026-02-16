@@ -1,0 +1,50 @@
+---
+description: Tunisian market context for Dodo Nutrition — language, currency, regions, cultural conventions. Always apply for correct cultural context.
+alwaysApply: true
+---
+
+# Tunisian Market Context
+
+## Language Mix (CRITICAL)
+
+| Context | Language | Script |
+|---------|----------|--------|
+| Headlines, CTAs, slogans | Tunisian Darija | Arabic script |
+| Body text, descriptions | French | Latin script |
+| Technical/admin | French or English | Latin script |
+
+**Examples of Darija CTAs:**
+- "علاش جاي؟" (Why are you here? — Goal navigator)
+- "واش مازلت محيّر؟" (Still undecided? — Final CTA)
+- "شري دوك" / "Chri Tawa" (Buy now)
+- Arabic font: **Cairo** (Google Fonts)
+
+## Currency
+
+- **TND** (Tunisian Dinar) — ALWAYS after the amount
+- Format: `89.00 TND` or `129.990 TND`
+- Never use "DT", "Dinar", or "$"
+
+## Geography
+
+- 24 Governorates (gouvernorats): `lib/constants/gouvernorats.ts`
+- Greater Tunis: Tunis, Ariana, Ben Arous, Manouba
+- Shipping: Ciblex (national), local delivery (Tunis area)
+
+## Payment
+
+- **COD only** (Cash on Delivery) — standard in Tunisia
+- No online payment yet (Flouci/Konnect planned for future)
+
+## User Communication
+
+- Project manager (Dali) communicates in **Tunisian Darija**
+- Mix of Arabic + French words in same sentences
+- Respond in English or French (not Darija)
+- Understand Darija input, respond formally
+
+## Business Hours / Context
+
+- Target: Fitness enthusiasts 18-35, athletes, bodybuilders
+- Sports nutrition market in Tunisia
+- Competitors: local supplement stores, Facebook sellers
