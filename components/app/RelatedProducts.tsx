@@ -49,7 +49,7 @@ function ProductCard({ product }: { product: RelatedProduct }) {
           />
         ) : (
           <div className="flex h-full items-center justify-center text-muted-foreground">
-            No image
+            Pas d&apos;image
           </div>
         )}
         {product.priceSlashed && product.priceSlashed > (product.priceRetail ?? 0) && (

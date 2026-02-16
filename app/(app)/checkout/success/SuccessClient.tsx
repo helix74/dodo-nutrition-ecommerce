@@ -45,10 +45,10 @@ export function SuccessClient({ session }: SuccessClientProps) {
       <div className="text-center">
         <CheckCircle className="mx-auto h-16 w-16 text-green-500" />
         <h1 className="mt-4 text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-          Order Confirmed!
+          Commande confirmée !
         </h1>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          Thank you for your purchase. We&apos;ve sent a confirmation to{" "}
+          Merci pour votre commande. Un email de confirmation a été envoyé à{" "}
           <span className="font-medium">{session.customerEmail}</span>
         </p>
       </div>
@@ -57,7 +57,7 @@ export function SuccessClient({ session }: SuccessClientProps) {
       <div className="mt-10 rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
         <div className="border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
           <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
-            Order Details
+            Détails de la commande
           </h2>
         </div>
 
@@ -96,7 +96,7 @@ export function SuccessClient({ session }: SuccessClientProps) {
         {address && (
           <div className="border-t border-zinc-200 px-6 py-4 dark:border-zinc-800">
             <h3 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-              Shipping to
+              Livraison à
             </h3>
             <div className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
               {session.customerName && <p>{session.customerName}</p>}
@@ -117,7 +117,7 @@ export function SuccessClient({ session }: SuccessClientProps) {
           <div className="flex items-center gap-2">
             <Package className="h-5 w-5 text-zinc-400" />
             <span className="text-sm text-zinc-600 dark:text-zinc-400">
-              Payment status:{" "}
+              Statut du paiement :{" "}
               <span className="font-medium capitalize text-green-600">
                 {session.paymentStatus}
               </span>
@@ -130,12 +130,12 @@ export function SuccessClient({ session }: SuccessClientProps) {
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
         <Button asChild variant="outline">
           <Link href="/orders">
-            View Your Orders
+            Voir vos commandes
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>
         <Button asChild>
-          <Link href="/">Continue Shopping</Link>
+          <Link href="/">Continuer vos achats</Link>
         </Button>
       </div>
     </div>

@@ -53,7 +53,7 @@ export function WishlistClient() {
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center text-muted-foreground">
-                    No Image
+                    Pas d'image
                   </div>
                 )}
               </Link>

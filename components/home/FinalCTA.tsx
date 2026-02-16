@@ -28,8 +28,7 @@ export function FinalCTA() {
         <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button
             onClick={openChat}
-            size="lg"
-            className="bg-dodo-yellow text-black font-semibold hover:bg-dodo-yellow-hover shadow-md shadow-dodo-yellow/20"
+            className="h-12 px-8 text-base bg-dodo-yellow text-black font-semibold hover:bg-dodo-yellow-hover shadow-md shadow-dodo-yellow/20"
           >
             <Sparkles className="mr-2 h-5 w-5" />
             إسأل الـ AI
@@ -37,9 +36,8 @@ export function FinalCTA() {
 
           <Button
             asChild
-            size="lg"
             variant="outline"
-            className="border-border text-foreground hover:bg-secondary hover:text-foreground"
+            className="h-12 px-8 text-base border-border text-foreground hover:bg-secondary hover:text-foreground"
           >
             <Link href="/shop">
               إكتشف البوتيك

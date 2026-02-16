@@ -72,13 +72,13 @@ export function CategoryShowcase({ categories }: CategoryShowcaseProps) {
         </div>
 
         {/* See All link */}
-        <div className="mt-8 text-center">
+        <div className="mt-10 text-center">
           <Link
             href="/categories"
-            className="inline-flex items-center gap-2 rounded-md bg-dodo-yellow px-6 py-2.5 text-sm font-semibold text-black hover:bg-dodo-yellow/90 transition-colors"
+            className="inline-flex items-center gap-2 rounded-md bg-dodo-yellow px-8 py-3 text-base font-semibold text-black hover:bg-dodo-yellow/90 transition-colors"
           >
             شوف الكل
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-5 w-5" />
           </Link>
         </div>
       </div>

@@ -239,7 +239,7 @@
     );
   }
   .marquee-track {
-    animation: marquee 12s linear infinite;
+    animation: marquee 8s linear infinite;
   }
   .marquee-reverse .marquee-track {
     animation-direction: reverse;

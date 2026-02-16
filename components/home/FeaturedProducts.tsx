@@ -132,7 +132,7 @@ function ProductCard({
           image={mainImage ?? undefined}
           stock={stock}
           label="زيدو للقضيّة"
-          className="mt-auto bg-dodo-yellow text-black font-semibold hover:bg-dodo-yellow/90"
+          className="mt-auto h-12 text-base bg-dodo-yellow text-black font-semibold hover:bg-dodo-yellow/90"
         />
       </div>
     </div>
@@ -235,14 +235,15 @@ export function FeaturedProducts({
           </TabsContent>
         </Tabs>
 
-        <div className="mt-8 text-center">
+        <div className="mt-10 text-center">
           <Button
             asChild
-            className="bg-dodo-yellow text-black font-semibold hover:bg-dodo-yellow/90"
+            size="lg"
+            className="h-12 px-8 text-base bg-dodo-yellow text-black font-semibold hover:bg-dodo-yellow/90"
           >
             <Link href="/shop">
               شوف الكل
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
         </div>

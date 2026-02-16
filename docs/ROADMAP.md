@@ -1,8 +1,8 @@
 # 🗺️ ROADMAP — Dodo Nutrition
 
-> **Last Updated**: 2026-02-14
+> **Last Updated**: 2026-02-16
 > **Status**: Deployed → Preparing for Launch
-> **Version**: 1.2.0
+> **Version**: 1.3.0
 
 ---
 
@@ -39,60 +39,59 @@
 
 ### 1. Homepage Redesign ⭐ PRIORITY #1
 
-**Problem**: Current homepage is too generic — trop de texte AI vide, sections faibles ("Why Choose Us"), pas assez de visuels, expérience plate.
+**Status**: ✅ 95% Complete (Spec 017a–g + Spec 019)
 
-**Objectif**: Une homepage qui fait "masaretch" — premium, visuelle, animée, comparable aux grandes marques.
+**Sections**:
 
-**Sections à revoir/créer**:
+| Section           | Status       | Notes                                                |
+| ----------------- | ------------ | ---------------------------------------------------- |
+| Hero Section      | ✅ Done      | CMS-driven slider, trust badges, responsive CTAs     |
+| Featured Products | ✅ Done      | Tabs (best-sellers/nouveautés/promos), Darija titles  |
+| Featured Packs    | ✅ Done      | Pack cards with savings display                       |
+| Categories Grid   | ✅ Done      | Visual grid with gradient overlays, Darija titles     |
+| Goal Navigator    | ✅ Done      | 4 goals (muscle/performance/sèche/bien-être)          |
+| Brands Marquee    | ✅ Done      | Two-row reverse animation, Darija title               |
+| Testimonials      | ✅ Done      | Dynamic from Sanity (hidden when no reviews)          |
+| Final CTA         | ✅ Done      | AI chat integration, Darija text                      |
+| Banner Section    | ✅ Done      | CMS-driven promotional banners                        |
 
-| Section           | Status     | Action                                         |
-| ----------------- | ---------- | ---------------------------------------------- |
-| Hero Section      | ⚠️ Faible  | Redesign complet — animations, visuels, impact |
-| Featured Products | ⚠️ Basique | Améliorer présentation, hover effects          |
-| Featured Packs    | ⬜ Missing | Ajouter section bundles/packs                  |
-| Categories Grid   | ⬜ Missing | Navigation visuelle par catégorie              |
-| Brands Carousel   | ⬜ Missing | Logos des marques avec liens                   |
-| New Arrivals      | ⬜ Missing | Produits récents                               |
-| Promotions        | ⬜ Missing | Zone promos/soldes                             |
-| Why Choose Us     | ⚠️ Faible  | Refaire design, plus visuel                    |
-| Testimonials      | ⚠️ Basique | Améliorer présentation                         |
-
-> [!IMPORTANT]
-> Cette feature nécessite une discussion approfondie avant implémentation. User a beaucoup d'idées visuelles à partager.
+**Remaining polish** (minor):
+- [ ] Add Framer Motion animations (post-launch Phase 2)
+- [ ] Product images (user to upload in Sanity Studio)
+- [ ] Reviews data (user to add in Sanity Studio)
 
 ---
 
 ### 2. Dataset Cleanup & Product Import
 
-**Problem**: Les données actuelles sont des données test. Il faut les remplacer par les vrais produits.
+**Status**: ✅ Done (Spec 018)
 
-**Tasks**:
+- 119 products imported, clean IDs, 0 broken refs
+- 10 categories, 21 brands
+- Templates available at `data/template-packs.csv`
 
-- [ ] Créer template CSV vide (modèle pour l'import)
-- [ ] Créer template CSV rempli avec les produits actuels (comme exemple)
-- [ ] Mapper les catégories correctes (actuellement 8, réellement 10+)
-- [ ] Vérifier/corriger les descriptions trop longues ou mal formatées
-- [ ] Import batch via script Sanity
-- [ ] Vérifier SEO de chaque produit après import
-
-**Template CSV requis pour**:
-
-- Produits (name, price, SKU, stock, category, brand, description, SEO fields)
-- Packs/Bundles (name, products inclus, prix bundle)
-- Catégories (name, slug, description, image)
-- Brands (name, slug, logo)
+**Still needs user action**:
+- [ ] Update real prices, stock, featured flags in `data/products-database.csv`
+- [ ] Upload product images in Sanity Studio
+- [ ] Provide pack data (CSV based on `data/template-packs.csv`)
 
 ---
 
 ### 3. Site Revision & Bug Fixes
 
-**Problem**: Il y a des erreurs de navigation, des boutons cassés et des problèmes de traduction.
+**Status**: ✅ 90% Complete (Spec 019)
 
-- [ ] Identifier et fixer les pages 404 (paths cassés)
-- [ ] Fixer les boutons qui ne marchent pas
-- [ ] Réviser traduction Darija/Français (corrections, ajouts, suppressions)
-- [ ] Vérifier responsive mobile sur toutes les pages
-- [ ] Tester navigation complète (chaque lien du header, footer, mega menu)
+- [x] Fixed broken routes: `/brands/[slug]` → `/shop?brand=slug`, `/categories/[slug]` → `/shop?category=slug`
+- [x] Fixed button hover states (text invisible on dark background)
+- [x] Translated all user-facing English text to French
+- [x] Fixed mobile hamburger menu (categories, brands, search — removed autofocus)
+- [x] Fixed responsive trust badges on mobile
+- [x] Fixed checkout with logged-in accounts
+- [x] Fixed order confirmation emails
+- [x] CTA buttons resized for better visibility
+- [ ] Search UX improvement (currently modal-based, needs persistent search bar)
+- [ ] Infinite scroll pagination on shop page
+- [ ] Mobile product card height consistency (when names wrap)
 
 ---
 
@@ -298,6 +297,12 @@
 | —   | Security Audit (Rate Limiting, Stripe Removal)       | 2026-02-12 | —                                                |
 | —   | Admin Auth Refactor (JWT, Server Actions, No SDK)    | 2026-02-14 | —                                                |
 
+| 015 | Homepage + Shop Improvements                        | 2026-02-01 | [specs/015](../specs/015-homepage-shop/)         |
+| 016 | SEO Optimization                                    | 2026-02-01 | [specs/016](../specs/016-seo/)                   |
+| 017 | Homepage Redesign (9-section architecture)          | 2026-02-10 | [specs/017](../specs/017a-homepage-redesign/)    |
+| 018 | Dataset Cleanup & Product Import                    | 2026-02-14 | [specs/018](../specs/018-dataset-cleanup/)       |
+| 019 | Homepage Revision & UI Polish                       | 2026-02-16 | [specs/019](../specs/019-homepage-revision/)     |
+
 ### Bug Fixes History
 
 | #   | Issue                          | Resolution                                               | Date       |
@@ -308,7 +313,14 @@
 | B1  | Middleware naming (proxy.ts)   | Renamed to middleware.ts (Next.js convention)            | 2026-02-12 |
 | B2  | Order status update auth error | Switched import to admin-mutations.ts (JWT)              | 2026-02-14 |
 | B3  | Insights API 403               | Replaced Clerk isAdmin() with JWT isAdminAuthenticated() | 2026-02-14 |
+| B4  | Brand links → 404              | Changed `/brands/{slug}` to `/shop?brand={slug}`         | 2026-02-16 |
+| B5  | Category mobile links → 404    | Changed `/categories/{slug}` to `/shop?category={slug}`  | 2026-02-16 |
+| B6  | Mobile menu autofocus          | Removed `autoFocus` from search input                    | 2026-02-16 |
+| B7  | Checkout with account failing  | Fixed email validation for authenticated users           | 2026-02-16 |
+| B8  | Email template failing         | Fixed `last:` Tailwind classes in `@react-email`         | 2026-02-16 |
+| B9  | TypeScript build errors        | Replaced broken TypeGen types with working alternatives  | 2026-02-16 |
+| B10 | CTA hover text invisible       | Fixed `--accent-foreground` CSS variable                 | 2026-02-16 |
 
 ---
 
-_Last Updated: 2026-02-14_
+_Last Updated: 2026-02-16_

@@ -264,7 +264,7 @@ function MobileMenu({
               onChange={(e) => setMobileSearch(e.target.value)}
               placeholder="Rechercher des produits..."
               className="w-full bg-transparent px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
-              autoFocus
+              
             />
           </div>
         </form>
@@ -307,7 +307,7 @@ function MobileMenu({
                   {categories.map((cat) => (
                     <Link
                       key={cat._id}
-                      href={`/categories/${cat.slug}`}
+                      href={`/shop?category=${cat.slug}`}
                       onClick={onClose}
                       className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg"
                     >
@@ -345,7 +345,7 @@ function MobileMenu({
                   {brands.map((brand) => (
                     <Link
                       key={brand._id}
-                      href={`/brands/${brand.slug}`}
+                      href={`/shop?brand=${brand.slug}`}
                       onClick={onClose}
                       className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg"
                     >

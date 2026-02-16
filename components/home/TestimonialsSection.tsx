@@ -130,10 +130,10 @@ export function TestimonialsSection({ reviews, stats }: TestimonialsSectionProps
         {/* Header */}
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold text-foreground md:text-4xl">
-            Ce que disent nos clients ⭐
+            شنوّا قالوا علينا ⭐
           </h2>
           <p className="mt-2 text-lg text-muted-foreground">
-            Avis vérifiés de notre communauté
+            آراء حقيقيّة من عائلة Dodo
           </p>
 
           {/* Stats */}

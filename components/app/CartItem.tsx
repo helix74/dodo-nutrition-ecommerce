@@ -48,7 +48,7 @@ export function CartItem({ item, stockInfo }: CartItemProps) {
           />
         ) : (
           <div className="flex h-full items-center justify-center text-xs text-zinc-400">
-            No image
+            Pas d'image
           </div>
         )}
       </div>

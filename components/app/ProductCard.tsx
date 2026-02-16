@@ -59,7 +59,7 @@ export function ProductCard({ product }: ProductCardProps) {
           {displayedImageUrl ? (
             <Image
               src={displayedImageUrl}
-              alt={product.name ?? "Product image"}
+              alt={product.name ?? "Image du produit"}
               fill
               className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
               sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
@@ -195,7 +195,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <CardFooter className="mt-auto p-5 pt-0">
         <AddToCartButton
           productId={product._id}
-          name={product.name ?? "Unknown Product"}
+          name={product.name ?? "Produit inconnu"}
           price={product.priceRetail ?? 0}
           image={mainImageUrl ?? undefined}
           stock={stock}

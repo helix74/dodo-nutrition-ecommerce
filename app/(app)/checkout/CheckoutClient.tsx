@@ -227,7 +227,7 @@ export function CheckoutClient() {
                             />
                           ) : (
                             <div className="flex h-full items-center justify-center text-xs text-zinc-400">
-                              No image
+                              Pas d'image
                             </div>
                           )}
                         </div>
@@ -275,7 +275,7 @@ export function CheckoutClient() {
               </div>
 
               {/* Trust Badges */}
-              <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
+              <div className="rounded-lg border border-zinc-200 bg-card p-4 dark:border-zinc-800 dark:bg-zinc-950">
                 <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
                   <span>🔒</span>
                   <span>Paiement sécurisé à la livraison</span>

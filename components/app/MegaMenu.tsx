@@ -147,7 +147,7 @@ export function BrandsMegaMenu({ brands }: BrandsMegaMenuProps) {
         {visibleBrands.map((brand) => (
           <Link
             key={brand._id}
-            href={`/brands/${brand.slug}`}
+            href={`/shop?brand=${brand.slug}`}
             className="group flex flex-col items-center gap-1.5 p-2 rounded-lg border border-transparent hover:border-dodo-yellow/50 hover:bg-secondary transition-all"
           >
             {brand.logo ? (

@@ -100,11 +100,11 @@ export function HeroSection({ slides }: HeroSectionProps) {
         {/* Trust Strip */}
         <div className="absolute bottom-0 left-0 right-0 bg-card/80 backdrop-blur-sm border-t border-border">
           <div className="mx-auto max-w-7xl px-4 py-3 sm:py-4">
-            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:justify-between md:gap-4">
+            <div className="grid grid-cols-2 gap-y-2 gap-x-4 md:grid-cols-4 md:gap-4">
               {trustBadges.map((badge, index) => {
                 const Icon = badge.icon;
                 return (
-                  <div key={index} className="flex items-center gap-2">
+                  <div key={index} className="flex items-center gap-2 md:justify-center">
                     <Icon className="h-5 w-5 text-dodo-yellow shrink-0" />
                     <span className="text-xs sm:text-sm text-foreground whitespace-nowrap">{badge.text}</span>
                   </div>
@@ -119,7 +119,7 @@ export function HeroSection({ slides }: HeroSectionProps) {
 
   const currentSlide = slides[currentIndex];
   const imageUrl = currentSlide.image?.asset?.url
-    ? urlFor(currentSlide.image).width(1920).height(800).url()
+    ? urlFor(currentSlide.image).width(1920).height(1080).url()
     : null;
 
   return (
@@ -142,7 +142,7 @@ export function HeroSection({ slides }: HeroSectionProps) {
       <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/50 to-black/30" />
 
       {/* Content */}
-      <div className="relative h-full min-h-[380px] sm:min-h-[450px] md:min-h-[600px] flex items-center">
+      <div className="relative h-full min-h-[380px] sm:min-h-[450px] md:min-h-[600px] flex items-end pb-24 sm:pb-28 md:pb-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
           <div className="max-w-3xl">
             {/* Headline */}
@@ -154,20 +154,20 @@ export function HeroSection({ slides }: HeroSectionProps) {
 
             {/* Subtitle */}
             {currentSlide.subtitle && (
-              <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-8 drop-shadow-md">
+              <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-6 drop-shadow-md">
                 {currentSlide.subtitle}
               </p>
             )}
 
             {/* CTAs */}
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-3 sm:gap-4">
               {currentSlide.ctaLabel && currentSlide.ctaLink && (
-                <Button asChild size="lg" className="bg-dodo-yellow text-black hover:bg-dodo-yellow-hover">
+                <Button asChild className="h-12 px-8 text-base font-semibold bg-dodo-yellow text-black hover:bg-dodo-yellow-hover sm:h-14 sm:px-10 sm:text-lg">
                   <Link href={currentSlide.ctaLink}>{currentSlide.ctaLabel}</Link>
                 </Button>
               )}
               {currentSlide.secondaryCtaLabel && currentSlide.secondaryCtaLink && (
-                <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10 hover:text-white">
+                <Button asChild variant="outline" className="h-12 px-8 text-base font-semibold border-white text-white hover:bg-white/10 hover:text-white sm:h-14 sm:px-10 sm:text-lg">
                   <Link href={currentSlide.secondaryCtaLink}>{currentSlide.secondaryCtaLabel}</Link>
                 </Button>
               )}
@@ -215,11 +215,11 @@ export function HeroSection({ slides }: HeroSectionProps) {
       {/* Trust Strip */}
       <div className="absolute bottom-0 left-0 right-0 bg-card/80 backdrop-blur-sm border-t border-border">
         <div className="mx-auto max-w-7xl px-4 py-3 sm:py-4">
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:justify-between md:gap-4">
+          <div className="grid grid-cols-2 gap-y-2 gap-x-4 md:grid-cols-4 md:gap-4">
             {trustBadges.map((badge, index) => {
               const Icon = badge.icon;
               return (
-                <div key={index} className="flex items-center gap-2">
+                <div key={index} className="flex items-center gap-2 md:justify-center">
                   <Icon className="h-5 w-5 text-dodo-yellow shrink-0" />
                   <span className="text-xs sm:text-sm text-foreground whitespace-nowrap">{badge.text}</span>
                 </div>

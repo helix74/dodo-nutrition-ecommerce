@@ -5,6 +5,52 @@
 
 ---
 
+## [1.3.0] - 2026-02-16 — Homepage Revision & UI Polish (Spec 019)
+
+### Added
+
+- Mobile hamburger menu: categories accordion, brands accordion, search bar
+- Two-row brands marquee with reverse animation on homepage
+- Darija Arabic titles/subtitles for GoalNavigator, FeaturedProducts, CategoryShowcase, BrandsMarquee, FinalCTA, Testimonials sections
+- AI chat CTA in FinalCTA section (opens ChatSheet)
+- `MobileMenu` component with full navigation (categories, brands, search)
+
+### Changed
+
+- **Hero section**: CTAs repositioned to bottom, buttons enlarged (h-12 px-8 text-base), image render height 800→1080
+- **Trust badges**: Switched from flex-wrap to 2-column grid on mobile for proper alignment
+- **All CTA buttons**: Increased from default to h-12/px-8/text-base across all homepage sections
+- **AddToCartButton**: Global height increased from h-11 to h-12
+- **Brand links**: Fixed routing from `/brands/{slug}` (404) to `/shop?brand={slug}` in both MegaMenu and mobile menu
+- **Category links**: Fixed routing from `/categories/{slug}` (404) to `/shop?category={slug}` in mobile menu
+- **Brands marquee**: Animation speed increased from 20s→8s
+- **Header/Footer**: Converted remaining Arabic navigation labels to French
+- **MegaMenu brands**: Made responsive (was fixed 6-column, now adapts)
+- **Hero section**: Secondary CTA button hover text fixed (was black on dark, now stays white)
+- **LoginPromptDialog**: "Continuer sans compte" hover text fixed
+- **GoalNavigator**: Icon size reduced from text-5xl to text-3xl
+
+### Fixed
+
+- Mobile menu auto-focusing search field (caused keyboard popup + zoom) — removed `autoFocus`
+- Checkout with logged-in accounts failing (email validation issue)
+- Order confirmation email failing (`last:` Tailwind classes not inlined by `@react-email`)
+- Hydration mismatch in TopBar.tsx (`suppressHydrationWarning`)
+- Hero section headline field no longer required in Sanity schema
+- TypeScript build errors: replaced broken `FILTER_PRODUCTS_BY_NAME_QUERYResult` type with `PROMOTIONS_QUERYResult`
+- `FeaturedProduct.images` type accepting null from Sanity TypeGen
+- `PackProduct.quantity` accepting null
+
+### Translated (EN → FR)
+
+- Order detail page: all labels (Commande, Articles, Qté, Sous-total, Adresse de livraison, Paiement, Statut)
+- Checkout success page: all labels (Commande confirmée, Détails de la commande, Livraison à, Statut du paiement)
+- ProductGallery: "No images available" → "Aucune image disponible"
+- RelatedProducts/FeaturedCarousel: "No image" → "Pas d'image"
+- Order page metadata: "Order Details | Furniture Shop" → "Détails de la commande | Dodo Nutrition"
+
+---
+
 ## [1.2.0] - 2026-02-14 — Admin Auth Refactor & Doc Cleanup
 
 ### Added
