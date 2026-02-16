@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/carousel";
 
 interface PackProduct {
-  quantity: number;
+  quantity: number | null;
   product: {
     _id: string;
     name: string | null;

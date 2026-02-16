@@ -16,6 +16,7 @@ import { ProductFiltersSkeleton } from "@/components/app/ProductFiltersSkeleton"
 import { ProductGridSkeleton } from "@/components/app/ProductGridSkeleton";
 import { Pagination } from "@/components/app/Pagination";
 import type { Metadata } from "next";
+import type { PROMOTIONS_QUERYResult } from "@/sanity.types";
 
 export const metadata: Metadata = {
   title: "Shop - Tous les Produits | Dodo Nutrition",
@@ -106,7 +107,7 @@ export default async function ShopPage({ searchParams }: PageProps) {
     }),
   ]);
 
-  const products = productsResult.data;
+  const products = productsResult.data as unknown as PROMOTIONS_QUERYResult;
   const totalProducts = countResult.data ?? 0;
   const categories = categoriesResult.data;
   const brands = brandsResult.data;

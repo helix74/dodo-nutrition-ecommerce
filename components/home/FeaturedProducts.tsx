@@ -21,9 +21,11 @@ type FeaturedProduct = {
   slug: string | null;
   priceRetail: number | null;
   priceSlashed?: number | null;
-  images?: Array<{ asset?: { _id?: string; url?: string } | null } | null>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  images?: Array<{ asset?: { _id?: string; url?: string | null } | null } | null> | null;
   brand?: { name?: string | null } | null;
   stock?: number | null;
+  [key: string]: unknown;
 };
 
 type BadgeType = "best-seller" | "new" | "promo";
@@ -127,7 +129,7 @@ function ProductCard({
           productId={product._id}
           name={product.name ?? "Unknown Product"}
           price={priceRetail}
-          image={mainImage}
+          image={mainImage ?? undefined}
           stock={stock}
           label="زيدو للقضيّة"
           className="mt-auto bg-dodo-yellow text-black font-semibold hover:bg-dodo-yellow/90"

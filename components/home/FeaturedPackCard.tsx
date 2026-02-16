@@ -6,7 +6,7 @@ import { Package } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 
 interface PackProduct {
-  quantity: number;
+  quantity: number | null;
   product: {
     _id: string;
     name: string | null;
@@ -118,7 +118,7 @@ export function FeaturedPackCard({ pack }: FeaturedPackCardProps) {
                     </div>
                   )}
                   <span className="line-clamp-1 text-muted-foreground">
-                    {item.quantity > 1 ? `${item.quantity}× ` : ""}
+                    {(item.quantity ?? 1) > 1 ? `${item.quantity}× ` : ""}
                     {prod.name}
                   </span>
                 </li>

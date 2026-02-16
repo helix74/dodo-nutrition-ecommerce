@@ -7,7 +7,7 @@ import { ProductFilters } from "./ProductFilters";
 import { ProductGrid } from "./ProductGrid";
 import type {
   ALL_CATEGORIES_QUERYResult,
-  FILTER_PRODUCTS_BY_NAME_QUERYResult,
+  PROMOTIONS_QUERYResult,
 } from "@/sanity.types";
 
 interface Brand {
@@ -19,7 +19,7 @@ interface Brand {
 interface ProductSectionProps {
   categories: ALL_CATEGORIES_QUERYResult;
   brands?: Brand[];
-  products: FILTER_PRODUCTS_BY_NAME_QUERYResult;
+  products: PROMOTIONS_QUERYResult;
   searchQuery: string;
 }
 
