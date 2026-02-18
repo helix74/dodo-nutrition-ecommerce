@@ -1,10 +1,12 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { CheckCircle, Home, Package, PhoneCall, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
 import { ReviewFormDialog } from "@/components/app/ReviewFormDialog";
+import { trackPurchase } from "@/lib/tracking/events";
 
 interface CODSuccessClientProps {
   orderNumber: string;
@@ -12,6 +14,12 @@ interface CODSuccessClientProps {
 }
 
 export function CODSuccessClient({ orderNumber, total }: CODSuccessClientProps) {
+  useEffect(() => {
+    if (total) {
+      trackPurchase(orderNumber, total, []);
+    }
+  }, [orderNumber, total]);
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
       {/* Success Header */}

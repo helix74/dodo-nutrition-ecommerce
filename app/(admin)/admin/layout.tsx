@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -11,13 +11,18 @@ import {
   X,
   ExternalLink,
   Star,
+  LogOut,
+  Users,
+  FileText,
 } from "lucide-react";
+import { LowStockBadge } from "@/components/admin/LowStockBadge";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { adminLogoutAction } from "@/lib/actions/admin-mutations";
 
 const navItems = [
   {
-    label: "Dashboard",
+    label: "Tableau de bord",
     href: "/admin",
     icon: LayoutDashboard,
   },
@@ -25,6 +30,7 @@ const navItems = [
     label: "Inventaire",
     href: "/admin/inventory",
     icon: Package,
+    badge: "low-stock" as const,
   },
   {
     label: "Commandes",
@@ -36,11 +42,26 @@ const navItems = [
     href: "/admin/reviews",
     icon: Star,
   },
+  {
+    label: "Fournisseurs",
+    href: "/admin/suppliers",
+    icon: Users,
+  },
+  {
+    label: "Factures",
+    href: "/admin/invoices",
+    icon: FileText,
+  },
 ];
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoggingOut, startLogout] = useTransition();
+
+  if (pathname === "/admin/login") {
+    return <>{children}</>;
+  }
 
   return (
       <div className="flex min-h-screen bg-background">
@@ -71,7 +92,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
         {sidebarOpen && (
           <button
             type="button"
-            aria-label="Close sidebar"
+            aria-label="Fermer la barre latérale"
             className="fixed inset-0 z-40 bg-black/50 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />
@@ -81,9 +102,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
         <aside
           className={cn(
             "fixed left-0 top-0 z-50 h-screen w-64 border-r border-border bg-card transition-transform",
-            // Mobile: slide in/out
             sidebarOpen ? "translate-x-0" : "-translate-x-full",
-            // Desktop: always visible
             "lg:translate-x-0",
           )}
         >
@@ -126,6 +145,9 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
                   >
                     <item.icon className="h-5 w-5" />
                     {item.label}
+                    {"badge" in item && item.badge === "low-stock" && (
+                      <LowStockBadge />
+                    )}
                   </Link>
                 );
               })}
@@ -139,7 +161,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
                 onClick={() => setSidebarOpen(false)}
                 className="flex items-center justify-between gap-2 rounded-lg bg-secondary px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary/80"
               >
-                Open Studio
+                Ouvrir Studio
                 <ExternalLink className="h-4 w-4" />
               </Link>
               <Link
@@ -149,6 +171,15 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
               >
                 ← Retour à la boutique
               </Link>
+              <button
+                type="button"
+                onClick={() => startLogout(() => adminLogoutAction())}
+                disabled={isLoggingOut}
+                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-dodo-red transition-colors hover:bg-dodo-red/10 disabled:opacity-50"
+              >
+                <LogOut className="h-4 w-4" />
+                {isLoggingOut ? "Déconnexion..." : "Se déconnecter"}
+              </button>
             </div>
           </div>
         </aside>

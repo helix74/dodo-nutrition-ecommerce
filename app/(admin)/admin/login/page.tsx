@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
             <Lock className="h-8 w-8 text-black" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">
-            Admin Dashboard
+            Panneau d&apos;administration
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Connectez-vous pour accéder au panneau d&apos;administration

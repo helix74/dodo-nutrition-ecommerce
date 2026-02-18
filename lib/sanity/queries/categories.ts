@@ -22,7 +22,7 @@ export const ALL_CATEGORIES_QUERY = defineQuery(`*[
 }`);
 
 /**
- * Get category by slug
+ * Get category by slug (full details for SEO landing page)
  */
 export const CATEGORY_BY_SLUG_QUERY = defineQuery(`*[
   _type == "category"
@@ -30,6 +30,7 @@ export const CATEGORY_BY_SLUG_QUERY = defineQuery(`*[
 ][0] {
   _id,
   title,
+  description,
   "slug": slug.current,
   "image": image{
     asset->{
@@ -37,5 +38,6 @@ export const CATEGORY_BY_SLUG_QUERY = defineQuery(`*[
       url
     },
     hotspot
-  }
+  },
+  "productCount": count(*[_type == "product" && references(^._id)])
 }`);

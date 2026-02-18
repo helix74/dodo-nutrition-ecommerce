@@ -19,8 +19,14 @@ import type { Metadata } from "next";
 import type { PROMOTIONS_QUERYResult } from "@/sanity.types";
 
 export const metadata: Metadata = {
-  title: "Shop - Tous les Produits | Dodo Nutrition",
-  description: "Découvrez notre sélection complète de suppléments et nutrition sportive. Protéines, créatine, pre-workout, vitamines et plus.",
+  title: "Shop - Tous les Produits",
+  description:
+    "Découvrez notre sélection complète de suppléments et nutrition sportive. Protéines, créatine, pre-workout, vitamines et plus.",
+  openGraph: {
+    title: "Shop - Tous les Produits | Dodo Nutrition",
+    description:
+      "Découvrez notre sélection complète de suppléments et nutrition sportive. Protéines, créatine, pre-workout, vitamines et plus.",
+  },
 };
 
 interface PageProps {

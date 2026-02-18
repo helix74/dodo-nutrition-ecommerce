@@ -122,7 +122,7 @@ export function ProductDetailClient({ documentId, product }: ProductDetailClient
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   onBlur={() => saveField("name", name)}
-                  placeholder="Product name"
+                  placeholder="Nom du produit"
                 />
               </div>
               <div className="space-y-2">
@@ -140,7 +140,7 @@ export function ProductDetailClient({ documentId, product }: ProductDetailClient
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   onBlur={() => saveField("description", description)}
-                  placeholder="Product description..."
+                  placeholder="Description du produit..."
                   rows={4}
                 />
               </div>
@@ -195,7 +195,7 @@ export function ProductDetailClient({ documentId, product }: ProductDetailClient
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select material" />
+                    <SelectValue placeholder="Sélectionner le matériau" />
                   </SelectTrigger>
                   <SelectContent>
                     {MATERIALS.map((m) => (
@@ -216,7 +216,7 @@ export function ProductDetailClient({ documentId, product }: ProductDetailClient
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select color" />
+                    <SelectValue placeholder="Sélectionner la couleur" />
                   </SelectTrigger>
                   <SelectContent>
                     {COLORS.map((c) => (
@@ -233,7 +233,7 @@ export function ProductDetailClient({ documentId, product }: ProductDetailClient
                   value={dimensions}
                   onChange={(e) => setDimensions(e.target.value)}
                   onBlur={() => saveField("dimensions", dimensions)}
-                  placeholder='e.g., "120cm x 80cm x 75cm"'
+                  placeholder='ex. "120cm x 80cm x 75cm"'
                 />
               </div>
             </div>

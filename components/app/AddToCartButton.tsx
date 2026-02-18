@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useCartActions, useCartItem } from "@/lib/store/cart-store-provider";
 import { cn } from "@/lib/utils";
+import { trackAddToCart } from "@/lib/tracking/events";
 
 interface AddToCartButtonProps {
   productId: string;
@@ -36,7 +37,8 @@ export function AddToCartButton({
   const handleAdd = () => {
     if (quantityInCart < stock) {
       addItem({ productId, name, price, image }, 1);
-      toast.success(`Added ${name}`);
+      trackAddToCart({ id: productId, name, price, quantity: 1 });
+      toast.success(`${name} ajouté au panier`);
     }
   };
 

@@ -19,7 +19,12 @@ import { CategoryShowcase } from "@/components/home/CategoryShowcase";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { BrandsMarquee } from "@/components/home/BrandsMarquee";
 import { FinalCTA } from "@/components/home/FinalCTA";
+import { OrganizationJsonLd } from "@/components/seo/JsonLd";
+import { FadeIn, SlideUp } from "@/components/ui/motion";
 import type { Metadata } from "next";
+
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://dodonutrition.tn";
 
 export const metadata: Metadata = {
   title: "Dodo Nutrition | Suppléments & Nutrition Sportive en Tunisie",
@@ -68,36 +73,54 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* 1. Hero — CMS-driven slider + trust strip */}
+      <OrganizationJsonLd siteUrl={siteUrl} />
+
+      {/* 1. Hero — CMS-driven slider + trust strip (no animation — above fold) */}
       <HeroSection slides={heroSlides} />
 
       {/* 2. Goal Navigator — علاش جاي؟ */}
-      <GoalNavigator />
+      <FadeIn>
+        <GoalNavigator />
+      </FadeIn>
 
       {/* 3. Featured Products — tabs (best-sellers / جداد / promos) */}
-      <FeaturedProducts
-        featured={featuredProducts}
-        newProducts={newProducts}
-        promoProducts={promoProducts}
-      />
+      <SlideUp>
+        <FeaturedProducts
+          featured={featuredProducts}
+          newProducts={newProducts}
+          promoProducts={promoProducts}
+        />
+      </SlideUp>
 
       {/* 4. CMS Banners — full-bleed from Sanity Studio */}
-      <BannerSection banners={banners} />
+      <FadeIn>
+        <BannerSection banners={banners} />
+      </FadeIn>
 
       {/* 5. Packs & Deals — الباكات */}
-      <FeaturedPacks packs={featuredPacks} />
+      <SlideUp>
+        <FeaturedPacks packs={featuredPacks} />
+      </SlideUp>
 
       {/* 6. Categories — تصنيفات */}
-      <CategoryShowcase categories={categories} />
+      <SlideUp>
+        <CategoryShowcase categories={categories} />
+      </SlideUp>
 
       {/* 7. Social Proof — reviews + rating summary */}
-      <TestimonialsSection reviews={featuredReviews} stats={reviewStats} />
+      <FadeIn>
+        <TestimonialsSection reviews={featuredReviews} stats={reviewStats} />
+      </FadeIn>
 
       {/* 8. Brands Marquee */}
-      <BrandsMarquee brands={brands} />
+      <FadeIn>
+        <BrandsMarquee brands={brands} />
+      </FadeIn>
 
       {/* 9. Final CTA — واش مازلت محيّر؟ */}
-      <FinalCTA />
+      <SlideUp>
+        <FinalCTA />
+      </SlideUp>
     </div>
   );
 }

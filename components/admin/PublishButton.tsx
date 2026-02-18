@@ -45,7 +45,7 @@ export function PublishButton({
     return (
       <Button variant={variant} size={size} disabled className="min-w-[140px]">
         <Check className="mr-2 h-4 w-4 text-green-500" />
-        Published!
+        Publié !
       </Button>
     );
   }
@@ -61,12 +61,12 @@ export function PublishButton({
       {isPublishing ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Publishing...
+          Publication...
         </>
       ) : (
         <>
           <Save className="mr-2 h-4 w-4" />
-          Publish
+          Publier
         </>
       )}
     </Button>
@@ -127,7 +127,7 @@ export function RevertButton({
         </Button>
       </TooltipTrigger>
       <TooltipContent>
-        <p>Discard changes</p>
+        <p>Annuler les modifications</p>
       </TooltipContent>
     </Tooltip>
   );

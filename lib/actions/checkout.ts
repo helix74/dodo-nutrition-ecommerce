@@ -6,6 +6,8 @@ import { PRODUCTS_BY_IDS_QUERY } from "@/lib/sanity/queries/products";
 import { resend, senderEmail } from "@/lib/mail";
 import { OrderConfirmation } from "@/emails/OrderConfirmation";
 import { CODOrderSchema } from "@/lib/validations/schemas";
+import { sendCAPIEvent } from "@/lib/tracking/meta-capi";
+import { createCiblexShipment } from "@/lib/actions/shipping";
 
 // Types
 interface CartItem {
@@ -177,6 +179,41 @@ export async function createCODOrder(
         console.error("Failed to send confirmation email:", emailError);
       }
     }
+
+    // 10. Send Meta CAPI Purchase event (non-blocking)
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dodonutrition.tn";
+    sendCAPIEvent({
+      eventName: "Purchase",
+      eventId: `purchase-${order.orderNumber}`,
+      eventSourceUrl: `${baseUrl}/checkout/success?order=${order.orderNumber}`,
+      userData: {
+        email: data.email,
+        phone: data.phone,
+      },
+      value: total,
+      items: data.items.map((i) => ({
+        id: i.productId,
+        name: i.name,
+        price: i.price,
+        quantity: i.quantity,
+      })),
+    }).catch((err) => console.error("CAPI Purchase event failed:", err));
+
+    // 11. Create Ciblex shipment (non-blocking — never fail the order)
+    const itemNames = data.items.map((i) => i.name).join(", ");
+    createCiblexShipment({
+      orderId: order._id,
+      orderNumber,
+      clientName: data.address.name,
+      address: data.address.line1,
+      gouvernorat: data.address.gouvernorat,
+      ville: data.address.city,
+      phone: data.phone,
+      total,
+      itemCount: data.items.reduce((sum, i) => sum + i.quantity, 0),
+      designation: itemNames.length > 200 ? itemNames.slice(0, 197) + "..." : itemNames,
+      notes: data.notes,
+    }).catch((err) => console.error("[Ciblex] Shipment creation failed:", err));
 
     return {
       success: true,

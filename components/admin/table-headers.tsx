@@ -39,7 +39,8 @@ export function OrderTableHeader() {
 const PRODUCT_TABLE_COLUMNS: TableHeaderColumn[] = [
   { label: "Image", className: "hidden w-16 sm:table-cell" },
   { label: "Produit" },
-  { label: "Prix", className: "hidden w-32 md:table-cell" },
+  { label: "Prix TND", className: "hidden w-28 md:table-cell" },
+  { label: "Modifier prix", className: "hidden w-32 lg:table-cell" },
   { label: "Stock", className: "hidden w-40 md:table-cell" },
   { label: "Vedette", className: "hidden w-16 lg:table-cell" },
   { label: "Actions", className: "hidden w-[140px] text-right sm:table-cell" },

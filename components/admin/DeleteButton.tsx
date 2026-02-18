@@ -32,7 +32,7 @@ export function DeleteButton({
 
   const handleDelete = async () => {
     const confirmed = window.confirm(
-      "Delete this product permanently? This cannot be undone.",
+      "Supprimer ce produit définitivement ? Cette action est irréversible.",
     );
     if (!confirmed) return;
 
@@ -55,13 +55,13 @@ export function DeleteButton({
                 target="_blank"
               >
                 <Trash2 className="h-4 w-4" />
-                Delete in Studio
+                Supprimer dans Studio
               </Link>
             </Button>
           </TooltipTrigger>
           <TooltipContent>
             <p>
-              This product is referenced by {referenceCount} order
+              Ce produit est référencé par {referenceCount} commande
               {referenceCount !== 1 ? "s" : ""}
             </p>
           </TooltipContent>
@@ -78,7 +78,7 @@ export function DeleteButton({
       onClick={handleDelete}
     >
       <Trash2 className="h-4 w-4" />
-      Delete
+      Supprimer
     </Button>
   );
 }

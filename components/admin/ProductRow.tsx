@@ -143,8 +143,15 @@ function ProductRowContent({ product }: ProductRowProps) {
         </Link>
       </TableCell>
 
-      {/* Price - Desktop only */}
+      {/* Retail Price - Desktop only */}
       <TableCell className="hidden py-4 md:table-cell">
+        <span className="text-sm font-medium text-foreground">
+          {formatPrice(product.price)}
+        </span>
+      </TableCell>
+
+      {/* Price Editor - Desktop only */}
+      <TableCell className="hidden py-4 lg:table-cell">
         <PriceInput productId={documentId} initialPrice={product.price} />
       </TableCell>
 
@@ -204,6 +211,9 @@ function ProductRowSkeleton() {
         </div>
       </TableCell>
       <TableCell className="hidden py-4 md:table-cell">
+        <Skeleton className="h-4 w-20" />
+      </TableCell>
+      <TableCell className="hidden py-4 lg:table-cell">
         <Skeleton className="h-8 w-24" />
       </TableCell>
       <TableCell className="hidden py-4 md:table-cell">

@@ -2,10 +2,17 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { Plus, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { RevenueStats, OrderStats, StockSummary, RecentOrdersWidget } from "@/components/admin/widgets";
+import {
+  RevenueStats,
+  OrderStats,
+  StockSummary,
+  RecentOrdersWidget,
+  EnhancedKPIs,
+  ChartsSection,
+  LowStockDashboardWidget,
+} from "@/components/admin/widgets";
 import { AIInsightsCard } from "@/components/admin";
 
-// Loading skeleton for widgets
 function WidgetSkeleton() {
   return (
     <div className="rounded-lg border border-border bg-card p-4 animate-pulse">
@@ -25,6 +32,27 @@ function StatsGridSkeleton() {
   );
 }
 
+function ChartsSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="rounded-lg border border-border bg-card p-6 animate-pulse">
+        <div className="h-5 w-48 bg-secondary rounded mb-4" />
+        <div className="h-[300px] bg-secondary/30 rounded" />
+      </div>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="rounded-lg border border-border bg-card p-6 animate-pulse">
+          <div className="h-5 w-48 bg-secondary rounded mb-4" />
+          <div className="h-[280px] bg-secondary/30 rounded" />
+        </div>
+        <div className="rounded-lg border border-border bg-card p-6 animate-pulse">
+          <div className="h-5 w-48 bg-secondary rounded mb-4" />
+          <div className="h-[280px] bg-secondary/30 rounded" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   return (
     <div className="space-y-6">
@@ -39,7 +67,7 @@ export default function AdminDashboard() {
               Tableau de bord
             </h1>
             <p className="text-sm text-muted-foreground">
-              Vue d'ensemble de votre boutique
+              Vue d&apos;ensemble de votre boutique
             </p>
           </div>
         </div>
@@ -51,9 +79,19 @@ export default function AdminDashboard() {
         </Button>
       </div>
 
+      {/* Low Stock Alerts (prominent) */}
+      <Suspense fallback={null}>
+        <LowStockDashboardWidget />
+      </Suspense>
+
       {/* Revenue Stats Row */}
       <Suspense fallback={<StatsGridSkeleton />}>
         <RevenueStats />
+      </Suspense>
+
+      {/* Enhanced KPIs Row */}
+      <Suspense fallback={<StatsGridSkeleton />}>
+        <EnhancedKPIs />
       </Suspense>
 
       {/* Three Column Grid: Orders, Stock, Recent Orders */}
@@ -69,7 +107,12 @@ export default function AdminDashboard() {
         </Suspense>
       </div>
 
-      {/* AI Insights - Disabled until Vercel AI Gateway is configured */}
+      {/* Charts Section */}
+      <Suspense fallback={<ChartsSkeleton />}>
+        <ChartsSection />
+      </Suspense>
+
+      {/* AI Insights */}
       <AIInsightsCard />
     </div>
   );

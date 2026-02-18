@@ -1,21 +1,21 @@
+import type { Metadata } from "next";
 import { sanityFetch } from "@/sanity/lib/live";
 import { ALL_PACKS_QUERY } from "@/lib/sanity/queries/packs";
-import { PackCard } from "@/components/app/PackCard";
+import { PacksClient } from "@/components/app/PacksClient";
 import { Package } from "lucide-react";
 import Link from "next/link";
 
-interface Pack {
-  _id: string;
-  name: string | null;
-  slug: { current: string } | null;
-  tagline: string | null;
-  imageUrl: string | null;
-  priceOriginal: number | null;
-  priceBundle: number | null;
-  packCategory: string | null;
-  stock: number | null;
-  productCount?: number | null;
-}
+export const metadata: Metadata = {
+  title: "Packs & Bundles",
+  description:
+    "Économisez avec nos packs combinés de nutrition sportive. Des bundles conçus pour vos objectifs fitness.",
+  openGraph: {
+    title: "Packs & Bundles | Dodo Nutrition",
+    description:
+      "Économisez avec nos packs combinés de nutrition sportive. Des bundles conçus pour vos objectifs fitness.",
+  },
+};
+
 export default async function PacksPage() {
   const { data: packs } = await sanityFetch({
     query: ALL_PACKS_QUERY,
@@ -25,25 +25,35 @@ export default async function PacksPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <Package className="h-8 w-8 text-dodo-yellow" />
-            <h1 className="text-3xl font-bold text-foreground">Nos Packs</h1>
+      {/* Page Header — matches shop layout */}
+      <div className="border-b border-border bg-card">
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <nav className="mb-4 text-sm text-muted-foreground">
+            <a href="/" className="hover:text-dodo-yellow">Accueil</a>
+            <span className="mx-2">/</span>
+            <span className="text-foreground">Packs</span>
+          </nav>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                Nos Packs & Bundles
+              </h1>
+              <p className="mt-2 text-muted-foreground">
+                Économisez en achetant nos packs combinés, conçus pour vos objectifs.
+              </p>
+            </div>
+            <div className="hidden sm:block text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">{packList.length}</span>{" "}
+              pack{packList.length !== 1 ? "s" : ""} disponible{packList.length !== 1 ? "s" : ""}
+            </div>
           </div>
-          <p className="text-muted-foreground">
-            Économisez en achetant nos packs combinés, conçus pour vos objectifs.
-          </p>
         </div>
+      </div>
 
-        {/* Packs Grid */}
+      {/* Content */}
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {packList.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {(packList as Pack[]).map((pack: Pack) => (
-              <PackCard key={pack._id} pack={pack} />
-            ))}
-          </div>
+          <PacksClient packs={packList} />
         ) : (
           <div className="rounded-xl border border-dashed border-border bg-card/50 py-16 text-center">
             <Package className="mx-auto h-12 w-12 text-muted-foreground opacity-50" />

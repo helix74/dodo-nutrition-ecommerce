@@ -6,7 +6,8 @@ alwaysApply: true
 
 # Dodo Nutrition — Project Handover Report
 
-> **Last updated**: 2026-02-14
+> **Last updated**: 2026-02-16
+> **Version**: 1.4.0
 > **Owner**: Mohamed Ali Jardak (Dali)
 > **Repo**: github.com/helix74/dodo-nutrition-ecommerce
 
@@ -31,15 +32,15 @@ Dodo Nutrition is a **Tunisian sports nutrition e-commerce platform** built with
 
 ---
 
-## Current State (Post Spec 018)
+## Current State (Post Spec 029)
 
 ### What's Complete
 
 | Spec | Feature | Status |
 |------|---------|--------|
 | 001–007 | Core: cart, checkout (COD), product pages, UI unification | ✅ Done |
-| 008 | Packs & Bundles (schema + queries ready, no data yet) | ✅ Schema done |
-| 009 | Reviews system (schema, admin panel, testimonials, category reviews) | ✅ Done |
+| 008 | Packs & Bundles (schema + queries + client) | ✅ Done |
+| 009 | Reviews system (schema, admin panel, testimonials) | ✅ Done |
 | 010 | Wishlist | ✅ Done |
 | 011 | Email notifications (Resend) | ✅ Done |
 | 012 | Enhancements | ✅ Done |
@@ -48,7 +49,18 @@ Dodo Nutrition is a **Tunisian sports nutrition e-commerce platform** built with
 | 015 | Homepage + shop improvements | ✅ Done |
 | 016 | SEO optimization | ✅ Done |
 | 017a–g | Homepage redesign (9-section architecture) | ✅ Done |
-| **018** | **Dataset cleanup & product import** | ✅ Done |
+| 018 | Dataset cleanup & product import | ✅ Done |
+| 019 | Homepage revision & UI polish | ✅ Done |
+| 020 | Site revision phase 2 (animations, polish) | ✅ Done |
+| 021 | Admin dashboard critical fixes (A1–A5) | ✅ Done |
+| 022 | Admin analytics & BI (charts, KPIs, insights) | ✅ Done |
+| 023 | Admin Pre-ERP MVP (suppliers, invoices, stock alerts) | ✅ Done |
+| 024 | Tracking integration (GA4, Meta Pixel, CAPI) | ✅ Code done — awaiting env vars |
+| 025 | Ciblex delivery integration | ✅ Code done — awaiting credentials |
+| 026 | SEO & discovery (JSON-LD, sitemap, OG) | ✅ Done |
+| 027 | Pre-launch features (upsell, packs client, motion) | ✅ Done |
+| 028 | Testing infrastructure | ✅ Done |
+| **029** | **Documentation audit** | ✅ Done |
 
 ### Database State (Sanity Production)
 
@@ -57,6 +69,8 @@ Dodo Nutrition is a **Tunisian sports nutrition e-commerce platform** built with
 | Products | **119** | All clean, proper IDs, 0 broken refs |
 | Categories | **10** | proteines, creatine, pre-workout, gainers, bruleurs, acides-amines, vitamines, boosters, barres-snacks, accessoires |
 | Brands | **21** | All with ≥1 product |
+| Suppliers | **0** | Schema ready, awaiting user input |
+| Invoices | **0** | Schema ready, awaiting user input |
 | Hero Slides | 1 | Active |
 | Banners | 3 | Active |
 | Packs | 0 | Awaiting user data (template at `data/template-packs.csv`) |
@@ -65,9 +79,13 @@ Dodo Nutrition is a **Tunisian sports nutrition e-commerce platform** built with
 
 ### What Still Needs User Action
 
-1. **`data/products-database.csv`** — User needs to update real prices, stock, featured flags
-2. **Product images** — Need manual upload in Sanity Studio
-3. **Pack data** — User will provide CSV based on `data/template-packs.csv`
+1. **Product prices & stock** — Update real prices, stock, featured flags in `data/products-database.csv` → re-import
+2. **Product images** — Upload in Sanity Studio
+3. **Pack data** — Provide CSV based on `data/template-packs.csv`
+4. **Tracking env vars** — Set `GA_MEASUREMENT_ID`, `META_PIXEL_ID`, `META_ACCESS_TOKEN` in `.env.local`
+5. **Ciblex credentials** — Set `CIBLEX_USER`, `CIBLEX_PASS` in `.env.local`
+6. **Custom email domain** — Verify `@dodonutrition.tn` with Resend
+7. **Domain name** — Point `dodonutrition.tn` to Vercel
 
 ---
 
@@ -81,35 +99,49 @@ app/
 │   ├── page.tsx        → Homepage (9 sections, 10 parallel queries)
 │   ├── shop/page.tsx   → Shop (filters, search, pagination)
 │   ├── products/[slug] → Product detail (gallery, info, accordion, reviews, related)
+│   ├── brands/[slug]   → Brand detail page
+│   ├── categories/[slug] → Category detail page
+│   ├── packs/page.tsx  → Packs listing with filtering/sorting
 │   └── layout.tsx      → App shell (Clerk, SanityLive, Header, Footer, Cart, Chat)
 ├── (admin)/admin/      → Admin dashboard (JWT auth, not Clerk)
+│   ├── page.tsx        → Dashboard (KPIs, charts, recent orders, stock alerts, AI insights)
+│   ├── orders/         → Order management + detail pages
+│   ├── inventory/      → Product inventory + detail editing
+│   ├── suppliers/      → Supplier management
+│   ├── invoices/       → Invoice management
+│   └── reviews/        → Review moderation
 ├── studio/             → Sanity Studio (mounted at /studio)
-└── api/                → API routes (checkout, reviews, AI chat, admin)
+├── api/                → API routes (checkout, reviews, AI chat, admin, cart-upsell, shipping)
+└── sitemap.ts          → Dynamic sitemap.xml generation
 
 sanity/
-├── schemaTypes/        → 9 types: product, category, brand, pack, heroSlide, banner, review, order, customer
+├── schemaTypes/        → 11 types: product, category, brand, pack, heroSlide, banner, review, order, customer, supplier, invoice
 ├── lib/client.ts       → Read + write Sanity clients
 ├── lib/live.ts         → SanityLive + sanityFetch
-└── structure.ts        → Studio desk structure (Marketing → Catalogue → Commerce)
+└── structure.ts        → Studio desk structure (Marketing → Catalogue → Commerce → Operations)
 
 lib/
-├── sanity/queries/     → 10 query files (products, categories, packs, reviews, banners, hero, orders, customers, stats, analytics)
+├── sanity/queries/     → 13 query files (products, categories, brands, packs, reviews, banners, hero, orders, customers, stats, analytics, suppliers, invoices)
 ├── constants/goals.ts  → Goal→category mapping (muscle, performance, seche, wellness)
 ├── constants/stock.ts  → LOW_STOCK_THRESHOLD = 5
-├── actions/            → Server actions (cart, checkout, reviews, orders)
+├── actions/            → Server actions (cart, checkout, reviews, orders, admin-data, admin-mutations, admin-analytics, shipping)
+├── shipping/           → Ciblex API client + gouvernorat zone pricing
+├── tracking/           → GA4 events, Meta Pixel events, Meta CAPI server-side
 ├── store/              → Zustand stores (cart, chat)
 └── data/megamenu.ts    → Header data fetching
 
 components/
 ├── home/               → 9 homepage sections (HeroSection, GoalNavigator, FeaturedProducts, BannerSection, FeaturedPacks, CategoryShowcase, TestimonialsSection, BrandsMarquee, FinalCTA)
-├── app/                → Shared app components (ProductCard, ProductSection, Header, CartSheet, ChatSheet, etc.)
-├── admin/              → Admin components
+├── app/                → Shared app components (ProductCard, CartSheet, ChatSheet, CartUpsell, PacksClient, etc.)
+├── admin/              → Admin components + widgets/ (charts, KPIs, stock alerts)
+├── seo/                → JsonLd structured data component
+├── tracking/           → GoogleAnalytics, MetaPixel, TrackViewContent
 ├── layout/             → TopBar, Footer
-└── ui/                 → shadcn components (DO NOT modify these directly)
+└── ui/                 → shadcn components + motion.tsx (DO NOT modify shadcn directly)
 
 scripts/                → Data pipeline scripts (fix-products-csv, csv-to-ndjson, force-cleanup, export-products-csv)
 data/                   → CSV files (raw, clean, export, templates)
-specs/                  → Feature specifications (001–018)
+specs/                  → Feature specifications (001–029)
 ```
 
 ### Key Patterns
@@ -121,6 +153,11 @@ specs/                  → Feature specifications (001–018)
 - **Goal navigation**: Maps goal IDs to category slug arrays in `lib/constants/goals.ts`
 - **Sanity fetch**: Always use `sanityFetch()` from `sanity/lib/live.ts` (not raw client.fetch)
 - **Dark theme**: Uses CSS vars (`bg-background`, `text-foreground`, `border-border`, `bg-dodo-yellow` for CTAs)
+- **Tracking**: Unified event system in `lib/tracking/events.ts` — fires both GA4 + Meta Pixel; server-side CAPI via `lib/tracking/meta-capi.ts`
+- **Shipping**: Ciblex API in `lib/shipping/ciblex.ts`; zone pricing via `lib/shipping/gouvernorats.ts`; server actions in `lib/actions/shipping.ts`
+- **SEO**: JSON-LD via `components/seo/JsonLd.tsx`; sitemap at `app/sitemap.ts`; OG/Twitter meta in page-level `generateMetadata()`
+- **Admin analytics**: Server actions in `lib/actions/admin-analytics.ts`; chart components in `components/admin/`; widget compositions in `components/admin/widgets/`
+- **Animations**: Framer Motion wrappers in `components/ui/motion.tsx` (FadeIn, SlideUp, ScaleIn, StaggerContainer)
 
 ### Known Non-Issues (Don't Try to Fix)
 
@@ -130,18 +167,24 @@ specs/                  → Feature specifications (001–018)
 
 ---
 
-## What's Next: Phase 3
+## What's Next: Launch Preparation
 
-The user wants to do a **front-end revision pass** — fixing visual bugs, styling issues, and UI polish across the site. This has NOT started yet.
+All **code** for v1.4.0 is feature-complete. The project is blocked on **user action items** only:
 
-Potential areas (user will specify):
-- Homepage section visual refinements
-- Product card improvements
-- Shop page filter UI
-- Product detail page layout
-- Mobile responsiveness
-- Color/typography consistency
-- Empty states (no packs, no reviews, no images)
+### Blocking Launch
+1. **Product prices, stock, featured flags** — user must update CSV and re-import
+2. **Product images** — user must upload in Sanity Studio
+3. **Tracking env vars** — user must provide GA4 + Meta Pixel IDs
+4. **Ciblex credentials** — user must provide API username/password
+5. **Domain** — user must configure DNS for `dodonutrition.tn`
+
+### Post-Launch Priorities
+- Newsletter backend (Resend Audiences)
+- TikTok Pixel integration
+- Online payment (Flouci / Konnect)
+- Search UX improvements (persistent search bar)
+- Infinite scroll pagination on shop page
+- Export features for admin (Excel/PDF reports)
 
 ---
 
@@ -166,7 +209,7 @@ pnpm build            # Production build
 ### Speckit Workflow
 
 The user follows a "speckit" methodology:
-- Each feature gets a `specs/NNN-feature-name/` folder
+- Each feature gets a `specs/NNN-feature-name/` folder (001–029 complete)
 - Contains: `spec.md` (main), `plan.md`, `tasks.md`, `verification.md`
 - User calls the AI agent "Maestro" and expects structured, documented work
 - User communicates in **Tunisian Darija** (mix of Arabic + French) — respond normally in English/French

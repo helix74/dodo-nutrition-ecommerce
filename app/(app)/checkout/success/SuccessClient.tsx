@@ -6,6 +6,7 @@ import { CheckCircle, Package, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
 import { useCartActions } from "@/lib/store/cart-store-provider";
+import { trackPurchase } from "@/lib/tracking/events";
 
 interface SuccessClientProps {
   session: {
@@ -33,10 +34,20 @@ interface SuccessClientProps {
 export function SuccessClient({ session }: SuccessClientProps) {
   const { clearCart } = useCartActions();
 
-  // Clear cart on mount
+  // Clear cart and track purchase on mount
   useEffect(() => {
     clearCart();
-  }, [clearCart]);
+    trackPurchase(
+      session.id,
+      (session.amountTotal ?? 0) / 100,
+      (session.lineItems ?? []).map((item) => ({
+        id: item.name ?? "",
+        name: item.name ?? "",
+        price: item.amount / 100,
+        quantity: item.quantity ?? 1,
+      }))
+    );
+  }, [clearCart, session]);
 
   const address = session.shippingAddress;
 

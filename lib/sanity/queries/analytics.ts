@@ -105,3 +105,58 @@ export const ORDERS_DATE_RANGE_QUERY = defineQuery(`
     status
   } | order(createdAt asc)
 `);
+
+// =============================================================================
+// SPEC 022 — Dashboard Analytics & Charts
+// =============================================================================
+
+/**
+ * Enhanced KPIs: average order value, low stock count, top selling category
+ */
+export const ENHANCED_KPIS_QUERY = defineQuery(`{
+  "avgOrderValue": coalesce(
+    math::sum(*[_type == "order"].total) /
+    count(*[_type == "order" && defined(total)]),
+    0
+  ),
+  "lowStockCount": count(*[_type == "product" && stock > 0 && stock < 5]),
+  "outOfStockCount": count(*[_type == "product" && stock <= 0]),
+  "topCategory": *[_type == "order"] {
+    items[] {
+      "categoryTitle": product->category->title
+    }
+  }.items[defined(categoryTitle)].categoryTitle
+}`);
+
+/**
+ * Orders grouped by gouvernorat for the horizontal bar chart.
+ * Returns an array of { gouvernorat, total } grouped from order addresses.
+ */
+export const ORDERS_BY_GOUVERNORAT_QUERY = defineQuery(`
+  *[_type == "order" && defined(address.gouvernorat)] {
+    "gouvernorat": address.gouvernorat,
+    total
+  }
+`);
+
+/**
+ * Full order status distribution including pending & confirmed
+ */
+export const FULL_ORDER_STATUS_QUERY = defineQuery(`{
+  "pending": count(*[_type == "order" && status == "pending"]),
+  "confirmed": count(*[_type == "order" && status == "confirmed"]),
+  "shipped": count(*[_type == "order" && status == "shipped"]),
+  "delivered": count(*[_type == "order" && status == "delivered"]),
+  "cancelled": count(*[_type == "order" && status == "cancelled"])
+}`);
+
+/**
+ * Orders with date + total for the revenue-over-time line chart (last 30 days)
+ */
+export const REVENUE_OVER_TIME_QUERY = defineQuery(`
+  *[_type == "order" && createdAt >= $startDate] {
+    "date": createdAt,
+    total,
+    status
+  } | order(createdAt asc)
+`);

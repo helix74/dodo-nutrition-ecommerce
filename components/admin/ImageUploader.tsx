@@ -64,7 +64,7 @@ export function ImageUploader({ productId, initialImages }: ImageUploaderProps) 
         body: formData,
       });
 
-      if (!response.ok) throw new Error("Upload failed");
+      if (!response.ok) throw new Error("Échec du téléchargement");
 
       const { images: newImageRefs } = await response.json();
 
@@ -251,7 +251,7 @@ function ImageThumbnail({
       {imageUrl ? (
         <Image
           src={imageUrl}
-          alt="Product image"
+          alt="Image du produit"
           fill
           className="object-cover"
           sizes="150px"

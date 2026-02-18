@@ -10,6 +10,7 @@ import {
   Phone,
   FileText,
 } from "lucide-react";
+import { ShippingStatus } from "@/components/admin/ShippingStatus";
 import { writeClient } from "@/sanity/lib/client";
 import {
   StatusSelect,
@@ -33,6 +34,8 @@ interface OrderDetail {
   notes: string | null;
   createdAt: string;
   stripePaymentId: string | null;
+  trackingNumber: string | null;
+  ciblexStatus: string | null;
   isDraft: boolean;
   address: {
     name: string;
@@ -73,6 +76,8 @@ async function getOrderDetail(id: string): Promise<OrderDetail | null> {
       notes,
       "createdAt": _createdAt,
       stripePaymentId,
+      trackingNumber,
+      ciblexStatus,
       address{
         name,
         line1,
@@ -131,7 +136,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
         className="inline-flex items-center text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Orders
+        Retour aux commandes
       </Link>
 
       <div className="space-y-6 sm:space-y-8">
@@ -251,6 +256,13 @@ export default async function OrderDetailPage({ params }: PageProps) {
 
           {/* Sidebar */}
           <div className="space-y-6 lg:col-span-2">
+            {/* Ciblex Shipping */}
+            <ShippingStatus
+              trackingNumber={data.trackingNumber}
+              ciblexStatus={data.ciblexStatus}
+              orderId={data._id}
+            />
+
             {/* COD Info */}
             {data.paymentMethod === 'cod' && (data.phone || data.gouvernorat || data.notes) && (
               <div className="rounded-xl border border-dodo-yellow/30 bg-dodo-yellow/5 p-4 sm:p-6">

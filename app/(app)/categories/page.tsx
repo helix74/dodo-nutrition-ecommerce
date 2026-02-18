@@ -5,8 +5,14 @@ import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Catégories | Dodo Nutrition",
-  description: "Explorez toutes nos catégories de suppléments et nutrition sportive : protéines, créatine, pre-workout, vitamines et plus.",
+  title: "Catégories",
+  description:
+    "Explorez toutes nos catégories de suppléments et nutrition sportive : protéines, créatine, pre-workout, vitamines et plus.",
+  openGraph: {
+    title: "Catégories | Dodo Nutrition",
+    description:
+      "Explorez toutes nos catégories de suppléments et nutrition sportive : protéines, créatine, pre-workout, vitamines et plus.",
+  },
 };
 
 // Icons for each category
@@ -57,7 +63,7 @@ export default async function CategoriesPage() {
             return (
               <Link
                 key={category._id}
-                href={`/shop?category=${slug}`}
+                href={`/categories/${slug}`}
                 className="group relative flex flex-col rounded-xl border border-border bg-card p-8 transition-all duration-300 hover:border-dodo-yellow hover:shadow-xl hover:shadow-dodo-yellow/10"
               >
                 {/* Icon */}

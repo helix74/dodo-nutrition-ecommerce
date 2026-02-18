@@ -1,214 +1,260 @@
 # 🗺️ ROADMAP — Dodo Nutrition
 
 > **Last Updated**: 2026-02-16
-> **Status**: Deployed → Preparing for Launch
-> **Version**: 1.3.0
+> **Status**: Pre-Launch — Feature Complete, Awaiting User Data & Credentials
+> **Version**: 1.4.0
 
 ---
 
 ## Table of Contents
 
 1. [Current Status](#-current-status)
-2. [Before Launch](#-before-launch)
-3. [Post Launch](#-post-launch)
-4. [Admin Dashboard Vision](#-admin-dashboard-vision)
-5. [Strategic Decisions](#-strategic-decisions)
-6. [Cost & Infrastructure](#-cost--infrastructure)
-7. [Completed Features](#-completed-features)
+2. [User Action Required](#-user-action-required)
+3. [Before Launch](#-before-launch)
+4. [Post Launch](#-post-launch)
+5. [Admin Dashboard Vision](#-admin-dashboard-vision)
+6. [Strategic Decisions](#-strategic-decisions)
+7. [Cost & Infrastructure](#-cost--infrastructure)
+8. [Completed Features](#-completed-features)
 
 ---
 
 ## 📊 Current Status
 
-| Area                  | Status        | Notes                                       |
-| --------------------- | ------------- | ------------------------------------------- |
-| **Storefront**        | ✅ Live       | Products, cart, checkout, reviews, wishlist |
-| **Admin Dashboard**   | ✅ Live       | JWT auth, server actions, no Sanity SDK     |
-| **Sanity Studio**     | ✅ Live       | Content editing at `/studio`                |
-| **Deployment**        | ✅ Vercel     | Auto-deploy on push to `main`               |
-| **Auth (Storefront)** | ✅ Clerk      | Sign-up/login/social                        |
-| **Auth (Admin)**      | ✅ Custom JWT | Username/password via env vars              |
-| **AI**                | ✅ Groq       | Chat assistant + admin insights             |
-| **Emails**            | ✅ Resend     | Order confirmation (`@resend.dev`)          |
+| Area                  | Status        | Notes                                                    |
+| --------------------- | ------------- | -------------------------------------------------------- |
+| **Storefront**        | ✅ Live       | Products, cart, checkout, reviews, wishlist, upsell      |
+| **Admin Dashboard**   | ✅ Live       | JWT auth, analytics, charts, KPIs, suppliers, invoices   |
+| **Sanity Studio**     | ✅ Live       | Content editing at `/studio` (11 schema types)           |
+| **Deployment**        | ✅ Vercel     | Auto-deploy on push to `main`                            |
+| **Auth (Storefront)** | ✅ Clerk      | Sign-up/login/social                                     |
+| **Auth (Admin)**      | ✅ Custom JWT | Username/password via env vars                           |
+| **AI**                | ✅ Groq       | Chat assistant + admin insights                          |
+| **Emails**            | ✅ Resend     | Order confirmation (`@resend.dev`)                       |
+| **SEO**               | ✅ Done       | JSON-LD, sitemap.xml, meta tags, Open Graph              |
+| **Tracking**          | ⏳ Ready      | GA4 + Meta Pixel + CAPI — awaiting env vars              |
+| **Shipping**          | ⏳ Ready      | Ciblex integration built — awaiting API credentials      |
+
+---
+
+## ⚠️ User Action Required
+
+> **These items need manual input from the project owner before launch.**
+
+| # | Item | Action | Where |
+|---|------|--------|-------|
+| 1 | **Product prices & stock** | Update real prices, stock levels, featured flags | `data/products-database.csv` → re-import |
+| 2 | **Product images** | Upload product images | Sanity Studio (`/studio`) |
+| 3 | **Pack data** | Provide pack CSV | Based on `data/template-packs.csv` |
+| 4 | **Tracking env vars** | Set `GA_MEASUREMENT_ID`, `META_PIXEL_ID`, `META_ACCESS_TOKEN` | `.env.local` |
+| 5 | **Ciblex credentials** | Set `CIBLEX_USER`, `CIBLEX_PASS` | `.env.local` |
+| 6 | **Custom email domain** | Verify `@dodonutrition.tn` with Resend | Resend dashboard |
+| 7 | **Domain name** | Point `dodonutrition.tn` to Vercel | DNS + Vercel dashboard |
 
 ---
 
 ## 🔴 Before Launch
 
-> **Priority**: Everything here MUST be done before changing domain name and going live.
+> **Priority**: Everything here MUST be done before going live. All **code** is complete — remaining items are user data and credentials.
 
-### 1. Homepage Redesign ⭐ PRIORITY #1
+### 1. Homepage Redesign — ✅ COMPLETE
 
-**Status**: ✅ 95% Complete (Spec 017a–g + Spec 019)
+**Spec 017a–g + 019 + 020**
 
-**Sections**:
-
-| Section           | Status       | Notes                                                |
-| ----------------- | ------------ | ---------------------------------------------------- |
-| Hero Section      | ✅ Done      | CMS-driven slider, trust badges, responsive CTAs     |
-| Featured Products | ✅ Done      | Tabs (best-sellers/nouveautés/promos), Darija titles  |
-| Featured Packs    | ✅ Done      | Pack cards with savings display                       |
-| Categories Grid   | ✅ Done      | Visual grid with gradient overlays, Darija titles     |
-| Goal Navigator    | ✅ Done      | 4 goals (muscle/performance/sèche/bien-être)          |
-| Brands Marquee    | ✅ Done      | Two-row reverse animation, Darija title               |
-| Testimonials      | ✅ Done      | Dynamic from Sanity (hidden when no reviews)          |
-| Final CTA         | ✅ Done      | AI chat integration, Darija text                      |
-| Banner Section    | ✅ Done      | CMS-driven promotional banners                        |
-
-**Remaining polish** (minor):
-- [ ] Add Framer Motion animations (post-launch Phase 2)
-- [ ] Product images (user to upload in Sanity Studio)
-- [ ] Reviews data (user to add in Sanity Studio)
+All 9 sections implemented and polished: Hero, Goal Navigator, Featured Products, Banner, Featured Packs, Category Showcase, Testimonials, Brands Marquee, Final CTA. Framer Motion animations added (Spec 020).
 
 ---
 
-### 2. Dataset Cleanup & Product Import
+### 2. Dataset Cleanup — ✅ COMPLETE
 
-**Status**: ✅ Done (Spec 018)
+**Spec 018**
 
-- 119 products imported, clean IDs, 0 broken refs
-- 10 categories, 21 brands
-- Templates available at `data/template-packs.csv`
-
-**Still needs user action**:
-- [ ] Update real prices, stock, featured flags in `data/products-database.csv`
-- [ ] Upload product images in Sanity Studio
-- [ ] Provide pack data (CSV based on `data/template-packs.csv`)
+119 products imported, 10 categories, 21 brands. Clean IDs, 0 broken refs. Awaiting user action for real prices/stock/images.
 
 ---
 
-### 3. Site Revision & Bug Fixes
+### 3. Site Revision & Bug Fixes — ✅ 95% COMPLETE
 
-**Status**: ✅ 90% Complete (Spec 019)
+**Spec 019 + 020**
 
-- [x] Fixed broken routes: `/brands/[slug]` → `/shop?brand=slug`, `/categories/[slug]` → `/shop?category=slug`
-- [x] Fixed button hover states (text invisible on dark background)
-- [x] Translated all user-facing English text to French
-- [x] Fixed mobile hamburger menu (categories, brands, search — removed autofocus)
-- [x] Fixed responsive trust badges on mobile
-- [x] Fixed checkout with logged-in accounts
-- [x] Fixed order confirmation emails
-- [x] CTA buttons resized for better visibility
-- [ ] Search UX improvement (currently modal-based, needs persistent search bar)
-- [ ] Infinite scroll pagination on shop page
-- [ ] Mobile product card height consistency (when names wrap)
+- [x] Fixed broken routes (`/brands/[slug]`, `/categories/[slug]`)
+- [x] Fixed button hover states, translated UI to French
+- [x] Fixed mobile menu, trust badges, checkout, order emails
+- [x] CTA buttons resized, Framer Motion animations added
+- [ ] Search UX improvement (persistent search bar — post-launch)
+- [ ] Infinite scroll pagination on shop page (post-launch)
 
 ---
 
-### 4. Admin Dashboard Fixes — Issues Connues
+### 4. Admin Dashboard Critical Fixes — ✅ COMPLETE
 
-| #   | Issue                     | Description                                             | Priority  |
-| --- | ------------------------- | ------------------------------------------------------- | --------- |
-| A1  | Pas de bouton déconnexion | Après login, impossible de se déconnecter               | 🔴 High   |
-| A2  | Sidebar visible sur login | Navigation (Inventory, Orders, Avis) visible avant auth | 🔴 High   |
-| A3  | Prix vides dans inventory | Les prix n'apparaissent pas dans la liste               | 🟠 Medium |
-| A4  | Pas de bouton "Confirmer" | Changements prix/quantité sans confirmation             | 🟠 Medium |
-| A5  | Page admin découvrable    | `/admin` accessible en tapant l'URL                     | 🟡 Low    |
+**Spec 021**
+
+All 5 issues (A1–A5) resolved: logout button, sidebar hidden on login, prices visible, save confirmation, admin route protection.
+
+---
+
+### 5. Admin Analytics & BI — ✅ COMPLETE
+
+**Spec 022**
+
+- Revenue chart (30-day trend), Order status distribution chart, Orders by gouvernorat chart
+- Enhanced KPIs: avg order value, low stock count, top category, cancelled order rate
+- Charts section on admin dashboard with parallel data fetching
+
+---
+
+### 6. Admin Pre-ERP MVP — ✅ COMPLETE
+
+**Spec 023**
+
+- Supplier management (`/admin/suppliers`) — Sanity schema + admin page
+- Invoice management (`/admin/invoices`) — Sanity schema + admin page
+- Low stock dashboard widget with direct links to products
+- GROQ queries for suppliers and invoices
+
+---
+
+### 7. Tracking Integration — ✅ COMPLETE (awaiting env vars)
+
+**Spec 024**
+
+- Google Analytics 4 (`components/tracking/GoogleAnalytics.tsx`)
+- Meta Pixel + Conversions API (`components/tracking/MetaPixel.tsx`, `lib/tracking/meta-capi.ts`)
+- Unified event system (`lib/tracking/events.ts`) — ViewContent, AddToCart, Purchase
+- `TrackViewContent` component for product pages
+- **Needs**: `GA_MEASUREMENT_ID`, `META_PIXEL_ID`, `META_ACCESS_TOKEN` in `.env.local`
+
+---
+
+### 8. Ciblex Delivery Integration — ✅ COMPLETE (awaiting credentials)
+
+**Spec 025**
+
+- Ciblex API client (`lib/shipping/ciblex.ts`) — create/track shipments
+- Gouvernorat-based zone pricing (`lib/shipping/gouvernorats.ts`)
+- Shipping server actions (`lib/actions/shipping.ts`)
+- Admin shipping sync API (`/api/admin/shipping/sync`)
+- `ShippingStatus` component for admin order details
+- **Needs**: `CIBLEX_USER`, `CIBLEX_PASS` in `.env.local`
+
+---
+
+### 9. SEO & Discovery — ✅ COMPLETE
+
+**Spec 026**
+
+- JSON-LD structured data (Product, Organization, BreadcrumbList) via `components/seo/JsonLd.tsx`
+- Dynamic `sitemap.xml` (`app/sitemap.ts`) — products, categories, brands
+- Open Graph + Twitter Card meta tags on all pages
+- Dynamic meta titles/descriptions per product, category, brand
+
+---
+
+### 10. Pre-Launch Features — ✅ COMPLETE
+
+**Spec 027**
+
+- Cart upsell/cross-sell (`components/app/CartUpsell.tsx` + `/api/cart-upsell`)
+- Packs client with filtering and sorting (`components/app/PacksClient.tsx`)
+- Brand/category slug pages (`/brands/[slug]`, `/categories/[slug]`)
+- Framer Motion animation components (`components/ui/motion.tsx`)
+
+---
+
+### 11. Testing Infrastructure — ✅ COMPLETE
+
+**Spec 028**
+
+- Testing patterns and infrastructure established
+- Component validation ready for CI pipeline
 
 ---
 
 ## 🟢 Post Launch
 
 > **Priority**: Après le changement de domaine et le lancement officiel.
+> Items previously planned for pre-launch SEO, tracking, shipping, and upsell are now **DONE** (see completed features above).
 
-### Phase 1: SEO & Marketing (Semaine 1-2 Post-Launch)
+### Phase 1: Revenue & Growth (Semaine 1-2 Post-Launch)
 
-| #   | Task                                                    | Effort | Impact              |
-| --- | ------------------------------------------------------- | ------ | ------------------- |
-| 1   | Meta titles/descriptions dynamiques par produit         | 2-3h   | SEO                 |
-| 2   | JSON-LD structured data (Product, Review, Organization) | 2h     | Google Rich Results |
-| 3   | Sitemap.xml auto-généré                                 | 1h     | Indexation          |
-| 4   | Open Graph tags pour partage social                     | 30min  | Social sharing      |
-| 5   | Pages catégories SEO (`/categories/[slug]`)             | 1 jour | SEO + Navigation    |
-| 6   | Tracking pixels (Meta, GA4, TikTok)                     | 2-3h   | Analytics & Ads     |
+| #   | Task                                            | Effort | Impact                | Status   |
+| --- | ----------------------------------------------- | ------ | --------------------- | -------- |
+| 1   | Newsletter backend (Resend Audiences)           | 1-2h   | Communication clients | Planned  |
+| 2   | Custom email domain (`@dodonutrition.tn`)       | 30min  | Emails pas en spam    | User action |
+| 3   | TikTok Pixel integration                        | 1-2h   | Ads tracking          | Planned  |
+| 4   | Search UX (persistent search bar)               | 4-6h   | UX improvement        | Planned  |
+| 5   | Infinite scroll pagination                      | 2-3h   | Shop UX               | Planned  |
 
-### Phase 2: Revenue Features (Semaine 2-4)
-
-| #   | Task                                            | Effort | Impact                |
-| --- | ----------------------------------------------- | ------ | --------------------- |
-| 1   | Upsell/Cross-sell ("Clients achètent aussi...") | 1 jour | +15-25% panier moyen  |
-| 2   | Newsletter backend (Resend Audiences)           | 1-2h   | Communication clients |
-| 3   | Animations & polish (Framer Motion)             | 4-6h   | UX premium            |
-| 4   | Custom email domain (@dodonutrition.tn)         | 30min  | Emails pas en spam    |
-
-### Phase 3: Shipping & Operations (Mois 1-2)
+### Phase 2: Operations & Payments (Mois 1-2)
 
 | #   | Task                                                      | Effort       | Impact              |
 | --- | --------------------------------------------------------- | ------------ | ------------------- |
-| 1   | Ciblex shipping integration (national)                    | 1-2 semaines | Livraison nationale |
+| 1   | Online payment (Flouci / Konnect / Click to Pay)          | 1 semaine    | Revenue online      |
 | 2   | Local delivery system (Tunis, Ben Arous, Manouba, Ariana) | 1 semaine    | Livraison locale    |
-| 3   | Tracking number injection dans orders                     | 2-3h         | Suivi commandes     |
-| 4   | Zone detection (par gouvernorat)                          | 1 jour       | Pricing par zone    |
+| 3   | Rapports exportables (Excel/PDF pour comptabilité)        | 2-3 jours    | Business ops        |
 
-### Phase 4: Advanced Features (Mois 2-3+)
+### Phase 3: Advanced Features (Mois 2-3+)
 
 | #   | Task                                        | Effort         | Impact         |
 | --- | ------------------------------------------- | -------------- | -------------- |
-| 1   | Online payment (Flouci / Konnect)           | 1 semaine      | Revenue online |
-| 2   | Multi-language complet                      | 2-3 jours      | Accessibilité  |
-| 3   | Blog/Content section                        | 2-3 jours      | SEO + Trust    |
-| 4   | Google Maps reviews import                  | 1-2 jours      | Social proof   |
-| 5   | AI assistant upgrade (model + Darija)       | 1-2 jours      | Meilleur chat  |
-| 6   | Mobile app (PWA first, Capacitor si needed) | 1 jour → 2 sem | Accès mobile   |
+| 1   | Multi-language complet                      | 2-3 jours      | Accessibilité  |
+| 2   | Blog/Content section                        | 2-3 jours      | SEO + Trust    |
+| 3   | Google Maps reviews import                  | 1-2 jours      | Social proof   |
+| 4   | AI assistant upgrade (model + Darija)       | 1-2 jours      | Meilleur chat  |
+| 5   | Mobile app (PWA first, Capacitor si needed) | 1 jour → 2 sem | Accès mobile   |
 
 ---
 
 ## 🎯 Admin Dashboard Vision
 
-> **Philosophie**: L'admin est destiné au **owner**. Focus sur analytics, inventory, stock, opérations. Pas besoin de toucher au SEO ou aux descriptions produits — ça c'est Sanity Studio.
+> **Philosophie**: L'admin est destiné au **business owner**. Focus sur analytics, décisions data-driven, gestion opérationnelle (stock, commandes, fournisseurs, factures). Les modifications SEO et contenus produits se font dans Sanity Studio.
 
-### Current Features (v1.2.0)
+### Tier 1: Critical Fixes — ✅ DONE (Spec 021)
 
-| Feature                              | Status |
-| ------------------------------------ | ------ |
-| Login (JWT, username/password)       | ✅     |
-| Dashboard avec stats                 | ✅     |
-| AI Business Insights                 | ✅     |
-| Gestion commandes (status, timeline) | ✅     |
-| Gestion inventaire (stock, prix)     | ✅     |
-| Modération avis                      | ✅     |
-| Accès Sanity Studio                  | ✅     |
+| Feature                  | Status |
+| ------------------------ | ------ |
+| Logout button            | ✅     |
+| Login page isolée        | ✅     |
+| Prix dans inventory list | ✅     |
+| Bouton "Sauvegarder"     | ✅     |
+| Admin route protection   | ✅     |
 
-### Planned Improvements — Phase 1 (Admin UX)
+### Tier 2: Analytics & BI — ✅ DONE (Spec 022)
 
-| Feature                  | Description                             | Priority |
-| ------------------------ | --------------------------------------- | -------- |
-| Logout button            | Bouton déconnexion visible              | 🔴       |
-| Login page isolée        | Cacher sidebar avant auth               | 🔴       |
-| Prix dans inventory list | Afficher les prix correctement          | 🔴       |
-| Bouton "Sauvegarder"     | Confirmer les changements prix/quantité | 🟠       |
-| Quick actions améliorées | Confirm/Ship/Deliver plus intuitif      | 🟠       |
+| Feature                              | Status | Component                         |
+| ------------------------------------ | ------ | --------------------------------- |
+| Revenue chart (30-day trend)         | ✅     | `RevenueChart`                    |
+| Order status distribution chart      | ✅     | `OrderStatusChart`                |
+| Orders by gouvernorat chart          | ✅     | `OrdersByCity`                    |
+| Enhanced KPIs (4 cards)              | ✅     | `EnhancedKPIs`                    |
+| Charts section (parallel fetch)      | ✅     | `ChartsSection`                   |
+| AI Business Insights                 | ✅     | `AIInsightsCard`                  |
+| Admin analytics server actions       | ✅     | `lib/actions/admin-analytics.ts`  |
 
-### Planned Improvements — Phase 2 (Analytics & Reporting)
+### Tier 3: Pre-ERP MVP — ✅ DONE (Spec 023)
 
-| Feature              | Description                             |
-| -------------------- | --------------------------------------- |
-| Charts détaillés     | Revenue, orders, stock graphs           |
-| Rapports exportables | Excel/PDF pour comptabilité             |
-| Alertes stock        | Notifications temps réel pour stock bas |
-| Tableau de bord KPI  | Métriques business principales          |
-| Historique activité  | Audit trail des actions admin           |
+| Feature                              | Status | Component / Route                          |
+| ------------------------------------ | ------ | ------------------------------------------ |
+| Supplier management                  | ✅     | `/admin/suppliers`, `supplierType` schema  |
+| Invoice management                   | ✅     | `/admin/invoices`, `invoiceType` schema    |
+| Low stock dashboard widget           | ✅     | `LowStockDashboardWidget`                  |
+| Low stock badge on product rows      | ✅     | `LowStockBadge`                            |
+| Shipping status in order details     | ✅     | `ShippingStatus`                            |
+| GROQ queries (suppliers, invoices)   | ✅     | `lib/sanity/queries/suppliers.ts`, `invoices.ts` |
 
-### Planned Improvements — Phase 3 (ERP Features)
+### Tier 4: Future ERP — NOT STARTED (Post-Launch)
 
 | Feature                  | Description                              | Effort       |
 | ------------------------ | ---------------------------------------- | ------------ |
-| Gestion fournisseurs     | Carnet d'adresses, commandes fournisseur | 2 semaines   |
-| Livraisons/Expéditions   | Suivi colis, intégration transporteurs   | 1-2 semaines |
-| Facturation              | Génération automatique de factures       | 1 semaine    |
-| Multi-location inventory | 2 local + 4 présentoires                 | 2 semaines   |
+| Multi-location inventory | 2 local + 4 présentoires                | 2 semaines   |
 | Rôles utilisateurs       | Owner/Manager/Employee/Content           | 1 semaine    |
+| Rapports exportables     | Excel/PDF pour comptabilité              | 2-3 jours    |
 | Dashboard financier      | Résumé finances, marges, coûts           | 2 semaines   |
-
-### Planned Improvements — Phase 4 (Intelligence)
-
-| Feature               | Description                                      |
-| --------------------- | ------------------------------------------------ |
-| Weekly AI reports     | Rapports automatiques hebdomadaires              |
-| Stock predictions     | Prédiction de réapprovisionnement                |
-| Customer behavior     | Analyse comportement clients                     |
-| Marketing suggestions | Suggestions de promotions basées sur les données |
-| Ad copy generation    | Génération de textes publicitaires               |
+| Weekly AI reports        | Rapports automatiques hebdomadaires      | 1 semaine    |
+| Stock predictions        | Prédiction de réapprovisionnement        | 2 semaines   |
+| Customer behavior        | Analyse comportement clients             | 1 semaine    |
+| Marketing suggestions    | Suggestions de promotions data-driven    | 1 semaine    |
 
 ---
 
@@ -232,14 +278,13 @@
 
 ### ❓ Decisions En Attente
 
-| Décision            | Options                          | Impact             |
-| ------------------- | -------------------------------- | ------------------ |
-| Online payment      | Flouci / Konnect / Click to Pay  | Revenue online     |
-| Tracking pixels     | Meta, GA4, TikTok — lesquels?    | Marketing/Ads      |
-| ERP expansion       | Oui/Non, scope?                  | +4 semaines dev    |
-| Custom email domain | `@dodonutrition.tn`              | Emails pas en spam |
-| Mobile app          | PWA (1j) → Capacitor (2 sem)     | Accès mobile       |
-| Admin roles         | Combien de users? Qui gets quoi? | Accès équipe       |
+| Décision            | Options                          | Impact             | Notes                          |
+| ------------------- | -------------------------------- | ------------------ | ------------------------------ |
+| Online payment      | Flouci / Konnect / Click to Pay  | Revenue online     |                                |
+| TikTok Pixel        | Oui/Non                          | Ads tracking       | GA4 + Meta already built       |
+| Custom email domain | `@dodonutrition.tn`              | Emails pas en spam |                                |
+| Mobile app          | PWA (1j) → Capacitor (2 sem)     | Accès mobile       |                                |
+| Admin roles         | Combien de users? Qui gets quoi? | Accès équipe       | Current: single owner via JWT  |
 
 ---
 
@@ -302,6 +347,16 @@
 | 017 | Homepage Redesign (9-section architecture)          | 2026-02-10 | [specs/017](../specs/017a-homepage-redesign/)    |
 | 018 | Dataset Cleanup & Product Import                    | 2026-02-14 | [specs/018](../specs/018-dataset-cleanup/)       |
 | 019 | Homepage Revision & UI Polish                       | 2026-02-16 | [specs/019](../specs/019-homepage-revision/)     |
+| 020 | Site Revision Phase 2 (Animations, Polish)          | 2026-02-16 | —                                                |
+| 021 | Admin Dashboard Critical Fixes (A1–A5)              | 2026-02-16 | —                                                |
+| 022 | Admin Analytics & BI (Charts, KPIs)                 | 2026-02-16 | —                                                |
+| 023 | Admin Pre-ERP MVP (Suppliers, Invoices, Stock)      | 2026-02-16 | —                                                |
+| 024 | Tracking Integration (GA4, Meta Pixel, CAPI)        | 2026-02-16 | Awaiting env vars                                |
+| 025 | Ciblex Delivery Integration                         | 2026-02-16 | Awaiting credentials                             |
+| 026 | SEO & Discovery (JSON-LD, Sitemap, OG)              | 2026-02-16 | —                                                |
+| 027 | Pre-Launch Features (Upsell, Packs Client, Motion)  | 2026-02-16 | —                                                |
+| 028 | Testing Infrastructure                              | 2026-02-16 | —                                                |
+| 029 | Documentation Audit                                 | 2026-02-16 | This update                                      |
 
 ### Bug Fixes History
 
@@ -323,4 +378,4 @@
 
 ---
 
-_Last Updated: 2026-02-16_
+_Last Updated: 2026-02-16 — v1.4.0_

@@ -131,7 +131,7 @@ export function HeroSection({ slides }: HeroSectionProps) {
           alt={currentSlide.headline ?? "Hero"}
           fill
           priority={currentIndex === 0}
-          className="object-cover object-center"
+          className="object-contain object-center md:object-cover bg-black"
           sizes="100vw"
         />
       ) : (

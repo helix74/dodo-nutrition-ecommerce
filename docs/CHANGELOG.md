@@ -5,6 +5,76 @@
 
 ---
 
+## [1.4.0] - 2026-02-16 — Pre-Launch Feature Complete (Specs 020–029)
+
+### Added — Admin Analytics & BI (Spec 022)
+
+- Revenue chart component (`RevenueChart`) — 30-day revenue trend
+- Order status distribution chart (`OrderStatusChart`)
+- Orders by gouvernorat chart (`OrdersByCity`)
+- Enhanced KPIs widget (`EnhancedKPIs`) — avg order value, low stock count, top category, cancellation rate
+- Charts section with parallel data fetching (`ChartsSection`)
+- Admin analytics server actions (`lib/actions/admin-analytics.ts`)
+
+### Added — Admin Pre-ERP MVP (Spec 023)
+
+- Supplier management page (`/admin/suppliers`) + `supplierType` Sanity schema
+- Invoice management page (`/admin/invoices`) + `invoiceType` Sanity schema
+- Low stock dashboard widget (`LowStockDashboardWidget`) with product links
+- Low stock badge component (`LowStockBadge`) on inventory rows
+- Shipping status component (`ShippingStatus`) for order details
+- GROQ queries for suppliers (`lib/sanity/queries/suppliers.ts`) and invoices (`lib/sanity/queries/invoices.ts`)
+- Sanity schema types now total 11 (added `supplier`, `invoice`)
+
+### Added — Tracking Integration (Spec 024)
+
+- Google Analytics 4 component (`components/tracking/GoogleAnalytics.tsx`)
+- Meta Pixel component (`components/tracking/MetaPixel.tsx`)
+- Meta Conversions API server-side tracking (`lib/tracking/meta-capi.ts`)
+- Unified tracking event system (`lib/tracking/events.ts`) — ViewContent, AddToCart, Purchase, InitiateCheckout
+- `TrackViewContent` component for product page view tracking
+
+### Added — Ciblex Delivery Integration (Spec 025)
+
+- Ciblex API client (`lib/shipping/ciblex.ts`) — create shipments, track status, cancel
+- Gouvernorat-based zone pricing and delivery estimates (`lib/shipping/gouvernorats.ts`)
+- Shipping server actions (`lib/actions/shipping.ts`)
+- Admin shipping sync API route (`/api/admin/shipping/sync`)
+
+### Added — SEO & Discovery (Spec 026)
+
+- JSON-LD structured data component (`components/seo/JsonLd.tsx`) — Product, Organization, BreadcrumbList schemas
+- Dynamic sitemap.xml generation (`app/sitemap.ts`) — products, categories, brands
+- Open Graph and Twitter Card meta tags on all public pages
+
+### Added — Pre-Launch Features (Spec 027)
+
+- Cart upsell/cross-sell component (`components/app/CartUpsell.tsx`) + API route (`/api/cart-upsell`)
+- Packs client with filtering and sorting (`components/app/PacksClient.tsx`)
+- Brand detail pages (`/brands/[slug]`)
+- Category detail pages (`/categories/[slug]`)
+- Framer Motion animation components (`components/ui/motion.tsx`) — FadeIn, SlideUp, ScaleIn, StaggerContainer
+
+### Added — Testing & Documentation (Specs 028–029)
+
+- Testing infrastructure setup
+- Documentation audit: updated ROADMAP.md, CHANGELOG.md, ProjectHandover.mdc
+
+### Changed — Site Revision Phase 2 (Spec 020)
+
+- Added Framer Motion animations to homepage sections
+- Further UI polish and responsive improvements
+
+### Fixed — Admin Dashboard Critical Fixes (Spec 021)
+
+- **A1**: Added logout button to admin sidebar
+- **A2**: Sidebar hidden on login page (isolated layout)
+- **A3**: Prices now visible in inventory list
+- **A4**: Save confirmation button for price/quantity changes
+- **A5**: Admin route properly protected
+
+---
+
 ## [1.3.0] - 2026-02-16 — Homepage Revision & UI Polish (Spec 019)
 
 ### Added

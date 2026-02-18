@@ -220,6 +220,80 @@ export const PRODUCTS_BY_CATEGORY_QUERY = defineQuery(`*[
 }`);
 
 /**
+ * Get products by category slug (for SEO category landing page)
+ */
+export const PRODUCTS_BY_CATEGORY_SLUG_QUERY = defineQuery(`*[
+  _type == "product"
+  && category->slug.current == $slug
+  && stock > 0
+] | order(featured desc, name asc) {
+  _id,
+  name,
+  "slug": slug.current,
+  priceRetail,
+  priceSlashed,
+  unit,
+  quantity,
+  "images": images[0...4]{
+    _key,
+    asset->{
+      _id,
+      url
+    }
+  },
+  category->{
+    _id,
+    title,
+    "slug": slug.current
+  },
+  brand->{
+    _id,
+    name,
+    "slug": slug.current
+  },
+  flavors,
+  certifications,
+  stock
+}`);
+
+/**
+ * Get products by brand slug (for SEO brand landing page)
+ */
+export const PRODUCTS_BY_BRAND_SLUG_QUERY = defineQuery(`*[
+  _type == "product"
+  && brand->slug.current == $slug
+  && stock > 0
+] | order(featured desc, name asc) {
+  _id,
+  name,
+  "slug": slug.current,
+  priceRetail,
+  priceSlashed,
+  unit,
+  quantity,
+  "images": images[0...4]{
+    _key,
+    asset->{
+      _id,
+      url
+    }
+  },
+  category->{
+    _id,
+    title,
+    "slug": slug.current
+  },
+  brand->{
+    _id,
+    name,
+    "slug": slug.current
+  },
+  flavors,
+  certifications,
+  stock
+}`);
+
+/**
  * Get single product by slug - FULL DETAILS for product page
  */
 export const PRODUCT_BY_SLUG_QUERY = defineQuery(`*[

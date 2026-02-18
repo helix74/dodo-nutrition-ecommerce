@@ -6,8 +6,14 @@ import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Marques | Dodo Nutrition",
-  description: "Découvrez toutes les grandes marques de nutrition sportive disponibles chez Dodo Nutrition. Real Pharm, BioTech USA, Muscletech et plus.",
+  title: "Marques",
+  description:
+    "Découvrez toutes les grandes marques de nutrition sportive disponibles chez Dodo Nutrition. Real Pharm, BioTech USA, Muscletech et plus.",
+  openGraph: {
+    title: "Marques | Dodo Nutrition",
+    description:
+      "Découvrez toutes les grandes marques de nutrition sportive disponibles chez Dodo Nutrition.",
+  },
 };
 
 export default async function BrandsPage() {
@@ -42,7 +48,7 @@ export default async function BrandsPage() {
           {brands.map((brand) => (
             <Link
               key={brand._id}
-              href={`/shop?brand=${brand.slug}`}
+              href={`/brands/${brand.slug}`}
               className="group relative flex flex-col items-center rounded-xl border border-border bg-card p-6 transition-all duration-300 hover:border-dodo-yellow hover:shadow-xl hover:shadow-dodo-yellow/10"
             >
               {/* Logo */}

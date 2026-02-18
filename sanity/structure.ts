@@ -46,4 +46,18 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem("review").title("Avis"),
             ])
         ),
+
+      S.divider(),
+
+      // --- Approvisionnement ---
+      S.listItem()
+        .title("Approvisionnement")
+        .child(
+          S.list()
+            .title("Approvisionnement")
+            .items([
+              S.documentTypeListItem("supplier").title("Fournisseurs"),
+              S.documentTypeListItem("invoice").title("Factures"),
+            ])
+        ),
     ]);

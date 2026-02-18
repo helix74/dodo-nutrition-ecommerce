@@ -8,30 +8,31 @@ import { formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Package, ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/lib/store/cart-store-provider";
+import type { Slug } from "@/sanity.types";
 
-interface PackProduct {
-  quantity: number;
-  product: {
-    _id: string;
-    name: string;
-    slug: { current?: string } | null;
-    priceRetail: number | null;
-    stock: number | null;
-    imageUrl: string | null;
-  } | null;
-}
-
-interface Pack {
+export interface Pack {
   _id: string;
   name: string | null;
-  slug: { current?: string } | null;
+  slug: Slug | null;
   tagline: string | null;
+  description?: string | null;
   imageUrl: string | null;
   priceOriginal: number | null;
   priceBundle: number | null;
+  featured?: boolean | null;
   packCategory: string | null;
   stock: number | null;
-  products?: PackProduct[] | null;
+  products?: Array<{
+    quantity: number | null;
+    product: {
+      _id: string;
+      name: string | null;
+      slug: Slug | null;
+      priceRetail: number | null;
+      stock: number | null;
+      imageUrl: string | null;
+    } | null;
+  }> | null;
   productCount?: number | null;
 }
 

@@ -19,6 +19,7 @@ import {
 import { useCartStock } from "@/lib/hooks/useCartStock";
 import { createCODOrder } from "@/lib/actions/checkout";
 import { toast } from "sonner";
+import { trackInitiateCheckout } from "@/lib/tracking/events";
 
 export function CheckoutClient() {
   const router = useRouter();
@@ -33,6 +34,16 @@ export function CheckoutClient() {
   const [hasSeenLoginPrompt, setHasSeenLoginPrompt] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
+
+  // Track checkout initiation
+  useEffect(() => {
+    if (items.length > 0) {
+      trackInitiateCheckout(
+        totalPrice,
+        items.map((i) => ({ id: i.productId, name: i.name, price: i.price, quantity: i.quantity }))
+      );
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Show login prompt for guests (only once)
   useEffect(() => {

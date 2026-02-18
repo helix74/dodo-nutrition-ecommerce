@@ -119,6 +119,70 @@ export async function getOrder(id: string): Promise<OrderData | null> {
   );
 }
 
+// ============ SUPPLIERS ============
+
+export interface SupplierRow {
+  _id: string;
+  name: string;
+  contactName: string | null;
+  phone: string | null;
+  email: string | null;
+  productCount: number;
+}
+
+export async function getSuppliers(): Promise<SupplierRow[]> {
+  return writeClient.fetch(
+    `*[_type == "supplier"] | order(name asc) {
+      _id,
+      name,
+      contactName,
+      phone,
+      email,
+      "productCount": count(products)
+    }`,
+    {},
+    { cache: "no-store" }
+  );
+}
+
+// ============ INVOICES ============
+
+export interface InvoiceRow {
+  _id: string;
+  invoiceNumber: string;
+  supplierName: string | null;
+  date: string | null;
+  totalAmount: number | null;
+  status: string;
+  itemCount: number;
+}
+
+export async function getInvoices(): Promise<InvoiceRow[]> {
+  return writeClient.fetch(
+    `*[_type == "invoice"] | order(date desc) {
+      _id,
+      invoiceNumber,
+      "supplierName": supplier->name,
+      date,
+      totalAmount,
+      status,
+      "itemCount": count(items)
+    }`,
+    {},
+    { cache: "no-store" }
+  );
+}
+
+// ============ LOW STOCK COUNT ============
+
+export async function getLowStockCount(): Promise<number> {
+  return writeClient.fetch(
+    `count(*[_type == "product" && stock <= 5])`,
+    {},
+    { cache: "no-store" }
+  );
+}
+
 // ============ STATS ============
 
 export interface DashboardStats {

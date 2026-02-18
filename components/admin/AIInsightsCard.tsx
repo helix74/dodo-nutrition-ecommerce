@@ -100,6 +100,35 @@ function TrendIcon({ trend }: { trend: "up" | "down" | "stable" }) {
   return <Minus className="h-4 w-4 text-zinc-400" />;
 }
 
+const INSIGHTS_CACHE_KEY = "dodo-admin-insights";
+const INSIGHTS_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+
+function getCachedInsights(): InsightsResponse | null {
+  try {
+    const raw = sessionStorage.getItem(INSIGHTS_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as InsightsResponse & { _cachedAt?: number };
+    if (parsed._cachedAt && Date.now() - parsed._cachedAt > INSIGHTS_CACHE_TTL) {
+      sessionStorage.removeItem(INSIGHTS_CACHE_KEY);
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function setCachedInsights(data: InsightsResponse) {
+  try {
+    sessionStorage.setItem(
+      INSIGHTS_CACHE_KEY,
+      JSON.stringify({ ...data, _cachedAt: Date.now() })
+    );
+  } catch {
+    // Storage quota exceeded — silently ignore
+  }
+}
+
 export function AIInsightsCard() {
   const [data, setData] = useState<InsightsResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -120,12 +149,13 @@ export function AIInsightsCard() {
       const result = await response.json();
 
       if (!result.success) {
-        throw new Error(result.error || "Failed to fetch insights");
+        throw new Error(result.error || "Échec du chargement des analyses");
       }
 
       setData(result);
+      setCachedInsights(result);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load insights");
+      setError(err instanceof Error ? err.message : "Échec du chargement des analyses");
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -133,9 +163,16 @@ export function AIInsightsCard() {
   }, []);
 
   useEffect(() => {
-    // Prevent double fetch in React StrictMode
     if (hasFetched.current) return;
     hasFetched.current = true;
+
+    const cached = getCachedInsights();
+    if (cached) {
+      setData(cached);
+      setLoading(false);
+      return;
+    }
+
     fetchInsights();
   }, [fetchInsights]);
 
@@ -153,7 +190,7 @@ export function AIInsightsCard() {
             </div>
             <div>
               <h3 className="font-semibold text-red-900 dark:text-red-100">
-                Failed to load insights
+                Échec du chargement des analyses
               </h3>
               <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
             </div>
@@ -165,7 +202,7 @@ export function AIInsightsCard() {
             className="border-red-300 text-red-700 hover:bg-red-100 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900/50"
           >
             <RefreshCw className="mr-2 h-4 w-4" />
-            Retry
+            Réessayer
           </Button>
         </div>
       </div>
@@ -188,10 +225,10 @@ export function AIInsightsCard() {
           </div>
           <div>
             <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
-              AI Insights
+              Analyses IA
             </h2>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              Updated{" "}
+              Mis à jour{" "}
               {new Date(generatedAt).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -211,7 +248,7 @@ export function AIInsightsCard() {
           ) : (
             <RefreshCw className="h-4 w-4" />
           )}
-          Refresh
+          Rafraîchir
         </Button>
       </div>
 
@@ -219,7 +256,7 @@ export function AIInsightsCard() {
       <div className="grid grid-cols-2 gap-px border-b border-zinc-200 bg-zinc-200 dark:border-zinc-800 dark:bg-zinc-800 sm:grid-cols-4">
         <div className="bg-white p-4 dark:bg-zinc-900">
           <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-            Revenue (7d)
+            Revenus (7j)
           </p>
           <p className="mt-1 text-lg font-bold text-zinc-900 dark:text-zinc-100">
             {Number(rawMetrics.currentRevenue).toLocaleString("fr-TN", {
@@ -239,21 +276,21 @@ export function AIInsightsCard() {
             )}
           >
             {Number(rawMetrics.revenueChange) > 0 ? "+" : ""}
-            {rawMetrics.revenueChange}% vs last week
+            {rawMetrics.revenueChange}% vs semaine dernière
           </p>
         </div>
         <div className="bg-white p-4 dark:bg-zinc-900">
           <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-            Orders (7d)
+            Commandes (7j)
           </p>
           <p className="mt-1 text-lg font-bold text-zinc-900 dark:text-zinc-100">
             {rawMetrics.orderCount}
           </p>
-          <p className="text-xs text-zinc-500">This week</p>
+          <p className="text-xs text-zinc-500">Cette semaine</p>
         </div>
         <div className="bg-white p-4 dark:bg-zinc-900">
           <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-            Avg Order
+            Panier moyen
           </p>
           <p className="mt-1 text-lg font-bold text-zinc-900 dark:text-zinc-100">
             {rawMetrics.avgOrderValue} <span className="text-sm text-muted-foreground">TND</span>
@@ -262,7 +299,7 @@ export function AIInsightsCard() {
         </div>
         <div className="bg-white p-4 dark:bg-zinc-900">
           <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-            Pending
+            En attente
           </p>
           <p
             className={cn(
@@ -274,7 +311,7 @@ export function AIInsightsCard() {
           >
             {rawMetrics.unfulfilledCount}
           </p>
-          <p className="text-xs text-zinc-500">To ship</p>
+          <p className="text-xs text-zinc-500">À expédier</p>
         </div>
       </div>
 
@@ -285,7 +322,7 @@ export function AIInsightsCard() {
           <div className="flex items-center gap-2">
             <TrendIcon trend={insights.salesTrends.trend} />
             <h3 className="font-medium text-zinc-900 dark:text-zinc-100">
-              Sales Trends
+              Tendances des ventes
             </h3>
           </div>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
@@ -309,7 +346,7 @@ export function AIInsightsCard() {
           <div className="flex items-center gap-2">
             <Package className="h-4 w-4 text-blue-500" />
             <h3 className="font-medium text-zinc-900 dark:text-zinc-100">
-              Inventory
+              Inventaire
             </h3>
           </div>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
@@ -346,14 +383,14 @@ export function AIInsightsCard() {
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-violet-500" />
             <h3 className="font-medium text-zinc-900 dark:text-zinc-100">
-              Action Items
+              Actions à faire
             </h3>
           </div>
 
           {insights.actionItems.urgent.length > 0 && (
             <div className="space-y-2">
               <p className="text-xs font-medium uppercase tracking-wide text-red-600 dark:text-red-400">
-                Urgent
+                Urgent(es)
               </p>
               {insights.actionItems.urgent.map((item, i) => (
                 <div
@@ -370,7 +407,7 @@ export function AIInsightsCard() {
           {insights.actionItems.recommended.length > 0 && (
             <div className="space-y-2">
               <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-                Recommended
+                Recommandé
               </p>
               <ul className="space-y-1">
                 {insights.actionItems.recommended.map((item, i) => (
@@ -389,7 +426,7 @@ export function AIInsightsCard() {
           {insights.actionItems.opportunities.length > 0 && (
             <div className="space-y-2">
               <p className="text-xs font-medium uppercase tracking-wide text-emerald-600 dark:text-emerald-400">
-                Opportunities
+                Opportunités
               </p>
               <ul className="space-y-1">
                 {insights.actionItems.opportunities.map((item, i) => (

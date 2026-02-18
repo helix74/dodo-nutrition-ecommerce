@@ -14,7 +14,7 @@ interface AdminSearchProps {
 }
 
 export function AdminSearch({
-  placeholder = "Search...",
+  placeholder = "Rechercher...",
   value,
   onChange,
   className,

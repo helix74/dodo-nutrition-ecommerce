@@ -167,6 +167,22 @@ export const orderType = defineType({
       ],
     }),
     defineField({
+      name: "trackingNumber",
+      type: "string",
+      group: "shipping",
+      title: "Numéro de suivi Ciblex",
+      description: "Code-barres Ciblex attribué automatiquement à la création",
+      readOnly: true,
+    }),
+    defineField({
+      name: "ciblexStatus",
+      type: "string",
+      group: "shipping",
+      title: "Statut Ciblex",
+      description: "Dernier statut remonté par Ciblex",
+      readOnly: true,
+    }),
+    defineField({
       name: "notes",
       type: "text",
       group: "shipping",

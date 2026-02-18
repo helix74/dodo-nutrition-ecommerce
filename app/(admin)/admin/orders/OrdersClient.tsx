@@ -61,7 +61,7 @@ export function OrdersClient({ orders }: OrdersClientProps) {
       {/* Search and Tabs */}
       <div className="flex flex-col gap-4">
         <AdminSearch
-          placeholder="Search by order # or email..."
+          placeholder="Rechercher par n° de commande ou email..."
           value={searchQuery}
           onChange={setSearchQuery}
           className="w-full sm:max-w-xs"
@@ -87,13 +87,13 @@ export function OrdersClient({ orders }: OrdersClientProps) {
       {filteredOrders.length === 0 ? (
         <EmptyState
           icon={ShoppingCart}
-          title="No orders found"
+          title="Aucune commande trouvée"
           description={
             debouncedSearch
-              ? "Try adjusting your search terms."
+              ? "Essayez d'ajuster vos termes de recherche."
               : statusFilter === "all"
-                ? "Orders will appear here when customers make purchases."
-                : `No ${statusFilter} orders at the moment.`
+                ? "Les commandes apparaîtront ici lorsque vos clients effectueront des achats."
+                : `Aucune commande « ${statusFilter} » pour le moment.`
           }
         />
       ) : (

@@ -237,38 +237,38 @@ export async function GET(request: Request) {
     // Generate AI insights
     const { text } = await generateText({
       model: groq("llama-3.1-8b-instant"),
-      system: `You are an expert e-commerce analytics assistant. Analyze the provided store data and generate actionable insights for the store admin.
+      system: `Tu es un assistant expert en analyse e-commerce. Analyse les données fournies et génère des insights actionnables pour l'administrateur de la boutique. Réponds UNIQUEMENT en français.
 
-Your response must be valid JSON with this exact structure:
+Ta réponse doit être un JSON valide avec cette structure exacte :
 {
   "salesTrends": {
-    "summary": "2-3 sentence summary of sales performance",
-    "highlights": ["highlight 1", "highlight 2", "highlight 3"],
+    "summary": "Résumé de 2-3 phrases sur les performances de vente",
+    "highlights": ["point clé 1", "point clé 2", "point clé 3"],
     "trend": "up" | "down" | "stable"
   },
   "inventory": {
-    "summary": "2-3 sentence summary of inventory status",
-    "alerts": ["alert 1", "alert 2"],
-    "recommendations": ["recommendation 1", "recommendation 2"]
+    "summary": "Résumé de 2-3 phrases sur l'état du stock",
+    "alerts": ["alerte 1", "alerte 2"],
+    "recommendations": ["recommandation 1", "recommandation 2"]
   },
   "actionItems": {
-    "urgent": ["urgent action 1", "urgent action 2"],
-    "recommended": ["recommended action 1", "recommended action 2"],
-    "opportunities": ["opportunity 1", "opportunity 2"]
+    "urgent": ["action urgente 1", "action urgente 2"],
+    "recommended": ["action recommandée 1", "action recommandée 2"],
+    "opportunities": ["opportunité 1", "opportunité 2"]
   }
 }
 
-Guidelines:
-- Be specific with numbers and product names
-- Prioritize actionable insights
-- Keep highlights, alerts, and recommendations concise (under 100 characters each)
-- Focus on what the admin can do TODAY
-- Use TND for currency`,
-      prompt: `Analyze this e-commerce store data and provide insights:
+Consignes :
+- Sois précis avec les chiffres et noms de produits
+- Priorise les insights actionnables
+- Garde les points, alertes et recommandations concis (moins de 100 caractères chacun)
+- Concentre-toi sur ce que l'admin peut faire AUJOURD'HUI
+- Utilise TND pour la devise`,
+      prompt: `Analyse les données de cette boutique e-commerce et fournis des insights :
 
 ${JSON.stringify(dataSummary, null, 2)}
 
-Generate insights in the required JSON format.`,
+Génère les insights au format JSON requis.`,
     });
 
     // Parse AI response
@@ -301,34 +301,34 @@ Generate insights in the required JSON format.`,
       // Fallback insights if parsing fails
       insights = {
         salesTrends: {
-          summary: `Revenue this week: ${currentRevenue.toFixed(2)} TND (${revenueChange > 0 ? "+" : ""}${revenueChange.toFixed(1)}% vs last week)`,
+          summary: `Revenus cette semaine : ${currentRevenue.toFixed(2)} TND (${revenueChange > 0 ? "+" : ""}${revenueChange.toFixed(1)}% vs semaine dernière)`,
           highlights: [
-            `${revenuePeriod.currentOrderCount || 0} orders this week`,
-            `Average order value: ${avgOrderValue.toFixed(2)} TND`,
+            `${revenuePeriod.currentOrderCount || 0} commandes cette semaine`,
+            `Panier moyen : ${avgOrderValue.toFixed(2)} TND`,
             topProducts[0]
-              ? `Top seller: ${topProducts[0].name}`
-              : "No sales data yet",
+              ? `Meilleure vente : ${topProducts[0].name}`
+              : "Pas encore de données de ventes",
           ],
           trend:
             revenueChange > 5 ? "up" : revenueChange < -5 ? "down" : "stable",
         },
         inventory: {
-          summary: `${needsRestock.length} products need restocking. ${slowMoving.length} products have no recent sales.`,
+          summary: `${needsRestock.length} produits à réapprovisionner. ${slowMoving.length} produits sans ventes récentes.`,
           alerts: needsRestock
             .slice(0, 2)
-            .map((p) => `${p.name} has only ${p.stock} left`),
+            .map((p) => `${p.name} : seulement ${p.stock} restant(s)`),
           recommendations: [
-            "Review low stock items before the weekend",
-            "Consider promotions for slow-moving inventory",
+            "Vérifier les stocks faibles avant le week-end",
+            "Envisager des promotions pour les invendus",
           ],
         },
         actionItems: {
           urgent:
             unfulfilledOrders.length > 0
-              ? [`Ship ${unfulfilledOrders.length} pending orders`]
-              : ["All orders fulfilled!"],
-          recommended: ["Review inventory levels", "Check product listings"],
-          opportunities: ["Featured products drive more sales"],
+              ? [`Expédier ${unfulfilledOrders.length} commandes en attente`]
+              : ["Toutes les commandes sont traitées !"],
+          recommended: ["Vérifier les niveaux de stock", "Contrôler les fiches produits"],
+          opportunities: ["Les produits vedettes génèrent plus de ventes"],
         },
       };
     }
@@ -352,7 +352,7 @@ Generate insights in the required JSON format.`,
     return Response.json(
       {
         success: false,
-        error: "Failed to generate insights",
+        error: "Échec de la génération des analyses",
       },
       { status: 500 }
     );

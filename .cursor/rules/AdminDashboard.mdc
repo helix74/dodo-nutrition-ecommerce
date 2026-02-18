@@ -30,6 +30,8 @@ await requireAdmin(); // Throws if not admin
 
 - Data fetching: `lib/actions/admin-data.ts`
 - Mutations: `lib/actions/admin-mutations.ts`
+- Analytics: `lib/actions/admin-analytics.ts`
+- Shipping: `lib/actions/shipping.ts`
 - Always use `requireAdmin()` guard
 
 ## Admin Components (in `components/admin/`)
@@ -39,24 +41,34 @@ await requireAdmin(); // Throws if not admin
 | `StatCard` | Dashboard metric card |
 | `RecentOrders` | Recent orders table |
 | `LowStockAlert` | Low stock warning |
+| `LowStockBadge` | Badge for low/out-of-stock products |
 | `OrderRow` | Order table row |
 | `ProductRow` | Product table row |
 | `StatusSelect` | Order status dropdown |
 | `PriceInput` / `StockInput` | Inline editing |
 | `ImageUploader` | Product image upload |
 | `AIInsightsCard` | AI-generated insights |
+| `RevenueChart` | 30-day revenue trend chart |
+| `OrderStatusChart` | Order status distribution |
+| `OrdersByCity` | Orders by gouvernorat chart |
+| `ShippingStatus` | Ciblex shipping status in order detail |
 
 ## Admin Widgets (in `components/admin/widgets/`)
 
 - `OrderStats`, `RevenueStats`, `StockSummary`, `RecentOrdersWidget`
+- `EnhancedKPIs` — avg order value, low stock, top category, cancellation rate
+- `ChartsSection` — parallel-fetched charts (revenue, status, gouvernorat)
+- `LowStockDashboardWidget` — low/out-of-stock products with links
 
 ## Pages
 
 | Route | Purpose |
 |-------|---------|
-| `/admin` | Dashboard overview |
+| `/admin` | Dashboard overview (KPIs, charts, orders, stock, AI) |
 | `/admin/orders` | Order management |
-| `/admin/orders/[id]` | Order detail |
+| `/admin/orders/[id]` | Order detail + shipping status |
 | `/admin/inventory` | Product inventory |
 | `/admin/inventory/[id]` | Product detail editing |
 | `/admin/reviews` | Review moderation |
+| `/admin/suppliers` | Supplier management |
+| `/admin/invoices` | Invoice management |

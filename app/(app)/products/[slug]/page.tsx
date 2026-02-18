@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { sanityFetch } from "@/sanity/lib/live";
 import {
@@ -13,11 +14,56 @@ import { ProductInfo } from "@/components/app/ProductInfo";
 import { ProductAccordion } from "@/components/app/ProductAccordion";
 import { CategoryReviews } from "@/components/app/CategoryReviews";
 import { RelatedProducts } from "@/components/app/RelatedProducts";
+import { TrackViewContent } from "@/components/tracking/TrackViewContent";
+import { ProductJsonLd } from "@/components/seo/JsonLd";
+
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://dodonutrition.tn";
 
 interface ProductPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const { data: product } = await sanityFetch({
+    query: PRODUCT_BY_SLUG_QUERY,
+    params: { slug },
+  });
+
+  if (!product) {
+    return { title: "Produit introuvable | Dodo Nutrition" };
+  }
+
+  const title = `${product.name} | Dodo Nutrition`;
+  const description = product.description
+    ? product.description.slice(0, 160)
+    : `Achetez ${product.name} chez Dodo Nutrition. Livraison rapide en Tunisie.`;
+  const imageUrl = product.images?.[0]?.asset?.url;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      url: `${siteUrl}/products/${product.slug}`,
+      ...(imageUrl && {
+        images: [{ url: imageUrl, alt: product.name ?? "Dodo Nutrition" }],
+      }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      ...(imageUrl && { images: [imageUrl] }),
+    },
+  };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
@@ -60,11 +106,26 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <div className="min-h-screen bg-background">
+      <TrackViewContent
+        product={{
+          id: product._id,
+          name: product.name ?? "",
+          category: product.category?.title ?? "",
+          price: product.priceRetail ?? 0,
+        }}
+      />
+      <ProductJsonLd
+        product={product}
+        siteUrl={siteUrl}
+        rating={rating}
+      />
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Hero Section: Image + Product Info */}
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Image Gallery */}
-          <ProductGallery images={product.images} productName={product.name} />
+          <div className="lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-8rem)]">
+            <ProductGallery images={product.images} productName={product.name} />
+          </div>
 
           {/* Product Info (Compact) */}
           <ProductInfo

@@ -16,6 +16,7 @@ import {
 import { useCartStock } from "@/lib/hooks/useCartStock";
 import { CartItem } from "./CartItem";
 import { CartSummary } from "./CartSummary";
+import { CartUpsell } from "./CartUpsell";
 
 export function CartSheet() {
   const items = useCartItems();
@@ -71,6 +72,9 @@ export function CartSheet() {
                 ))}
               </div>
             </div>
+
+            {/* Upsell Suggestions */}
+            <CartUpsell />
 
             {/* Summary */}
             <CartSummary hasStockIssues={hasStockIssues} />

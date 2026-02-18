@@ -1,7 +1,16 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { writeClient } from "@/sanity/lib/client";
+import { adminLogout } from "@/lib/auth/admin-session";
+
+// ============ AUTH MUTATIONS ============
+
+export async function adminLogoutAction(): Promise<void> {
+  await adminLogout();
+  redirect("/admin/login");
+}
 
 // ============ PRODUCT MUTATIONS ============
 
@@ -17,7 +26,7 @@ export async function updateProductField(
     return { success: true };
   } catch (error) {
     console.error(`Failed to update ${field}:`, error);
-    return { success: false, error: `Failed to update ${field}` };
+    return { success: false, error: `Échec de la mise à jour de ${field}` };
   }
 }
 
@@ -49,7 +58,7 @@ export async function publishDocument(
     return { success: true };
   } catch (error) {
     console.error("Failed to publish:", error);
-    return { success: false, error: "Failed to publish document" };
+    return { success: false, error: "Échec de la publication" };
   }
 }
 
@@ -78,7 +87,7 @@ export async function unpublishDocument(
     return { success: true };
   } catch (error) {
     console.error("Failed to unpublish:", error);
-    return { success: false, error: "Failed to unpublish document" };
+    return { success: false, error: "Échec de l'annulation de publication" };
   }
 }
 
@@ -98,7 +107,7 @@ export async function deleteDocument(
     return { success: true };
   } catch (error) {
     console.error("Failed to delete:", error);
-    return { success: false, error: "Failed to delete document" };
+    return { success: false, error: "Échec de la suppression" };
   }
 }
 
@@ -115,7 +124,7 @@ export async function updateOrderStatus(
     return { success: true };
   } catch (error) {
     console.error("Failed to update order status:", error);
-    return { success: false, error: "Failed to update order status" };
+    return { success: false, error: "Échec de la mise à jour du statut" };
   }
 }
 
@@ -136,7 +145,7 @@ export async function updateOrderAddress(
     return { success: true };
   } catch (error) {
     console.error("Failed to update order address:", error);
-    return { success: false, error: "Failed to update address" };
+    return { success: false, error: "Échec de la mise à jour de l'adresse" };
   }
 }
 
@@ -157,6 +166,6 @@ export async function updateProductImages(
     return { success: true };
   } catch (error) {
     console.error("Failed to update images:", error);
-    return { success: false, error: "Failed to update images" };
+    return { success: false, error: "Échec de la mise à jour des images" };
   }
 }

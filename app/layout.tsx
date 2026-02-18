@@ -4,6 +4,11 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { WishlistStoreProvider } from "@/lib/store/wishlist-store-provider";
 import { CartStoreProvider } from "@/lib/store/cart-store-provider";
+import { MetaPixel } from "@/components/tracking/MetaPixel";
+import { GoogleAnalytics } from "@/components/tracking/GoogleAnalytics";
+
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://dodonutrition.tn";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,9 +26,28 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "Dodo Nutrition | Suppléments & Nutrition Sportive en Tunisie",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Dodo Nutrition | Suppléments & Nutrition Sportive en Tunisie",
+    template: "%s | Dodo Nutrition",
+  },
   description:
     "Votre partenaire nutrition sportive en Tunisie. Protéines, créatine, pre-workout, vitamines et suppléments de qualité premium.",
+  openGraph: {
+    title: "Dodo Nutrition | Suppléments & Nutrition Sportive en Tunisie",
+    description:
+      "Votre partenaire nutrition sportive en Tunisie. Protéines, créatine, pre-workout, vitamines et suppléments de qualité premium.",
+    siteName: "Dodo Nutrition",
+    type: "website",
+    locale: "fr_TN",
+    url: siteUrl,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dodo Nutrition | Suppléments & Nutrition Sportive en Tunisie",
+    description:
+      "Votre partenaire nutrition sportive en Tunisie. Protéines, créatine, pre-workout, vitamines et suppléments de qualité premium.",
+  },
 };
 
 export default function RootLayout({
@@ -34,6 +58,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className="dark">
+        <head>
+          <MetaPixel />
+          <GoogleAnalytics />
+        </head>
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${cairo.variable} antialiased font-sans`}
         >
