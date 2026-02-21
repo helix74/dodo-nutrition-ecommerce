@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { Plus, LayoutDashboard } from "lucide-react";
+import { ExternalLink, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   RevenueStats,
@@ -71,10 +71,10 @@ export default function AdminDashboard() {
             </p>
           </div>
         </div>
-        <Button asChild className="bg-dodo-yellow hover:bg-dodo-yellow-hover text-black">
-          <Link href="/admin/inventory">
-            <Plus className="mr-2 h-4 w-4" />
-            Nouveau produit
+        <Button asChild variant="outline">
+          <Link href="/studio" target="_blank">
+            <ExternalLink className="mr-2 h-4 w-4" />
+            Ouvrir Studio
           </Link>
         </Button>
       </div>

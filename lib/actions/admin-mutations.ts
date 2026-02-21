@@ -3,7 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { writeClient } from "@/sanity/lib/client";
-import { adminLogout } from "@/lib/auth/admin-session";
+import { adminLogout, isAdminAuthenticated } from "@/lib/auth/admin-session";
+
+async function requireAdmin() {
+  const isAdmin = await isAdminAuthenticated();
+  if (!isAdmin) {
+    throw new Error("Non autorisé");
+  }
+}
 
 // ============ AUTH MUTATIONS ============
 
@@ -20,6 +27,7 @@ export async function updateProductField(
   value: unknown
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdmin();
     await writeClient.patch(id).set({ [field]: value }).commit();
     revalidatePath("/admin/inventory");
     revalidatePath(`/admin/inventory/${id}`);
@@ -34,6 +42,7 @@ export async function publishDocument(
   id: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdmin();
     // In Sanity, publishing means the draft is merged into the published version
     // For documents without drafts, they're already published
     // The SDK's publish action patches the document and removes the draft prefix
@@ -66,6 +75,7 @@ export async function unpublishDocument(
   id: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdmin();
     const publishedId = id.replace(/^drafts\./, "");
     const draftId = `drafts.${publishedId}`;
 
@@ -118,6 +128,7 @@ export async function updateOrderStatus(
   status: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdmin();
     await writeClient.patch(id).set({ status }).commit();
     revalidatePath("/admin/orders");
     revalidatePath(`/admin/orders/${id}`);
@@ -139,6 +150,7 @@ export async function updateOrderAddress(
   }
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdmin();
     await writeClient.patch(id).set({ shippingAddress: address }).commit();
     revalidatePath("/admin/orders");
     revalidatePath(`/admin/orders/${id}`);
@@ -160,6 +172,7 @@ export async function updateProductImages(
   }>
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdmin();
     await writeClient.patch(id).set({ images }).commit();
     revalidatePath("/admin/inventory");
     revalidatePath(`/admin/inventory/${id}`);

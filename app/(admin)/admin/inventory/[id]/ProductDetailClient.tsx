@@ -8,36 +8,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   PublishButton,
   RevertButton,
   ImageUploader,
   DeleteButton,
 } from "@/components/admin";
 import { updateProductField } from "@/lib/actions/admin-mutations";
-
-const MATERIALS = [
-  { value: "wood", label: "Bois" },
-  { value: "metal", label: "Métal" },
-  { value: "fabric", label: "Tissu" },
-  { value: "leather", label: "Cuir" },
-  { value: "glass", label: "Verre" },
-];
-
-const COLORS = [
-  { value: "black", label: "Noir" },
-  { value: "white", label: "Blanc" },
-  { value: "oak", label: "Chêne" },
-  { value: "walnut", label: "Noyer" },
-  { value: "grey", label: "Gris" },
-  { value: "natural", label: "Naturel" },
-];
 
 interface ProductDetailClientProps {
   documentId: string;
@@ -48,11 +24,7 @@ interface ProductDetailClientProps {
     description: string | null;
     price: number;
     stock: number;
-    material: string | null;
-    color: string | null;
-    dimensions: string | null;
     featured: boolean;
-    assemblyRequired: boolean;
     isDraft: boolean;
     hasReferences: boolean;
     referenceCount: number;
@@ -70,11 +42,7 @@ export function ProductDetailClient({ documentId, product }: ProductDetailClient
   const [description, setDescription] = useState(product.description || "");
   const [price, setPrice] = useState(product.price || 0);
   const [stock, setStock] = useState(product.stock || 0);
-  const [material, setMaterial] = useState(product.material || "");
-  const [color, setColor] = useState(product.color || "");
-  const [dimensions, setDimensions] = useState(product.dimensions || "");
   const [featured, setFeatured] = useState(product.featured || false);
-  const [assemblyRequired, setAssemblyRequired] = useState(product.assemblyRequired || false);
   const [isPending, startTransition] = useTransition();
 
   function saveField(field: string, value: unknown) {
@@ -154,14 +122,14 @@ export function ProductDetailClient({ documentId, product }: ProductDetailClient
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="price">Prix (TND)</Label>
+                <Label htmlFor="price">Prix de vente (TND)</Label>
                 <Input
                   type="number"
                   step="0.01"
                   min="0"
                   value={price ?? ""}
                   onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
-                  onBlur={() => saveField("price", price)}
+                  onBlur={() => saveField("priceRetail", price)}
                   placeholder="0.00"
                 />
               </div>
@@ -174,66 +142,6 @@ export function ProductDetailClient({ documentId, product }: ProductDetailClient
                   onChange={(e) => setStock(parseInt(e.target.value) || 0)}
                   onBlur={() => saveField("stock", stock)}
                   placeholder="0"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Attributes */}
-          <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
-            <h2 className="mb-4 font-semibold text-foreground">
-              Attributs
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label>Matériau</Label>
-                <Select
-                  value={material}
-                  onValueChange={(value) => {
-                    setMaterial(value);
-                    saveField("material", value);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner le matériau" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MATERIALS.map((m) => (
-                      <SelectItem key={m.value} value={m.value}>
-                        {m.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Couleur</Label>
-                <Select
-                  value={color}
-                  onValueChange={(value) => {
-                    setColor(value);
-                    saveField("color", value);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner la couleur" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {COLORS.map((c) => (
-                      <SelectItem key={c.value} value={c.value}>
-                        {c.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2 sm:col-span-2">
-                <Label>Dimensions</Label>
-                <Input
-                  value={dimensions}
-                  onChange={(e) => setDimensions(e.target.value)}
-                  onBlur={() => saveField("dimensions", dimensions)}
-                  placeholder='ex. "120cm x 80cm x 75cm"'
                 />
               </div>
             </div>
@@ -259,23 +167,6 @@ export function ProductDetailClient({ documentId, product }: ProductDetailClient
                   onCheckedChange={(checked) => {
                     setFeatured(checked);
                     saveField("featured", checked);
-                  }}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-foreground">
-                    Assemblage requis
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Le client devra assembler
-                  </p>
-                </div>
-                <Switch
-                  checked={assemblyRequired}
-                  onCheckedChange={(checked) => {
-                    setAssemblyRequired(checked);
-                    saveField("assemblyRequired", checked);
                   }}
                 />
               </div>
@@ -311,15 +202,15 @@ export function ProductDetailClient({ documentId, product }: ProductDetailClient
           {/* Studio Link */}
           <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
             <h2 className="font-semibold text-foreground">
-              Édition avancée
+              Édition complète
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Définir la catégorie et d&apos;autres options dans Sanity Studio.
+              Catégorie, marque, saveurs, certifications, bénéfices et contenu SEO dans Sanity Studio.
             </p>
             <Link
               href={`/studio/structure/product;${documentId}`}
               target="_blank"
-              className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:text-muted-foreground"
+              className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-dodo-yellow hover:text-dodo-yellow-hover"
             >
               Ouvrir dans Studio
               <ExternalLink className="h-3.5 w-3.5" />

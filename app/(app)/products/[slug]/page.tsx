@@ -121,18 +121,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
       />
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Hero Section: Image + Product Info */}
-        <div className="grid gap-8 lg:grid-cols-2">
-          {/* Image Gallery */}
-          <div className="lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-8rem)]">
+        <div className="grid gap-8 lg:grid-cols-5">
+          {/* Image Gallery — constrained so CTAs are visible without scroll */}
+          <div className="lg:col-span-2">
             <ProductGallery images={product.images} productName={product.name} />
           </div>
 
           {/* Product Info (Compact) */}
-          <ProductInfo
-            product={product}
-            averageRating={rating.average}
-            reviewCount={rating.count}
-          />
+          <div className="lg:col-span-3">
+            <ProductInfo
+              product={product}
+              averageRating={rating.average}
+              reviewCount={rating.count}
+            />
+          </div>
         </div>
 
         {/* Accordion Sections */}

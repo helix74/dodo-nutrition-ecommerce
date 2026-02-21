@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { writeClient } from "@/sanity/lib/client";
+import { isAdminAuthenticated } from "@/lib/auth/admin-session";
 
 export async function POST(request: NextRequest) {
   try {
+    const isAdmin = await isAdminAuthenticated();
+    if (!isAdmin) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
     const formData = await request.formData();
     const files = formData.getAll("files") as File[];
 

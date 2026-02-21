@@ -57,7 +57,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" className="dark">
+      <html lang="fr" className="dark">
         <head>
           <MetaPixel />
           <GoogleAnalytics />

@@ -16,6 +16,7 @@ import {
   FileText,
 } from "lucide-react";
 import { LowStockBadge } from "@/components/admin/LowStockBadge";
+import { AdminChat } from "@/components/admin/AdminChat";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { adminLogoutAction } from "@/lib/actions/admin-mutations";
@@ -188,6 +189,9 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
         <main className="flex-1 pt-14 lg:ml-64 lg:pt-0">
           <div className="p-4 lg:p-8">{children}</div>
         </main>
+
+        {/* AI Chat Widget */}
+        <AdminChat />
       </div>
   );
 }
